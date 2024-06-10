@@ -5,10 +5,10 @@ require('dotenv').config()
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const {token} = process.env
 
-// Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
+client.buttons = new Collection()
 client.commandArray = [];
 
 const functionFolders = fs.readdirSync('./functions');
@@ -22,8 +22,6 @@ for( const folder of functionFolders){
 
 client.handleEvents();
 client.handleCommands();
-
-const eventsPath = path.join(__dirname, 'events');
-const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+client.handleComponents();
 
 client.login(token);
