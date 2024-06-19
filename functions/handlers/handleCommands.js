@@ -29,7 +29,6 @@ module.exports = (client) => {
         const rest = new REST().setToken(token)
         try {
             console.log(`Started refreshing ${client.commandArray.length} application (/) commands.`);
-    
             const data = await rest.put(
                 Routes.applicationCommands(clientId),
                 { body: client.commandArray },

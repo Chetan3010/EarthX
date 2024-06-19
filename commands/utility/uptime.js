@@ -17,7 +17,7 @@ module.exports = {
         const message = await interaction.deferReply({
 			fetchReply: true
 		});
-		const newMessage = `${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds`;
+		const newMessage = `I'm alive form ${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds.`;
 		await interaction.editReply({
 			content: newMessage
 		})
