@@ -3,5 +3,9 @@ module.exports = {
     error: "❌",
     wait: "⏳",
     info: "ℹ",
-    separator: "•"
+    separator: "•",
+    music: "🎵",
+    sad: "🥹",
+    pause: "⏸️",
+    resume: "▶️"
 }

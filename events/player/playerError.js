@@ -1,7 +1,14 @@
+const { EmbedBuilder } = require("discord.js")
+const { errorColor } = require("../../configs/config")
+
 module.exports = {
     name: 'playerError',
-    execute(error) {
-        console.error('Music Player encountered unexpected error:')
-        console.error(error);
+    async execute(queue, error) {
+        console.log(error);
+        queue.metadata.channel.send({ embeds: [
+            new EmbedBuilder()
+                .setColor(errorColor)
+                .setDescription('Something went wrong with player. Sorry.')
+        ]})
     }
 }

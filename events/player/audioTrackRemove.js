@@ -1,18 +1,14 @@
 const { EmbedBuilder, escapeMarkdown } = require("discord.js");
 const { botColor } = require("../../configs/config");
-const { music } = require("../../configs/emojis");
+const { success } = require("../../configs/emojis");
 
 module.exports = {
-  name: 'playerStart',
+  name: 'audioTrackRemove',
   async execute(queue, track, client) {
     queue.metadata.channel.send({ embeds: [
       new EmbedBuilder()
         .setColor(botColor)
-        .setAuthor({
-          iconURL: client.user.displayAvatarURL(),
-          name: `\t| Started Playing ↴`,
-      })
-        .setDescription(`${music} [${ escapeMarkdown(track.title) }](${ track.url }).`)
+        .setDescription(`${success} Track removed - [${ escapeMarkdown(track.title) }](${ track.url }).`)
     ]});
   }
 }

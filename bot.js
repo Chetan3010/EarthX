@@ -32,14 +32,14 @@ const player = new Player(client, {
 
 (async () => {
 	
-	await player.extractors.register(YouTubeExtractor, {});
-	await player.extractors.register(DeezerExtractor)
-	await player.extractors.register(TidalExtractor);
-	await player.extractors.register(AppleMusicExtractor, {});
-	await player.extractors.register(SoundCloudExtractor, {});
-	await player.extractors.register(AttachmentExtractor, {});
-	await player.extractors.register(VimeoExtractor, {});
-	await player.extractors.register(ReverbnationExtractor, {});
+	// await player.extractors.register(YouTubeExtractor, {});
+	// await player.extractors.register(DeezerExtractor)
+	// await player.extractors.register(TidalExtractor);
+	// await player.extractors.register(AppleMusicExtractor, {});
+	// await player.extractors.register(SoundCloudExtractor, {});
+	// await player.extractors.register(AttachmentExtractor, {});
+	// await player.extractors.register(VimeoExtractor, {});
+	// await player.extractors.register(ReverbnationExtractor, {});
 	await player.extractors.register(
 		SpotifyExtractor,
 		{
@@ -47,7 +47,7 @@ const player = new Player(client, {
 		  clientSecret: spotifyClientSecret
 		}
 	);
-	// await player.extractors.loadDefault();
+	await player.extractors.loadDefault();
 })();
 
 
