@@ -23,10 +23,11 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 const player = new Player(client, {
 	skipFFmpeg: false,
 	ytdlOptions: {
-		highWaterMark: 1 << 25,
+		
+		highWaterMark: 1<<25,
 		filter: 'audioonly',
 		quality: 'highestaudio',
-		liveBuffer: 40000
+		// liveBuffer: 40000
 	}
 });
 

@@ -1,4 +1,6 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { clock } = require('../../configs/emojis');
+const { botColor, errorColor } = require('../../configs/config');
 
 module.exports = {
     category: 'utility',
@@ -14,12 +16,34 @@ module.exports = {
             totalSeconds %= 3600;
         let minutes = Math.floor(totalSeconds / 60);
         let seconds = Math.floor(totalSeconds % 60);
-        const message = await interaction.deferReply({
+
+        await interaction.deferReply({
 			fetchReply: true
 		});
-		const newMessage = `I'm alive form ${days} days, ${hours} hours, ${minutes} minutes and ${seconds} seconds.`;
-		await interaction.editReply({
-			content: newMessage
-		})
+
+		let time = ``
+		if(days) time+=`${days} days, `
+		if(hours) time+=`${hours} hours, `
+		if(minutes) time+=`${minutes} minutes, `
+		if(seconds) time+=`${seconds} seconds`
+
+		try {
+			await interaction.editReply({
+				embeds: [
+					new EmbedBuilder()
+						.setColor(botColor)
+						.setDescription(`${clock} | ${client.user.username} has been online since \`${time}\`.`)
+				]
+			})
+		} catch (error) {
+			await interaction.editReply({
+				embeds: [
+					new EmbedBuilder()
+						.setColor(errorColor)
+						.setDescription(`Something went wrong while executing this command.`)
+				]
+			})
+			console.log(error);
+		}
 	},
 };

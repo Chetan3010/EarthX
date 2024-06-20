@@ -1,6 +1,6 @@
 const { EmbedBuilder, escapeMarkdown } = require("discord.js");
 const { botColor } = require("../../configs/config");
-const { music } = require("../../configs/emojis");
+const { music, separator } = require("../../configs/emojis");
 
 module.exports = {
   name: 'playerStart',
@@ -10,9 +10,9 @@ module.exports = {
         .setColor(botColor)
         .setAuthor({
           iconURL: client.user.displayAvatarURL(),
-          name: `\t| Started Playing ↴`,
-      })
-        .setDescription(`${music} [${ escapeMarkdown(track.title) }](${ track.url }).`)
+          name: `| Started Playing ↴`,
+        })
+        .setDescription(`[${ escapeMarkdown(track.title) }](${ track.url }) - \`${track.duration}\` By ${track.requestedBy}.`)
     ]});
   }
 }

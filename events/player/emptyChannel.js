@@ -6,7 +6,7 @@ module.exports = {
   async execute(queue, client) {
     let msge = ''
 
-    if(!queue.leaveOnEmpty) msge = `Staying in channel as leaveOnEnd is disabled.`
+    if(!queue.leaveOnEmpty) msge = `Staying in channel as 24/7 is enabled.`
     else{
       msge = `Leaving empty channel in ${ queue.leaveOnEmptyCooldown / 60000}mins.`
     }

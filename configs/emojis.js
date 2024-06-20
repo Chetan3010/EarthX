@@ -1,5 +1,5 @@
 module.exports = {
-    success: "☑️",
+    success: "✅",  
     error: "❌",
     wait: "⏳",
     info: "ℹ",
@@ -7,5 +7,6 @@ module.exports = {
     music: "🎵",
     sad: "🥹",
     pause: "⏸️",
-    resume: "▶️"
+    resume: "▶️",
+    clock: "🕒"
 }

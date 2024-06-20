@@ -1,19 +1,26 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { botColor } = require('../../configs/config');
 
 module.exports = {
     category: 'utility',
     cooldown: 3,
 	data: new SlashCommandBuilder()
 		.setName('ping')
-		.setDescription('Replies with Pong!'),
+		.setDescription('Replies with bot ping.'),
 	async execute(interaction, client) {
 		const message = await interaction.deferReply({
 			fetchReply: true
 		});
-
-		const newMessage = `API Latency: ${client.ws.ping}\nClient Ping: ${message.createdTimestamp - interaction.createdTimestamp}`;
 		await interaction.editReply({
-			content: newMessage
+			embeds: [
+				new EmbedBuilder()
+					.setColor(botColor)
+					.setAuthor({
+						iconURL: client.user.displayAvatarURL(),
+						name: `${client.user.username}`
+					})
+					.setDescription(`Bot Latency: ${message.createdTimestamp - interaction.createdTimestamp} ms.\nDiscord Api Latency: ${client.ws.ping} ms.`)
+			]
 		})
 	},
 };

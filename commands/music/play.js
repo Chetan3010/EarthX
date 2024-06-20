@@ -9,10 +9,10 @@ module.exports = {
     aliases: ['p'],
 	data: new SlashCommandBuilder()
 		.setName('play')
-		.setDescription('Plays the given song.')
+		.setDescription('Plays the song from youtube, spotify, etc.')
         .addStringOption( option => 
-            option.setName('song')
-                .setDescription('Enter the name of the song')
+            option.setName('search')
+                .setDescription('Play a song. Search youtube, spotify or provide a direct link.')
                 .setRequired(true)
                 .setAutocomplete(true)
         ),
@@ -56,8 +56,14 @@ module.exports = {
 	async execute(interaction, client) {
         const player = useMainPlayer();
         const channel = interaction.member.voice.channel;
-        if (!channel) return interaction.reply('You are not connected to a voice channel!');
-        const query = interaction.options.getString('song')
+        if (!channel) return interaction.reply({
+            embeds: [
+                new EmbedBuilder()
+                .setColor(errorColor)
+                .setDescription(`${error} You are not connected to a voice channel!`)
+            ]
+        });
+        const query = interaction.options.getString('search')
 
         await interaction.deferReply()
         const searchResult = await player.search(query, { requestedBy: interaction.user });
@@ -106,7 +112,7 @@ module.exports = {
                                 iconURL: client.user.displayAvatarURL(),
                                 name: ` | Ready for playing ↴`,
                             })
-                            .setDescription(`[${escapeMarkdown(track.cleanTitle || track.title)}](${track.url}) - \`${track.duration}\` By ${track.requestedBy}.`)]  
+                            .setDescription(`[${escapeMarkdown(track.cleanTitle || track.title)}](${track.url}) - \`${track.duration}\`.`)]  
                     })
                 }
                 return

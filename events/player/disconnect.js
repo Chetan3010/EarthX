@@ -8,7 +8,7 @@ module.exports = {
     queue.metadata.channel.send({ embeds: [
       new EmbedBuilder()
         .setColor(botColor)
-        .setDescription(`${sad} Queue is now empty, leaving the channel! Sayonara.`)
+        .setDescription(`${sad} Leaving the voice channel! Sayonara.`)
     ]});
   }
 }

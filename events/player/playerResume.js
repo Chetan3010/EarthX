@@ -8,7 +8,7 @@ module.exports = {
     queue.metadata.channel.send({ embeds: [
       new EmbedBuilder()
         .setColor(botColor)
-        .setDescription(`${resume} Player is paused for now.`)
+        .setDescription(`${resume} Player is resumed now.`)
     ]});
   }
 }
