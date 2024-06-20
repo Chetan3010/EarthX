@@ -33,7 +33,7 @@ const player = new Player(client, {
 
 (async () => {
 	
-	await player.extractors.register(YouTubeExtractor, {});
+	// await player.extractors.register(YouTubeExtractor, {});
 	// await player.extractors.register(DeezerExtractor)
 	// await player.extractors.register(TidalExtractor);
 	// await player.extractors.register(AppleMusicExtractor, {});
