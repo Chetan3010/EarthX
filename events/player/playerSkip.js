@@ -5,15 +5,15 @@ const { error } = require("../../configs/emojis");
 module.exports = {
   name: 'playerSkip',
   async execute(queue, track, reason) {
-    if(reason){;
+    // if(reason){;
       console.log(reason);
       queue.metadata.channel.send({ embeds: [
         new EmbedBuilder()
         .setColor(botColor)
         .setDescription(`${error} Track skipped because the audio stream couldn't be extracted: **[${ escapeMarkdown(track.cleanTitle || track.title) }](${ track.url })**.`)
       ]});
-    }else{
-      return
-    }
+    // }else{
+    //   return
+    // }
   }
 }
