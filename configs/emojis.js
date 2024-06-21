@@ -8,5 +8,7 @@ module.exports = {
     sad: "🥹",
     pause: "⏸️",
     resume: "▶️",
-    clock: "🕒"
+    clock: "🕒",
+    mode: "Ⓜ️",
+    musicmany: "🎶",
 }

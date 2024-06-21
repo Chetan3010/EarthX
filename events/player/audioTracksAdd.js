@@ -1,15 +1,15 @@
 const { EmbedBuilder, escapeMarkdown } = require("discord.js");
 const { botColor } = require("../../configs/config");
-const { success } = require("../../configs/emojis");
+const { musicmany } = require("../../configs/emojis");
+const { BOT_MSGE_DELETE_TIMEOUT } = require("../../configs/constants");
 
 module.exports = {
   name: 'audioTracksAdd',
   async execute(queue, tracks, client) {
-    console.log(tracks);
     queue.metadata.channel.send({ embeds: [
       new EmbedBuilder()
         .setColor(botColor)
-        .setDescription(`${success} Multiple tracks added to the queue - **${ tracks.length }** tracks - From ${tracks[0].playlist.title} - By ${tracks[0].requestedBy}.`)
-    ]});
+        .setDescription(`${musicmany} **${ tracks.length }** tracks from **[${tracks[0].playlist.title}]** added to the queue By ${tracks[0].requestedBy}.`)
+    ]}).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT )).catch(error => console.log(error))
   }
 }

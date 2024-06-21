@@ -2,6 +2,9 @@ const { useMainPlayer, useQueue, usePlayer } = require('discord-player');
 const { SlashCommandBuilder, EmbedBuilder, escapeMarkdown } = require('discord.js');
 const { success, error } = require('../../configs/emojis');
 const { botColor, errorColor } = require('../../configs/config');
+const { errorEmbed } = require('../../configs/utils');
+const { MS_IN_ONE_MINUTE, BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { requireSessionConditions } = require('../../configs/music');
 
 module.exports = {
     category: 'music',
@@ -56,13 +59,9 @@ module.exports = {
 	async execute(interaction, client) {
         const player = useMainPlayer();
         const channel = interaction.member.voice.channel;
-        if (!channel) return interaction.reply({
-            embeds: [
-                new EmbedBuilder()
-                .setColor(errorColor)
-                .setDescription(`${error} You are not connected to a voice channel!`)
-            ]
-        });
+
+        if (!requireSessionConditions(interaction, false, true, false)) return;
+        
         const query = interaction.options.getString('search')
 
         await interaction.deferReply()
@@ -71,11 +70,12 @@ module.exports = {
         if (!searchResult.hasTracks()) {
             await interaction.editReply({
                 embeds: [
-                    new EmbedBuilder()
-                    .setColor(errorColor)
-                    .setDescription(`${error} NO track found for ${query}`)
-                ]
+                    errorEmbed(`No track found for ${query}`)
+                ],
             });
+            setTimeout(()=>{
+                interaction.deleteReply()
+            }, ERROR_MSGE_DELETE_TIMEOUT)
             return;
         } else {
             try {
@@ -112,17 +112,19 @@ module.exports = {
                                 iconURL: client.user.displayAvatarURL(),
                                 name: ` | Ready for playing ↴`,
                             })
-                            .setDescription(`[${escapeMarkdown(track.cleanTitle || track.title)}](${track.url}) - \`${track.duration}\`.`)]  
+                            .setDescription(`[${escapeMarkdown(track.title)}](${track.url}) - \`${track.duration}\`.`)]  
                     })
+                    setTimeout(() => {
+                        interaction.deleteReply()
+                    }, BOT_MSGE_DELETE_TIMEOUT);
                 }
                 return
             } catch (error) {
                 await interaction.editReply({
                     embeds: [
-                        new EmbedBuilder()
-                        .setColor(errorColor)
-                        .setDescription(`${error} Something went wrong while executing command!`)
-                    ]
+                        errorEmbed(`Something went wrong while executing command`)
+                    ],
+                    ephemeral: true
                 });
                 console.error(error)
             }

@@ -1,5 +1,6 @@
 const { EmbedBuilder, escapeMarkdown } = require("discord.js");
 const { botColor } = require("../../configs/config");
+const { BOT_MSGE_DELETE_TIMEOUT } = require("../../configs/constants");
 
 module.exports = {
   name: 'emptyChannel',
@@ -14,7 +15,7 @@ module.exports = {
       new EmbedBuilder()
     .setColor(botColor)
     .setDescription(msge)
-    ]}); 
+    ]}).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT )).catch(error => console.log(error))
   }
 }
 

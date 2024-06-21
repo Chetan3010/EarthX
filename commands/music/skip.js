@@ -2,6 +2,9 @@ const { usePlayer, TrackSkipReason } = require('discord-player');
 const { SlashCommandBuilder, EmbedBuilder, escapeMarkdown } = require('discord.js');
 const { errorColor, botColor } = require('../../configs/config');
 const { error, success} = require('../../configs/emojis');
+const { requireSessionConditions } = require('../../configs/music');
+const { BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { errorEmbed } = require('../../configs/utils');
 
 module.exports = {
     category: 'music',
@@ -12,14 +15,8 @@ module.exports = {
 		.setDescription('Skip the currently playing song.'),
 
 	async execute(interaction, client) {
-        const channel = interaction.member.voice.channel;
-        if (!channel) return interaction.reply({
-            embeds: [
-                new EmbedBuilder()
-                .setColor(errorColor)
-                .setDescription(`${error} You are not connected to a voice channel!`)
-            ]
-        });
+        
+        if (!requireSessionConditions(interaction, true)) return;
 
         try {
             const guildPlayerNode = usePlayer(interaction.guild.id);
@@ -28,10 +25,11 @@ module.exports = {
             if (!currentTrack) {
               interaction.reply({ 
                 embeds: [
-                    new EmbedBuilder()
-                    .setColor(errorColor)
-                    .setDescription(`${ error }, No music is currently being played.`)
+                    errorEmbed(`No music is currently being played`)
                 ]})
+                setTimeout(() => {
+                    interaction.deleteReply()
+                }, BOT_MSGE_DELETE_TIMEOUT);
               return;
             }
 
@@ -47,16 +45,18 @@ module.exports = {
                         )
                 ]
             })
+            setTimeout(() => {
+                interaction.deleteReply()
+            }, BOT_MSGE_DELETE_TIMEOUT);
             return
           }
-          catch (e) {
-            console.log(e);
-            await interaction.editReply({
+          catch (error) {
+            console.log(error);
+            await interaction.reply({
                 embeds: [
-                    new EmbedBuilder()
-                    .setColor(errorColor)
-                    .setDescription(`${error} Something went wrong while executing command!`)
-                ]
+                    errorEmbed(`Something went wrong while executing command`)
+                ], 
+                ephemeral: true
             });
           }
 	},

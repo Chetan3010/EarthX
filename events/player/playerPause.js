@@ -5,10 +5,12 @@ const { pause } = require("../../configs/emojis");
 module.exports = {
   name: 'playerPause',
   async execute(queue, track, client) {
-    queue.metadata.channel.send({ embeds: [
+
+    const res = await queue.metadata.channel.send({ embeds: [
       new EmbedBuilder()
         .setColor(botColor)
         .setDescription(`${pause} Player is paused for now.`)
     ]});
+    queue.metadata.pauseMsge = res.id
   }
 }
