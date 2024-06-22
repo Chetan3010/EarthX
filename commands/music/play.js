@@ -1,10 +1,9 @@
-const { useMainPlayer, useQueue, usePlayer } = require('discord-player');
-const { SlashCommandBuilder, EmbedBuilder, escapeMarkdown } = require('discord.js');
-const { success, error } = require('../../configs/emojis');
-const { botColor, errorColor } = require('../../configs/config');
+const { useMainPlayer } = require('discord-player');
+const { SlashCommandBuilder } = require('discord.js');
 const { errorEmbed } = require('../../configs/utils');
-const { MS_IN_ONE_MINUTE, BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
 const { requireSessionConditions } = require('../../configs/music');
+const playerOptions = require('../../configs/player-options')
 
 module.exports = {
     category: 'music',
@@ -82,15 +81,7 @@ module.exports = {
                 const {track} = await player.play(channel, searchResult, {
                     requestedBy: interaction.user,
                     nodeOptions: {
-                        skipOnNoStream: true,
-                        leaveOnStop: false, //If player should leave the voice channel after user stops the player
-                        leaveOnStopCooldown: 300000, //Cooldown in ms
-                        leaveOnEnd: false, //If player should leave after the whole queue is over
-                        leaveOnEndCooldown: 300000, //Cooldown in ms
-                        leaveOnEmpty: false, //If the player should leave when the voice channel is empty
-                        leaveOnEmptyCooldown: 300000, //Cooldown in ms
-                        pauseOnEmpty: true,
-                        selfDeaf: true,
+                        ...playerOptions,
                         metadata: {
                             channel: interaction.channel,
                             member: interaction.member,
@@ -98,34 +89,38 @@ module.exports = {
                         }
                     }
                 });
-                const queue = useQueue(interaction.guild.id);
-                queue.setRepeatMode(3);
-                const cp = usePlayer(queue)
-                if(cp.isPlaying()){
-                    await interaction.deleteReply()
-                }else{
-                    await interaction.editReply({
-                        embeds: [
-                        new EmbedBuilder()
-                            .setColor(botColor)
-                            .setAuthor({
-                                iconURL: client.user.displayAvatarURL(),
-                                name: ` | Ready for playing ↴`,
-                            })
-                            .setDescription(`[${escapeMarkdown(track.title)}](${track.url}) - \`${track.duration}\`.`)]  
-                    })
-                    setTimeout(() => {
-                        interaction.deleteReply()
-                    }, BOT_MSGE_DELETE_TIMEOUT);
-                }
-                return
+                // console.log({...playerOptions});
+                // const queue = useQueue(interaction.guild.id);
+                // queue.setRepeatMode(3);
+                // const cp = usePlayer(queue)
+                // if(cp.isPlaying()){
+                //     await interaction.deleteReply()
+                // }else{
+                    // await interaction.editReply({
+                    //     embeds: [
+                    //     new EmbedBuilder()
+                    //         .setColor(botColor)
+                    //         .setAuthor({
+                    //             iconURL: client.user.displayAvatarURL(),
+                    //             name: ` | Ready for playing ↴`,
+                    //         })
+                    //         .setDescription(`[${escapeMarkdown(track.title)}](${track.url}) - \`${track.duration}\`.`)]  
+                    // })
+                    // setTimeout(() => {
+                    //     interaction.deleteReply()
+                    // }, BOT_MSGE_DELETE_TIMEOUT);
+                // }
+                // return
+                await interaction.deleteReply()
             } catch (error) {
                 await interaction.editReply({
                     embeds: [
-                        errorEmbed(`Something went wrong while executing command`)
+                        errorEmbed(`Something went wrong while executing \`/play\` command`)
                     ],
-                    ephemeral: true
-                });
+                })
+                setTimeout(()=>{
+                    interaction.deleteReply()
+                }, ERROR_MSGE_DELETE_TIMEOUT)
                 console.error(error)
             }
         }

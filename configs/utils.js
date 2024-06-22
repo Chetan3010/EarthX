@@ -1,7 +1,7 @@
 const { stripIndents } = require("common-tags");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ComponentType, escapeMarkdown } = require("discord.js");
-const { botColor, errorColor } = require("./config");
-const { error, music, mode, sad } = require("./emojis");
+const { botColor, errorColor, successColor } = require("./config");
+const { error, music, mode, sad, success, disk } = require("./emojis");
 
 const handlePagination = async (
     interaction,
@@ -130,7 +130,7 @@ const queueEmbeds = (queue, guild, title) => {
       // Construct our embed
       embed
         .setDescription(stripIndents`
-              ${music} ** | Now Playing: ** [${escapeMarkdown(queue.currentTrack.title)}](${queue.currentTrack.url})${ typeof queue.repeatMode !== 'undefined' && queue.repeatMode !== null ? `\n${mode} ** | Repeat/Loop Mode: ** ${ repeatModeStr }` : '' }
+              ${disk} ** | Now Playing: ** [${escapeMarkdown(queue.currentTrack.title)}](${queue.currentTrack.url})${ typeof queue.repeatMode !== 'undefined' && queue.repeatMode !== null ? `\n${mode} ** | Repeat/Loop Mode: ** ${ repeatModeStr }` : '' }
     
               ${ chunkOutput }
             `)
@@ -272,6 +272,8 @@ const msToHumanReadableTime = (ms) => {
 
 const errorEmbed = (content) => new EmbedBuilder().setColor(errorColor).setDescription(`${error} ${content}.`)
 
+const successEmbed = (content) => new EmbedBuilder().setColor(botColor).setDescription(`${success} ${content}.`)
+
 module.exports = {
     msToHumanReadableTime,
     handlePagination,
@@ -283,5 +285,6 @@ module.exports = {
     dynamicInteractionReplyFn,
     handlePaginationButtons,
     queueTrackCb,
-    errorEmbed
+    errorEmbed,
+    successEmbed,
 }

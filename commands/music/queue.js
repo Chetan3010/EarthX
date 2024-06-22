@@ -37,7 +37,7 @@ module.exports = {
         }catch (error) {
             await interaction.reply({
                     embeds: [
-                        errorEmbed(`Something went wrong while executing command`)
+                        errorEmbed(`Something went wrong while executing \`/queue\` command`)
                     ],
                     ephemeral: true
                 });

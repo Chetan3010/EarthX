@@ -5,7 +5,7 @@ const {token,spotifyClientId, spotifyClientSecret} = process.env
 const DeezerExtractor = require("discord-player-deezer").default 
 const TidalExtractor = require('discord-player-tidal').default
 
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, ActivityType, PresenceUpdateStatus } = require('discord.js');
 const { Player } = require('discord-player');
 const {
 	SpotifyExtractor,
@@ -18,7 +18,13 @@ const {
 } = require('@discord-player/extractor');
 // "youtube-ext", "ytdl-core <- current", "@distube/ytdl-core", "play-dl", "yt-stream"
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
+const client = new Client({ 
+	presence: {
+		status: 'online',
+		activities: [{ name: '/help', type: ActivityType.Listening }],
+	},
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] 
+});
 
 const player = new Player(client, {
 	skipFFmpeg: false,
@@ -33,7 +39,7 @@ const player = new Player(client, {
 
 (async () => {
 	
-	await player.extractors.register(YouTubeExtractor, {});
+	// await player.extractors.register(YouTubeExtractor, {});
 	// await player.extractors.register(DeezerExtractor)
 	// await player.extractors.register(TidalExtractor);
 	// await player.extractors.register(AppleMusicExtractor, {});

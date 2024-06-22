@@ -9,7 +9,7 @@ module.exports = {
     queue.metadata.channel.send({ embeds: [
       new EmbedBuilder()
         .setColor(botColor)
-        .setDescription(`${sad} Leaving the voice channel! Sayonara.`)
+        .setDescription(`${sad} Leaving the voice channel, Sayonara.`)
     ]}).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT )).catch(error => console.log(error))
   }
 }

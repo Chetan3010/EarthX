@@ -19,7 +19,7 @@ module.exports = {
 						iconURL: client.user.displayAvatarURL(),
 						name: `${client.user.username}`
 					})
-					.setDescription(`Bot Latency: ${message.createdTimestamp - interaction.createdTimestamp} ms.\nDiscord Api Latency: ${client.ws.ping} ms.`)
+					.setDescription(`My Latency: ${message.createdTimestamp - interaction.createdTimestamp} ms.\nDiscord Api Latency: ${client.ws.ping} ms.`)
 			]
 		})
 	},

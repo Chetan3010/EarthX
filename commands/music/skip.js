@@ -1,10 +1,10 @@
 const { usePlayer, TrackSkipReason } = require('discord-player');
 const { SlashCommandBuilder, EmbedBuilder, escapeMarkdown } = require('discord.js');
 const { errorColor, botColor } = require('../../configs/config');
-const { error, success} = require('../../configs/emojis');
 const { requireSessionConditions } = require('../../configs/music');
 const { BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
-const { errorEmbed } = require('../../configs/utils');
+const { errorEmbed, successEmbed } = require('../../configs/utils');
+const { success, error } = require('../../configs/emojis');
 
 module.exports = {
     category: 'music',
@@ -36,13 +36,9 @@ module.exports = {
             const successSkip = guildPlayerNode.skip(TrackSkipReason);
             await interaction.reply({
                 embeds: [
-                    new EmbedBuilder()
-                        .setColor(successSkip ? botColor : errorColor)
-                        .setDescription(
-                            successSkip 
-                            ? `${ success } skipped **[${currentTrack }](${ currentTrack.url })** - By ${interaction.user}.`
-                            : `${ error } , something went wrong - couldn't skip current playing song.`
-                        )
+                    successSkip 
+                    ? successEmbed(` Skipped **[${currentTrack }](${ currentTrack.url })** song - By ${interaction.user}.`)
+                    : errorEmbed(` Something went wrong - couldn't skip current playing song.`)
                 ]
             })
             setTimeout(() => {
@@ -54,7 +50,7 @@ module.exports = {
             console.log(error);
             await interaction.reply({
                 embeds: [
-                    errorEmbed(`Something went wrong while executing command`)
+                    errorEmbed(`Something went wrong while executing \`/skip\` command`)
                 ], 
                 ephemeral: true
             });

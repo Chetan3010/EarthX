@@ -1,6 +1,9 @@
-const { useQueue, usePlayer } = require("discord-player");
-const { error, success } = require("./emojis");
-const { errorEmbed } = require("./utils");
+const { useQueue, usePlayer, GuildQueuePlayerNode } = require("discord-player");
+const { error, success, joinvc } = require("./emojis");
+const { errorEmbed, repeatModeEmojiStr } = require("./utils");
+const { EmbedBuilder } = require("discord.js");
+const { errorColor, botColor } = require("./config");
+const { stripIndents } = require("common-tags");
 
 const requireSessionConditions = (
     interaction,
@@ -20,7 +23,9 @@ const requireSessionConditions = (
     if (!channel) {
       interaction.reply({
         embeds: [
-            errorEmbed(`Please join/connect to a voice channel first`)
+            new EmbedBuilder()
+            .setColor(errorColor)
+            .setDescription(`${joinvc} Please join/connect to a voice channel first.`)
         ],
         ephemeral: true
       });
@@ -38,7 +43,7 @@ const requireSessionConditions = (
     if (queue && queue.channel.id !== channel.id) {
       interaction.reply({
         embeds: [
-            errorEmbed(`I'm already playing in <#${ queue.channel.id }>`)
+            errorEmbed(`I'm playing in <#${ queue.channel.id }>`)
         ],
         ephemeral: true
       });
@@ -120,11 +125,56 @@ const requireInitializeSessionConditions = (interaction) => {
     return true;
 };
 
+const nowPlayingEmbed = (queue, includeSessionDetails = true) => {
+  const { currentTrack } = queue;
+  const trackDescriptionOutputStr = currentTrack.description
+    ? `\n\`\`\`\n${ currentTrack.description }\`\`\`\n`
+    : '';
+
+  const ts = queue.node.getTimestamp();
+  const durationOut = ts === 'Forever' ? 'Live' : currentTrack.duration;
+
+  const guildPlayerQueue = new GuildQueuePlayerNode(queue);
+
+  const sessionDetails = includeSessionDetails
+    ? `\n${ trackDescriptionOutputStr }\n${ guildPlayerQueue.createProgressBar() }`
+    : '';
+
+  const npEmbed = new EmbedBuilder()
+    .setColor(botColor)
+    .setTitle(currentTrack.title)
+    .setURL(currentTrack.url)
+    .setImage(currentTrack.thumbnail)
+    .addFields(
+      {
+        name: 'Details',
+        value: stripIndents`
+      👑 **Author:** ${ currentTrack.author }
+      🚩 **Length:** ${ durationOut }
+      📖 **Views:** ${ currentTrack.views.toLocaleString() }${ sessionDetails }
+    `,
+        inline: true
+      }
+    );
+
+  if (includeSessionDetails) {
+    npEmbed.addFields({
+      name: 'Repeat/Loop Mode',
+      value: repeatModeEmojiStr(queue.repeatMode),
+      inline: false
+    });
+    npEmbed.setFooter({ text: `Requested by: ${ currentTrack.requestedBy.username }` });
+    npEmbed.setTimestamp(queue.metadata.timestamp);
+  }
+
+  return npEmbed;
+};
 
 
 module.exports = {
     requireSessionConditions,
-    requireInitializeSessionConditions
+    requireInitializeSessionConditions,
+    nowPlayingEmbed
 }
 
 
