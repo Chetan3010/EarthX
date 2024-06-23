@@ -33,7 +33,7 @@ module.exports = {
               return;
             }
 
-            const successSkip = guildPlayerNode.skip(TrackSkipReason);
+            const successSkip = guildPlayerNode.skip();
             await interaction.reply({
                 embeds: [
                     successSkip 

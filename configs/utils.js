@@ -2,6 +2,8 @@ const { stripIndents } = require("common-tags");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ComponentType, escapeMarkdown } = require("discord.js");
 const { botColor, errorColor, successColor } = require("./config");
 const { error, music, mode, sad, success, disk } = require("./emojis");
+const { GuildQueuePlayerNode } = require("discord-player");
+const { BOT_MSGE_DELETE_TIMEOUT } = require("./constants");
 
 const handlePagination = async (
     interaction,
@@ -156,13 +158,13 @@ const queueEmbedResponse = (interaction, queue, title = 'Queue') => {
        interaction.reply({ embeds: [
             new EmbedBuilder()
               .setColor(botColor)
-              .setDescription(`${ sad }, Queue is currently empty.`)
+              .setDescription(`${ sad } Queue is currently empty.`)
           ] });
 
           try {
             setTimeout(() => {
               interaction.deleteReply()
-            }, 1000)
+            }, BOT_MSGE_DELETE_TIMEOUT)
           }catch(error){
             console.log(error);
           }
@@ -274,6 +276,52 @@ const errorEmbed = (content) => new EmbedBuilder().setColor(errorColor).setDescr
 
 const successEmbed = (content) => new EmbedBuilder().setColor(botColor).setDescription(`${success} ${content}.`)
 
+
+const nowPlayingEmbed = (queue, includeSessionDetails = true) => {
+  const { currentTrack } = queue;
+  const trackDescriptionOutputStr = currentTrack.description
+    ? `\n\`\`\`\n${ currentTrack.description }\`\`\`\n`
+    : '';
+
+  const ts = queue.node.getTimestamp();
+  const durationOut = ts === 'Forever' ? 'Live' : currentTrack.duration;
+
+  const guildPlayerQueue = new GuildQueuePlayerNode(queue);
+
+  const sessionDetails = includeSessionDetails
+    ? `\n${ trackDescriptionOutputStr }\n${ guildPlayerQueue.createProgressBar() }`
+    : '';
+
+  const npEmbed = new EmbedBuilder()
+    .setColor(botColor)
+    .setTitle(currentTrack.title)
+    .setURL(currentTrack.url)
+    .setImage(currentTrack.thumbnail)
+    .addFields(
+      {
+        name: 'Details',
+        value: stripIndents`
+      👑 **Author:** ${ currentTrack.author }
+      🚩 **Length:** ${ durationOut }
+      📖 **Views:** ${ currentTrack.views.toLocaleString() }${ sessionDetails }
+    `,
+        inline: true
+      }
+    );
+
+  if (includeSessionDetails) {
+    npEmbed.addFields({
+      name: 'Repeat/Loop Mode',
+      value: repeatModeEmojiStr(queue.repeatMode),
+      inline: false
+    });
+    npEmbed.setFooter({ text: `Requested by: ${ currentTrack.requestedBy.username }` });
+    npEmbed.setTimestamp(queue.metadata.timestamp);
+  }
+
+  return npEmbed;
+};
+
 module.exports = {
     msToHumanReadableTime,
     handlePagination,
@@ -287,4 +335,5 @@ module.exports = {
     queueTrackCb,
     errorEmbed,
     successEmbed,
+    nowPlayingEmbed
 }

@@ -1,9 +1,8 @@
 const { useQueue, usePlayer, GuildQueuePlayerNode } = require("discord-player");
-const { error, success, joinvc } = require("./emojis");
-const { errorEmbed, repeatModeEmojiStr } = require("./utils");
+const { joinvc } = require("./emojis");
+const { errorEmbed } = require("./utils");
 const { EmbedBuilder } = require("discord.js");
-const { errorColor, botColor } = require("./config");
-const { stripIndents } = require("common-tags");
+const { errorColor } = require("./config");
 
 const requireSessionConditions = (
     interaction,
@@ -125,56 +124,9 @@ const requireInitializeSessionConditions = (interaction) => {
     return true;
 };
 
-const nowPlayingEmbed = (queue, includeSessionDetails = true) => {
-  const { currentTrack } = queue;
-  const trackDescriptionOutputStr = currentTrack.description
-    ? `\n\`\`\`\n${ currentTrack.description }\`\`\`\n`
-    : '';
-
-  const ts = queue.node.getTimestamp();
-  const durationOut = ts === 'Forever' ? 'Live' : currentTrack.duration;
-
-  const guildPlayerQueue = new GuildQueuePlayerNode(queue);
-
-  const sessionDetails = includeSessionDetails
-    ? `\n${ trackDescriptionOutputStr }\n${ guildPlayerQueue.createProgressBar() }`
-    : '';
-
-  const npEmbed = new EmbedBuilder()
-    .setColor(botColor)
-    .setTitle(currentTrack.title)
-    .setURL(currentTrack.url)
-    .setImage(currentTrack.thumbnail)
-    .addFields(
-      {
-        name: 'Details',
-        value: stripIndents`
-      👑 **Author:** ${ currentTrack.author }
-      🚩 **Length:** ${ durationOut }
-      📖 **Views:** ${ currentTrack.views.toLocaleString() }${ sessionDetails }
-    `,
-        inline: true
-      }
-    );
-
-  if (includeSessionDetails) {
-    npEmbed.addFields({
-      name: 'Repeat/Loop Mode',
-      value: repeatModeEmojiStr(queue.repeatMode),
-      inline: false
-    });
-    npEmbed.setFooter({ text: `Requested by: ${ currentTrack.requestedBy.username }` });
-    npEmbed.setTimestamp(queue.metadata.timestamp);
-  }
-
-  return npEmbed;
-};
-
-
 module.exports = {
     requireSessionConditions,
     requireInitializeSessionConditions,
-    nowPlayingEmbed
 }
 
 

@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, escapeMarkdown } = require('discord.js');
 const { errorEmbed, successEmbed } = require('../../configs/utils');
 const { requireSessionConditions } = require('../../configs/music');
-const { useQueue } = require('discord-player');
+const { useQueue, useMainPlayer } = require('discord-player');
 const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
 
 const FROM_OPTION_ID = 'from-position';
@@ -74,7 +74,7 @@ module.exports = {
 
             return;
           }
-    
+
           // Swap src and dest
           queue.moveTrack(fromPosition, toPosition);
           // use toPosition, because it's after #swap
