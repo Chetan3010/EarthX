@@ -1,3 +1,5 @@
+require('dotenv').config
+
 module.exports = {
      NS_IN_ONE_MS : 1000000,
      NS_IN_ONE_SECOND : 1e9,
@@ -10,6 +12,7 @@ module.exports = {
      MINUTES_IN_ONE_HOUR : 60,
      HOURS_IN_ONE_DAY : 24,
 
+     OWNERID : `${process.env.ownerId}`,
      ERROR_MSGE_DELETE_TIMEOUT : 30000,
      BOT_MSGE_DELETE_TIMEOUT : 60000,
 

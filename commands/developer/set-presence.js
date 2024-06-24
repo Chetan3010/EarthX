@@ -3,6 +3,7 @@ const { botColor } = require('../../configs/config');
 const { errorEmbed } = require('../../configs/utils');
 const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
 const { success } = require('../../configs/emojis');
+const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'developer',
@@ -40,7 +41,7 @@ module.exports = {
 	async execute(interaction, client) {
 
         try {
-            if ( interaction.user.id !== "466854858704814082" ) {
+            if ( interaction.user.id !== ownerId ) {
                 return interaction.reply({
                     embeds: [
                         errorEmbed("You don't have permission to use this command")
@@ -82,13 +83,14 @@ module.exports = {
         } catch (error) {
             await interaction.reply({
                 embeds: [
-                    errorEmbed(`Something went wrong while executing this command`)
+                    errorEmbed(`Something went wrong while executing \`/set-presence\` command`)
                 ],
                 ephemeral: true
             })
             setTimeout(() => {
                 interaction.deleteReply()
             }, ERROR_MSGE_DELETE_TIMEOUT);
+            errorLog(error.message)
         }
 	},
 };

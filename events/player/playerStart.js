@@ -2,6 +2,7 @@ const { EmbedBuilder, escapeMarkdown } = require("discord.js");
 const { botColor } = require("../../configs/config");
 const { cyanDot, disk, arrow } = require("../../configs/emojis");
 const { QueueRepeatMode } = require("../../configs/utils");
+const { errorLog } = require("../../configs/logger");
 
 module.exports = {
   name: 'playerStart',
@@ -39,7 +40,8 @@ module.exports = {
       queue.metadata.previousTrack = res.id
       return
     } catch (error) {
-        console.log(error);
+      errorLog('An error occured with player event!')
+      console.log(error);
     }
   }
 }

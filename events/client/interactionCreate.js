@@ -1,4 +1,6 @@
 const { Collection, InteractionType } = require("discord.js");
+const { errorLog, cmdLog, warningLog } = require("../../configs/logger");
+const chalk = require("chalk");
 
 module.exports = {
 	name: 'interactionCreate',
@@ -11,7 +13,7 @@ module.exports = {
 			// For message commandds aliases -> || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
 			if (!command) {
-				console.error(`No command matching ${commandName} was found.`);
+				warningLog(`No command matching ${commandName} was found.`)
 				return;
 			}
 			
@@ -35,6 +37,7 @@ module.exports = {
 						try {
 							await interaction.deleteReply()
 						} catch (error) {
+							errorLog(`An error occured while deleting cooldown reply.`)
 							console.log(error);
 						}
 					}, expirationTime - now )
@@ -50,30 +53,37 @@ module.exports = {
 			try {
 				await command.execute(interaction, client);
 			} catch (error) {
-				console.error(error);
 				if (interaction.replied || interaction.deferred) {
 					await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
 				} else {
 					await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 				}
+				errorLog(`An error has occurred while executing the ${ chalk.redBright(`/${command.data.name}`) } command.`)
+				console.error(error);
 			}
+
+			cmdLog(command.data.name,'ApplicationCommand', interaction.guild.name, interaction.channel.name, interaction.member.user.username)
+			// command.data.name commandType guild.name channel.name member.user.username
 		}else if(interaction.isButton()){
 			const { buttons } = client;
 			const { customId } = interaction;
 			const button = buttons.get(customId)
 
-			if(!button) return console.error("There is no code for this button.");
+			if(!button) return warningLog(`There is no code for ${customId} button.`);
 
 			try{
 				await button.execute(interaction, client)
 			}catch(error){
-				console.error(error);
 				if (interaction.replied || interaction.deferred) {
 					await interaction.followUp({ content: 'There was an error while executing this button!', ephemeral: true });
 				} else {
 					await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
 				}
+				errorLog(`An error has occurred while executing the button component.`)
+				console.error(error);	
 			}
+			cmdLog(button.data.name, 'ButtonComponent', interaction.guild.name, interaction.channel.name, interaction.member.user.username)
+
 		}else if(interaction.isStringSelectMenu()){
 			const { selectMenus } = client;
 			const { customId } = interaction;
@@ -84,25 +94,35 @@ module.exports = {
 			try {
 				await menu.execute(interaction, client);
 			} catch (error) {
-				console.error(error);
 				if (interaction.replied || interaction.deferred) {
 					await interaction.followUp({ content: 'There was an error while executing this menu!', ephemeral: true });
 				} else {
 					await interaction.reply({ content: 'There was an error while executing this menu!', ephemeral: true });
 				}
+				errorLog(`An error has occurred while executing the menu component.`)
+				console.error(error);
 			}
+			cmdLog(menu.data.name, 'SelectMenuComponent', interaction.guild.name, interaction.channel.name, interaction.member.user.username)
 
 		}else if(interaction.type == InteractionType.ApplicationCommandAutocomplete){
 			const { commands } = client;
 			const { commandName } = interaction;
 			const command = commands.get(commandName);
-			if(!command) return console.error("There is no code for this autocomplete.");
+			if(!command) return warningLog(`There is no code for ${command.data.name} autocomplete.`)
 
 			try{
 				await command.autocomplete(interaction, client)
 			}catch( error){
+				errorLog(`An error has occurred while executing autocomplete.`)
 				console.error(error)
 			}
+			cmdLog(command.data.name, 'ApplicationCommandAutocomplete', interaction.guild.name, interaction.channel.name, interaction.member.user.username)
+
 		}
 	}
 }
+/*
+`
+
+
+*/

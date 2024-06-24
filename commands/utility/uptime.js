@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { clock } = require('../../configs/emojis');
 const { botColor, errorColor } = require('../../configs/config');
+const { errorEmbed } = require('../../configs/utils');
+const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'utility',
@@ -37,13 +39,12 @@ module.exports = {
 			})
 		} catch (error) {
 			await interaction.editReply({
-				embeds: [
-					new EmbedBuilder()
-						.setColor(errorColor)
-						.setDescription(`Something went wrong while executing this command.`)
-				]
-			})
-			console.log(error);
+                embeds: [
+                    errorEmbed(`Something went wrong while executing \`/vc-ping\` command`)
+                ],
+                ephemeral: true
+            });
+            errorLog(error.message)
 		}
 	},
 };

@@ -5,6 +5,7 @@ const { requireSessionConditions } = require('../../configs/music');
 const { BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
 const { errorEmbed, successEmbed } = require('../../configs/utils');
 const { success, error } = require('../../configs/emojis');
+const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
@@ -47,13 +48,13 @@ module.exports = {
             return
           }
           catch (error) {
-            console.log(error);
             await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/skip\` command`)
                 ], 
                 ephemeral: true
             });
+            errorLog(error.message)
           }
 	},
 };

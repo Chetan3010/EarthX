@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { errorEmbed, queueEmbedResponse } = require('../../configs/utils');
 const { requireSessionConditions } = require('../../configs/music');
 const { useQueue } = require('discord-player');
+const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
@@ -27,7 +28,7 @@ module.exports = {
                 ],
                 ephemeral: true
             });
-            console.error(error)
+            errorLog(error.message)
         }
 		
 	},

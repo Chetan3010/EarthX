@@ -3,6 +3,7 @@ const { errorEmbed, successEmbed } = require('../../configs/utils');
 const { requireSessionConditions } = require('../../configs/music');
 const { useQueue, useMainPlayer } = require('discord-player');
 const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { errorLog } = require('../../configs/logger');
 
 const FROM_OPTION_ID = 'from-position';
 const TO_OPTION_ID = 'to-position';
@@ -90,7 +91,7 @@ module.exports = {
                 ],
                 ephemeral: true
             });
-            console.error(error)
+            errorLog(error.message)
         }
 		
 	},

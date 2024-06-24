@@ -6,7 +6,7 @@ const playerOptions = {
     //   preferBridgedMetadata: true,
     // disableBiquad: true,
     skipOnNoStream: true,
-    //   volume: 70,
+    // volume: ,
     leaveOnStop: false, //If player should leave the voice channel after user stops the player
     leaveOnStopCooldown: 300000, //Cooldown in ms
     leaveOnEnd: false, //If player should leave after the whole queue is over

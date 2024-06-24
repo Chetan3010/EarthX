@@ -4,6 +4,7 @@ const { requireSessionConditions } = require('../../configs/music');
 const { usePlayer, useQueue } = require('discord-player');
 const { errorEmbed } = require('../../configs/utils');
 const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
@@ -44,7 +45,7 @@ module.exports = {
                 ],
                 ephemeral: true
             });
-            console.error(error)
+            errorLog(error.message)
         }
 		
 	},

@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 require('dotenv').config()
-const {token,spotifyClientId, spotifyClientSecret} = process.env
+const {token,spotifyClientId, spotifyClientSecret, mongoConnection} = process.env
 
 const DeezerExtractor = require("discord-player-deezer").default 
 const TidalExtractor = require('discord-player-tidal').default
@@ -18,6 +18,10 @@ const {
 } = require('@discord-player/extractor');
 // "youtube-ext", "ytdl-core <- current", "@distube/ytdl-core", "play-dl", "yt-stream"
 
+const { connect } = require('mongoose');
+const { error } = require('node:console');
+const chalk = require('chalk');
+
 const client = new Client({ 
 	presence: {
 		status: 'online',
@@ -28,9 +32,9 @@ const client = new Client({
 
 const player = new Player(client, {
 	skipFFmpeg: false,
+	useLegacyFFmpeg: false,
 	ytdlOptions: {
-		
-		highWaterMark: 1<<25,
+		highWaterMark: 1 << 25,
 		filter: 'audioonly',
 		quality: 'highestaudio',
 		// liveBuffer: 40000
@@ -76,5 +80,9 @@ for( const folder of functionFolders){
 client.handleEvents();
 client.handleCommands();
 client.handleComponents();
+
+(async () => {
+	connect(mongoConnection).catch(error => console.log(error))
+})()
 
 client.login(token);

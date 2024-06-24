@@ -3,6 +3,7 @@ const { errorEmbed, successEmbed } = require('../../configs/utils');
 const { MS_IN_ONE_SECOND, ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
 const { requireSessionConditions } = require('../../configs/music');
 const { useQueue } = require('discord-player');
+const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
@@ -62,7 +63,7 @@ module.exports = {
                 ],
                 ephemeral: true
             });
-            console.error(error)
+            errorLog(error.message)
         }
 		
 	},

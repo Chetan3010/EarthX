@@ -5,6 +5,7 @@ const { requireSessionConditions } = require("../../configs/music");
 const { lyricsExtractor } = require("@discord-player/extractor");
 const { EMBED_DESCRIPTION_MAX_LENGTH, ERROR_MSGE_DELETE_TIMEOUT } = require("../../configs/constants");
 const { botColor } = require("../../configs/config");
+const { errorLog } = require("../../configs/logger");
 
 module.exports = {
     category: 'music',
@@ -119,7 +120,7 @@ module.exports = {
                     ],
                     ephemeral: true
                 });
-                console.error(error)
+                errorLog(error.message)
           }
 	},
 };

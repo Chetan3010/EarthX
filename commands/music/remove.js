@@ -3,6 +3,7 @@ const { errorEmbed, successEmbed } = require('../../configs/utils');
 const { requireSessionConditions } = require('../../configs/music');
 const { useQueue } = require('discord-player');
 const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { errorLog } = require('../../configs/logger');
 
 const SONG_POSITION_OPTION_ID = 'song-position';
 
@@ -61,7 +62,7 @@ module.exports = {
                 ],
                 ephemeral: true
             });
-            console.error(error)
+            errorLog(error.message)
         }
 		
 	},

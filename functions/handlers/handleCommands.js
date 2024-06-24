@@ -1,5 +1,6 @@
 const {REST,Routes} = require('discord.js')
 const fs = require('fs')
+const { warningLog, infoLog } = require('../../configs/logger')
 require('dotenv').config()
 const {clientId, token} = process.env
 // const guildId = process.env.GUILD_ID
@@ -19,7 +20,7 @@ module.exports = (client) => {
                     commands.set(command.data.name, command);
                     commandArray.push(command.data.toJSON());
                 } else {
-                    console.log(`[WARNING] The command at ${command} is missing a required "data" or "execute" property.`);
+                    warningLog(`The command at ${command} is missing a required "data" or "execute" property.`)
                 }
 
             }
@@ -28,13 +29,12 @@ module.exports = (client) => {
 
         const rest = new REST().setToken(token)
         try {
-            console.log(`Started refreshing ${client.commandArray.length} application (/) commands.`);
+            infoLog('INFO','START',`Started refreshing ${client.commandArray.length} application (/) commands.`)
             const data = await rest.put(
                 Routes.applicationCommands(clientId),
                 { body: client.commandArray },
             );
-    
-            console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+            infoLog('INFO','END',`Successfully reloaded ${data.length} application (/) commands.`)
         } catch (error) {
             console.error(error);
         }

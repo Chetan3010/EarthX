@@ -322,6 +322,13 @@ const nowPlayingEmbed = (queue, includeSessionDetails = true) => {
   return npEmbed;
 };
 
+const InteractionType = {
+  MessageComponent : 0,
+  ApplicationCommand : 1,
+  ApplicationCommandAutocomplete : 3,
+  ModalSubmit : 4
+}
+
 module.exports = {
     msToHumanReadableTime,
     handlePagination,
@@ -335,5 +342,6 @@ module.exports = {
     queueTrackCb,
     errorEmbed,
     successEmbed,
-    nowPlayingEmbed
+    nowPlayingEmbed,
+    InteractionType
 }
