@@ -18,5 +18,6 @@ module.exports = {
 
      EMBED_DESCRIPTION_MAX_LENGTH : 4096,
      
+     DEFAULT_DECIMAL_PRECISION : 2,
 
 }

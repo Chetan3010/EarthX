@@ -27,8 +27,8 @@ module.exports = {
                 setTimeout(()=> interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                   return false;
                 }
+                if(queue.metadata?.previousTrack) queue.metadata.channel.messages.delete(queue.metadata.previousTrack)
                 if (!queue?.deleted) queue?.delete();
-    
                 interaction.reply({
                     embeds: [successEmbed(" Left the voice channel")],
                 })

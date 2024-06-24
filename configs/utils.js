@@ -2,8 +2,8 @@ const { stripIndents } = require("common-tags");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ComponentType, escapeMarkdown } = require("discord.js");
 const { botColor, errorColor, successColor } = require("./config");
 const { error, music, mode, sad, success, disk } = require("./emojis");
-const { GuildQueuePlayerNode } = require("discord-player");
-const { BOT_MSGE_DELETE_TIMEOUT } = require("./constants");
+const { GuildQueuePlayerNode, QueueRepeatMode } = require("discord-player");
+const { BOT_MSGE_DELETE_TIMEOUT, DEFAULT_DECIMAL_PRECISION, NS_IN_ONE_MS, NS_IN_ONE_SECOND } = require("./constants");
 
 const handlePagination = async (
     interaction,
@@ -82,25 +82,6 @@ const handlePagination = async (
       ) }).catch(() => { /* Void */ });
     });
 };
-
-const QueueRepeatMode = {
-    /**
-     * Disable repeat mode.
-     */
-    OFF : 0,
-    /**
-     * Repeat the current track.
-     */
-    TRACK : 1,
-    /**
-     * Repeat the entire queue.
-     */
-    QUEUE : 2,
-    /**
-     * When last track ends, play similar tracks in the future if queue is empty.
-     */
-    AUTOPLAY : 3
-}
 
 const repeatModeEmojiStr = (repeatMode) => repeatMode === QueueRepeatMode.AUTOPLAY
   ? ':gear: Autoplay'
@@ -329,10 +310,24 @@ const InteractionType = {
   ModalSubmit : 4
 }
 
+const getRuntime = (hrtime, decimalPrecision = DEFAULT_DECIMAL_PRECISION) => {
+  // Converting
+  const inNS = process.hrtime.bigint() - hrtime;
+  const nsNumber = Number(inNS);
+  const inMS = (nsNumber / NS_IN_ONE_MS).toFixed(decimalPrecision);
+  const InSeconds = (nsNumber / NS_IN_ONE_SECOND).toFixed(decimalPrecision);
+
+  // Return the conversions
+  return {
+    seconds: InSeconds,
+    ms: inMS,
+    ns: inNS
+  };
+};
+
 module.exports = {
     msToHumanReadableTime,
     handlePagination,
-    QueueRepeatMode,
     repeatModeEmojiStr,
     queueEmbeds,
     queueEmbedResponse,
@@ -343,5 +338,6 @@ module.exports = {
     errorEmbed,
     successEmbed,
     nowPlayingEmbed,
-    InteractionType
+    InteractionType,
+    getRuntime
 }

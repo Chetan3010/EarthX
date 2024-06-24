@@ -25,7 +25,7 @@ const cmdLog = (commandName, commandType, guildName, channelName, member) =>{
 const infoLog = (type, pos, content) => {
     
     const time = chalk.cyan(`[${new Date().toLocaleTimeString()}]`)
-    const typeTitle = type === 'SUCCESS' ? chalk.greenBright(`${'[SUCCESS]'.padEnd(maxLevelLength)}`) : chalk.blue(`${'[INFO]'.padEnd(maxLevelLength)}`)
+    const typeTitle = type === 'SUCCESS' ? chalk.greenBright(`${'[SUCCESS]'.padEnd(maxLevelLength)}`) : type === 'DEBUG' ? chalk.magenta(`${'[DEBUG]'.padEnd(maxLevelLength)}`) : chalk.blue(`${'[INFO]'.padEnd(maxLevelLength)}`)
     const line = pos === 'START' ? chalk.yellowBright(`[START]`) : pos === 'END' ? chalk.greenBright(`[END]`) : ''
     console.log(`${time} ${typeTitle} : ${line} ${content}`)
 }

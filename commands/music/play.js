@@ -5,6 +5,7 @@ const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
 const { requireSessionConditions } = require('../../configs/music');
 const playerOptions = require('../../configs/player-options');
 const { errorLog } = require('../../configs/logger');
+const { getGuildSettings } = require('../../configs/db');
 
 module.exports = {
     category: 'music',
@@ -19,42 +20,6 @@ module.exports = {
                 .setRequired(true)
                 .setAutocomplete(true)
         ),
-
-    async autocomplete(interaction, client) {
-        const player = useMainPlayer();
-        const query = interaction.options.getFocused();
-        if (!query) return [];
-        const result = await player.search(query);
-
-        const returnData = [];
-        if (result.playlist) {
-            returnData.push({
-                name: 'Playlist | ' + result.playlist.title, value: query
-            });
-        }
-
-        result.tracks
-            .slice(0, 25)
-            .forEach((track) => {
-                let name = `${track.title} | ${track.author ?? 'Unknown'} (${track.duration ?? 'n/a'})`;
-                if (name.length > 100) name = `${name.slice(0, 97)}...`;
-                // Throws API error if we don't try and remove any query params
-                let url = track.url;
-                if (url.length > 100) url = url.slice(0, 100);
-                return returnData.push({
-                    name,
-                    value: url
-                });
-            });
-
-        try {
-            await interaction.respond(
-                returnData.slice(0, 25)
-            );
-        } catch (error) {
-            console.error(error)
-        }
-    },
 
     async execute(interaction, client) {
         const player = useMainPlayer();
@@ -79,23 +44,42 @@ module.exports = {
             return;
         } else {
             try {
+                const clientSettings = await getGuildSettings(interaction.guild.id)
+                // console.log(clientSettings);
                 const { track } = await player.play(channel, searchResult, {
                     requestedBy: interaction.user,
                     nodeOptions: {
-                        ...playerOptions,
+                        
+                        repeatMode: clientSettings.repeatMode,
+                        // noEmitInsert: true,
+                        skipOnNoStream: true,
+                        // preferBridgedMetadata: true,
+                        // disableBiquad: true,
+                        volume: clientSettings.volume,
+                        leaveOnEmpty: clientSettings.leaveOnEmpty, //If the player should leave when the voice channel is empty
+                        leaveOnEmptyCooldown: 10000,
+                        // leaveOnEmptyCooldown: clientSettings.leaveOnEmptyCooldown, //Cooldown in ms
+                        leaveOnStop: clientSettings.leaveOnStop, //If player should leave the voice channel after user stops the player
+                        leaveOnStopCooldown: clientSettings.leaveOnStopCooldown, //Cooldown in ms
+                        leaveOnEnd: clientSettings.leaveOnEnd, //If player should leave after the whole queue is over
+                        leaveOnEndCooldown: clientSettings.leaveOnEmptyCooldown, //Cooldown in ms
+                        pauseOnEmpty: clientSettings.pauseOnEmpty,
+                        selfDeaf: clientSettings.selfDeaf,
                         metadata: {
                             channel: interaction.channel,
                             member: interaction.member,
-                            timestamp: interaction.createdTimestamp
+                            timestamp: interaction.createdTimestamp,
+                            interaction
                         }
                     }
                 });
 
                 // console.log({...playerOptions});
                 // const queue = useQueue(interaction.guild.id);
+                // console.log(queue);
                 // queue.setRepeatMode(3);
                 // const cp = usePlayer(queue)
-                // console.log(cp.volume)
+                // console.log(cp)
                 // if(cp.isPlaying()){
                 //     await interaction.deleteReply()
                 // }else{

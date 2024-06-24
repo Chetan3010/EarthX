@@ -1,8 +1,8 @@
 const { EmbedBuilder, escapeMarkdown } = require("discord.js");
 const { botColor } = require("../../configs/config");
 const { cyanDot, disk, arrow } = require("../../configs/emojis");
-const { QueueRepeatMode } = require("../../configs/utils");
 const { errorLog } = require("../../configs/logger");
+const { QueueRepeatMode } = require("discord-player");
 
 module.exports = {
   name: 'playerStart',

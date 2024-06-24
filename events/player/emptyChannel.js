@@ -8,10 +8,10 @@ module.exports = {
   name: 'emptyChannel',
   async execute(queue, client) {
     let msge = ''
-
-    if (!queue.leaveOnEmpty) msge = `${greenDot} Staying in channel as 24/7 is enabled.`
+    if (!queue.options.leaveOnEmpty) msge = `${greenDot} Staying in channel as 24/7 is enabled.`
     else {
-      msge = `${redDot} Leaving empty channel in ${queue.leaveOnEmptyCooldown / 60000}mins.`
+      if (queue.metadata?.previousTrack) queue.metadata.channel.messages.delete(queue.metadata.previousTrack)
+      msge = `${redDot} Leaving empty channel in ${parseInt(queue.options.leaveOnEmptyCooldown / 60000)}mins.`
     }
     queue.metadata.channel.send({
       embeds: [

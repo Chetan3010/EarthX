@@ -5,6 +5,7 @@ const { useMainPlayer } = require("discord-player");
 const playerOptions = require('../../configs/player-options');
 const { BOT_MSGE_DELETE_TIMEOUT } = require("../../configs/constants");
 const { errorLog } = require("../../configs/logger");
+const { getGuildSettings } = require("../../configs/db");
 
 module.exports = {
     category: 'music',
@@ -22,15 +23,32 @@ module.exports = {
             if(interaction.guild.members.me?.voice?.channel === interaction.member.voice?.channel){
                 return interaction.reply({ embeds: [errorEmbed(`I'm already in <#${interaction.guild.members.me?.voice?.channel.id}> channel`)]})
             }
+            const clientSettings = getGuildSettings(interaction.guild.id)
             const player = useMainPlayer();
             const queue = player.queues.create(interaction.guild.id, {
-                ...playerOptions,
-                metadata: {
-                    channel: interaction.channel,
-                    member: interaction.member,
-                    timestamp: interaction.createdTimestamp
+                requestedBy: interaction.user,
+                nodeOptions: {
+                        
+                    repeatMode: clientSettings.repeatMode,
+                    noEmitInsert: true,
+                    skipOnNoStream: true,
+                    // preferBridgedMetadata: true,
+                    // disableBiquad: true,
+                    volume: clientSettings.volume,
+                    leaveOnEmpty: clientSettings.leaveOnEmpty, //If the player should leave when the voice channel is empty
+                    leaveOnEmptyCooldown: clientSettings.leaveOnEmptyCooldown, //Cooldown in ms
+                    leaveOnStop: clientSettings.leaveOnStop, //If player should leave the voice channel after user stops the player
+                    leaveOnStopCooldown: clientSettings.leaveOnStopCooldown, //Cooldown in ms
+                    leaveOnEnd: clientSettings.leaveOnEnd, //If player should leave after the whole queue is over
+                    leaveOnEndCooldown: clientSettings.leaveOnEmptyCooldown, //Cooldown in ms
+                    pauseOnEmpty: clientSettings.pauseOnEmpty,
+                    selfDeaf: clientSettings.selfDeaf,
+                    metadata: {
+                        channel: interaction.channel,
+                        member: interaction.member,
+                        timestamp: interaction.createdTimestamp
+                    }
                 },
-                selfDeaf: true,
             });
 
             await queue.connect(interaction.member.voice.channel);

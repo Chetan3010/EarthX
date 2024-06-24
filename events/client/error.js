@@ -5,6 +5,6 @@ module.exports = {
 	on: true,
 	async execute(error) {
 		errorLog(`Client event error occured.`)
-		console.log(error.message);
+		console.log(error);
 	},
 };

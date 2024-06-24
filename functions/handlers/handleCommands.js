@@ -29,12 +29,12 @@ module.exports = (client) => {
 
         const rest = new REST().setToken(token)
         try {
-            infoLog('INFO','START',`Started refreshing ${client.commandArray.length} application (/) commands.`)
+            infoLog('DEBUG','START',`Started refreshing ${client.commandArray.length} application (/) commands.`)
             const data = await rest.put(
                 Routes.applicationCommands(clientId),
                 { body: client.commandArray },
             );
-            infoLog('INFO','END',`Successfully reloaded ${data.length} application (/) commands.`)
+            infoLog('DEBUG','END',`Successfully reloaded ${data.length} application (/) commands.`)
         } catch (error) {
             console.error(error);
         }
