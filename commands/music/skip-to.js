@@ -1,14 +1,14 @@
 const { SlashCommandBuilder, escapeMarkdown } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../configs/utils');
-const { requireSessionConditions } = require('../../configs/music');
+const { errorEmbed, successEmbed } = require('../../helper/utils');
+const { requireSessionConditions } = require('../../helper/music');
 const { useQueue, useMainPlayer, TrackSkipReason } = require('discord-player');
-const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: [''],
+    aliases: [],
 	data: new SlashCommandBuilder()
 		.setName('skip-to')
 		.setDescription("Skip to provided /queue song position, removing everything up to the song")

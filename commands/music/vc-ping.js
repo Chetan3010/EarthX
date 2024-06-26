@@ -1,14 +1,15 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { botColor } = require('../../configs/config');
-const { requireSessionConditions } = require('../../configs/music');
+const { requireSessionConditions } = require('../../helper/music');
 const { usePlayer, useQueue } = require('discord-player');
-const { errorEmbed } = require('../../configs/utils');
-const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { errorEmbed } = require('../../helper/utils');
+const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
+    aliases: [],
 	data: new SlashCommandBuilder()
 		.setName('music-ping')
 		.setDescription("Replies with bot's music ping."),

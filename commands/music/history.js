@@ -1,14 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { queueEmbedResponse, errorEmbed } = require('../../configs/utils');
-const { requireSessionConditions } = require('../../configs/music');
+const { queueEmbedResponse, errorEmbed } = require('../../helper/utils');
+const { requireSessionConditions } = require('../../helper/music');
 const { useHistory } = require('discord-player');
-const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['h'],
+    aliases: [],
 	data: new SlashCommandBuilder()
 		.setName('history')
 		.setDescription('Display the current history.'),

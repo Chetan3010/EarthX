@@ -1,8 +1,8 @@
 const { SlashCommandBuilder, escapeMarkdown } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../configs/utils');
-const { requireSessionConditions } = require('../../configs/music');
+const { errorEmbed, successEmbed } = require('../../helper/utils');
+const { requireSessionConditions } = require('../../helper/music');
 const { useQueue } = require('discord-player');
-const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 const SONG_POSITION_OPTION_ID = 'song-position';

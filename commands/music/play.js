@@ -1,16 +1,15 @@
 const { useMainPlayer, usePlayer, useQueue } = require('discord-player');
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed } = require('../../configs/utils');
-const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
-const { requireSessionConditions } = require('../../configs/music');
-const playerOptions = require('../../configs/player-options');
+const { errorEmbed } = require('../../helper/utils');
+const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
+const { requireSessionConditions } = require('../../helper/music');
 const { errorLog } = require('../../configs/logger');
-const { getGuildSettings } = require('../../configs/db');
+const { getGuildSettings } = require('../../helper/db');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['p'],
+    aliases: [],
     data: new SlashCommandBuilder()
         .setName('play')
         .setDescription('Plays the song from youtube, spotify, etc.')
@@ -33,7 +32,7 @@ module.exports = {
         const searchResult = await player.search(query, { requestedBy: interaction.user });
 
         if (!searchResult.hasTracks()) {
-            await interaction.editReply({
+            interaction.editReply({
                 embeds: [
                     errorEmbed(`No track found for ${query}`)
                 ],
@@ -52,13 +51,12 @@ module.exports = {
                         
                         repeatMode: clientSettings.repeatMode,
                         // noEmitInsert: true,
-                        skipOnNoStream: true,
+                        skipOnNoStream: false,
                         // preferBridgedMetadata: true,
                         // disableBiquad: true,
                         volume: clientSettings.volume,
                         leaveOnEmpty: clientSettings.leaveOnEmpty, //If the player should leave when the voice channel is empty
-                        leaveOnEmptyCooldown: 10000,
-                        // leaveOnEmptyCooldown: clientSettings.leaveOnEmptyCooldown, //Cooldown in ms
+                        leaveOnEmptyCooldown: clientSettings.leaveOnEmptyCooldown, //Cooldown in ms
                         leaveOnStop: clientSettings.leaveOnStop, //If player should leave the voice channel after user stops the player
                         leaveOnStopCooldown: clientSettings.leaveOnStopCooldown, //Cooldown in ms
                         leaveOnEnd: clientSettings.leaveOnEnd, //If player should leave after the whole queue is over
@@ -98,9 +96,9 @@ module.exports = {
                 // }, BOT_MSGE_DELETE_TIMEOUT);
                 // }
                 // return
-                await interaction.deleteReply()
+                interaction.deleteReply()
             } catch (error) {
-                await interaction.editReply({
+                interaction.editReply({
                     embeds: [
                         errorEmbed(`Something went wrong while executing \`/play\` command`)
                     ],

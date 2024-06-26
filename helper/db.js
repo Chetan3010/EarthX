@@ -33,5 +33,5 @@ const getGuildSettings = async (guildId, interaction) => {
 }
 
 module.exports = {
-    getGuildSettings
+    getGuildSettings,
 }

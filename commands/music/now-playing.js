@@ -1,8 +1,8 @@
 const { useQueue } = require("discord-player");
 const { SlashCommandBuilder } = require("discord.js");
-const { errorEmbed, nowPlayingEmbed } = require("../../configs/utils");
-const { requireSessionConditions } = require("../../configs/music");
-const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../configs/constants");
+const { errorEmbed, nowPlayingEmbed } = require("../../helper/utils");
+const { requireSessionConditions } = require("../../helper/music");
+const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../helper/constants");
 const { errorLog } = require("../../configs/logger");
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
     cooldown: 3,
     aliases: ['np'],
 	data: new SlashCommandBuilder()
-		.setName('now-playing')
+		.setName('nowplaying')
 		.setDescription("Displays the current playing song's detailed information."),
 	async execute(interaction, client) {
 

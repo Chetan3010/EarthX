@@ -1,4 +1,5 @@
 const { useMainPlayer } = require("discord-player");
+const { errorLog } = require("../../configs/logger");
 
 module.exports = {
     data: {
@@ -36,7 +37,7 @@ module.exports = {
                 returnData.slice(0, 25)
             );
         } catch (error) {
-            console.error(error)
+            errorLog(error.message)
         }
     },
 }

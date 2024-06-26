@@ -1,13 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder, PresenceUpdateStatus, Activity, ActivityType } = require('discord.js');
 const { botColor } = require('../../configs/config');
-const { errorEmbed } = require('../../configs/utils');
-const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { errorEmbed } = require('../../helper/utils');
+const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { success } = require('../../configs/emojis');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'developer',
     cooldown: 3,
+    aliases: [],
 	data: new SlashCommandBuilder()
 		.setName('set-presence')
 		.setDescription("Sets the bot's presence activity.")

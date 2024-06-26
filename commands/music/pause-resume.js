@@ -1,13 +1,13 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed } = require('../../configs/utils');
-const { requireSessionConditions } = require('../../configs/music');
+const { errorEmbed } = require('../../helper/utils');
+const { requireSessionConditions } = require('../../helper/music');
 const { usePlayer } = require('discord-player');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['stop'],
+    aliases: ['pause','resume'],
 	data: new SlashCommandBuilder()
 		.setName('pause-resume')
 		.setDescription("Pause or resume the playback."),

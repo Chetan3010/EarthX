@@ -1,9 +1,9 @@
 const { usePlayer, TrackSkipReason } = require('discord-player');
 const { SlashCommandBuilder, EmbedBuilder, escapeMarkdown } = require('discord.js');
 const { errorColor, botColor } = require('../../configs/config');
-const { requireSessionConditions } = require('../../configs/music');
-const { BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
-const { errorEmbed, successEmbed } = require('../../configs/utils');
+const { requireSessionConditions } = require('../../helper/music');
+const { BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
+const { errorEmbed, successEmbed } = require('../../helper/utils');
 const { success, error } = require('../../configs/emojis');
 const { errorLog } = require('../../configs/logger');
 

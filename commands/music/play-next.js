@@ -1,8 +1,8 @@
 const { SlashCommandBuilder, escapeMarkdown } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../configs/utils');
+const { errorEmbed, successEmbed } = require('../../helper/utils');
 const { useMainPlayer, useQueue } = require('discord-player');
-const { requireSessionConditions } = require('../../configs/music');
-const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { requireSessionConditions } = require('../../helper/music');
+const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
@@ -50,7 +50,7 @@ module.exports = {
         setTimeout(()=> interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
         }catch (error) {
-            await interaction.editReply({
+            interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/play-next\` command`)
                 ],

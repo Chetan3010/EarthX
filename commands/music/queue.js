@@ -1,16 +1,16 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { botColor } = require('../../configs/config');
 const { sad} = require('../../configs/emojis');
-const { queueEmbedResponse, errorEmbed } = require('../../configs/utils');
+const { queueEmbedResponse, errorEmbed } = require('../../helper/utils');
 const { useQueue } = require('discord-player');
-const { requireSessionConditions } = require('../../configs/music');
-const { BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { requireSessionConditions } = require('../../helper/music');
+const { BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['q'],
+    aliases: [],
 	data: new SlashCommandBuilder()
 		.setName('queue')
 		.setDescription('Shows the current queue.'),

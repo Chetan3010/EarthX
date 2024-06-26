@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { requireSessionConditions } = require('../../configs/music');
-const { successEmbed, errorEmbed } = require("../../configs/utils");
+const { requireSessionConditions } = require('../../helper/music');
+const { successEmbed, errorEmbed } = require("../../helper/utils");
 const { useQueue } = require("discord-player");
-const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require("../../configs/constants");
+const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require("../../helper/constants");
 const { errorLog } = require("../../configs/logger");
 
 module.exports = {

@@ -1,9 +1,9 @@
 const { useQueue, useMainPlayer } = require("discord-player");
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { errorEmbed } = require("../../configs/utils");
-const { requireSessionConditions } = require("../../configs/music");
+const { errorEmbed } = require("../../helper/utils");
+const { requireSessionConditions } = require("../../helper/music");
 const { lyricsExtractor } = require("@discord-player/extractor");
-const { EMBED_DESCRIPTION_MAX_LENGTH, ERROR_MSGE_DELETE_TIMEOUT } = require("../../configs/constants");
+const { EMBED_DESCRIPTION_MAX_LENGTH, ERROR_MSGE_DELETE_TIMEOUT } = require("../../helper/constants");
 const { botColor } = require("../../configs/config");
 const { errorLog } = require("../../configs/logger");
 

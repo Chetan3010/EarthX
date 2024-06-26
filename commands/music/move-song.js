@@ -1,8 +1,8 @@
 const { SlashCommandBuilder, escapeMarkdown } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../configs/utils');
-const { requireSessionConditions } = require('../../configs/music');
+const { errorEmbed, successEmbed } = require('../../helper/utils');
+const { requireSessionConditions } = require('../../helper/music');
 const { useQueue, useMainPlayer } = require('discord-player');
-const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 const FROM_OPTION_ID = 'from-position';
@@ -13,7 +13,7 @@ module.exports = {
     cooldown: 3,
     aliases: ['move'],
 	data: new SlashCommandBuilder()
-		.setName('move-song')
+		.setName('move')
 		.setDescription("Move a song that is current in /queue")
         .addIntegerOption(option =>
             option.setName(FROM_OPTION_ID)

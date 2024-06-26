@@ -1,17 +1,17 @@
 const { SlashCommandBuilder, escapeMarkdown } = require('discord.js');
-const { errorEmbed, successEmbed, nowPlayingEmbed } = require('../../configs/utils');
+const { errorEmbed, successEmbed, nowPlayingEmbed } = require('../../helper/utils');
 const { useQueue } = require('discord-player');
-const { requireSessionConditions } = require('../../configs/music');
-const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { requireSessionConditions } = require('../../helper/music');
+const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['dm','save'],
+    aliases: ['dm','save-song'],
 	data: new SlashCommandBuilder()
-		.setName('save-song')
-		.setDescription("Saves the current playing song into your DMs."),
+		.setName('save')
+		.setDescription("Like the current playing song? save it."),
 	async execute(interaction, client) {
         if (!requireSessionConditions(interaction, true, false, false)) return;
 

@@ -21,6 +21,7 @@ const {
 const { connect } = require('mongoose');
 const { error } = require('node:console');
 const chalk = require('chalk');
+const { infoLog } = require('./configs/logger');
 
 const client = new Client({ 
 	presence: {
@@ -40,6 +41,12 @@ const player = new Player(client, {
 		// liveBuffer: 40000
 	}
 });
+
+process.on('SIGINT', () => {
+	infoLog('INFO','',`Received SIGINT ${chalk.redBright('Ctrl-C')}`);
+	infoLog('INFO','',`Gracefully shutting down from SIGINT ${chalk.redBright('Ctrl-C')}`);
+	process.exit(0);
+  });
 
 (async () => {
 	

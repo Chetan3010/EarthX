@@ -1,8 +1,8 @@
 const { useQueue, usePlayer, GuildQueuePlayerNode } = require("discord-player");
-const { joinvc } = require("./emojis");
+const { joinvc } = require("../configs/emojis");
 const { errorEmbed } = require("./utils");
 const { EmbedBuilder } = require("discord.js");
-const { errorColor } = require("./config");
+const { errorColor } = require("../configs/config");
 
 const requireSessionConditions = (
     interaction,

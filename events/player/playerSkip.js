@@ -1,6 +1,6 @@
 const { escapeMarkdown } = require("discord.js");
-const { errorEmbed } = require("../../configs/utils");
-const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../configs/constants");
+const { errorEmbed } = require("../../helper/utils");
+const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../helper/constants");
 const { errorLog } = require("../../configs/logger");
 
 module.exports = {

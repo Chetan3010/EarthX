@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../configs/utils');
-const { requireSessionConditions } = require('../../configs/music');
+const { errorEmbed, successEmbed } = require('../../helper/utils');
+const { requireSessionConditions } = require('../../helper/music');
 const { useQueue, TrackSkipReason } = require('discord-player');
-const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../configs/constants');
+const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
     cooldown: 3,
     aliases: ['jump'],
 	data: new SlashCommandBuilder()
-		.setName('jump-to')
+		.setName('jump')
 		.setDescription("Jump to a specific song without removing other songs.")
         .addIntegerOption(option =>
             option.setName('position')

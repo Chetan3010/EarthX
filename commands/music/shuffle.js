@@ -1,13 +1,13 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed, queueEmbedResponse } = require('../../configs/utils');
-const { requireSessionConditions } = require('../../configs/music');
+const { errorEmbed, queueEmbedResponse } = require('../../helper/utils');
+const { requireSessionConditions } = require('../../helper/music');
 const { useQueue } = require('discord-player');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: [''],
+    aliases: [],
 	data: new SlashCommandBuilder()
 		.setName('shuffle')
 		.setDescription("Shuffle the current queue"),

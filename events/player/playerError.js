@@ -1,6 +1,6 @@
-const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../configs/constants");
+const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../helper/constants");
 const { errorLog } = require("../../configs/logger");
-const { errorEmbed } = require("../../configs/utils");
+const { errorEmbed } = require("../../helper/utils");
 
 module.exports = {
     name: 'playerError',

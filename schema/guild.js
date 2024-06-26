@@ -3,7 +3,8 @@ const { default: mongoose } = require("mongoose");
 const guildSchema = new mongoose.Schema({
     guildId: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     // Volume System Default - 100
     volume: {

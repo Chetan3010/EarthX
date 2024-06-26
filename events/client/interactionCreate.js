@@ -1,7 +1,7 @@
 const { Collection, InteractionType } = require("discord.js");
 const { errorLog, cmdLog, warningLog, infoLog } = require("../../configs/logger");
 const chalk = require("chalk");
-const { getRuntime } = require("../../configs/utils");
+const { getRuntime } = require("../../helper/utils");
 
 module.exports = {
 	name: 'interactionCreate',
