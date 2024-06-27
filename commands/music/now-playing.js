@@ -9,32 +9,42 @@ module.exports = {
     category: 'music',
     cooldown: 3,
     aliases: ['np'],
-	data: new SlashCommandBuilder()
-		.setName('nowplaying')
-		.setDescription("Displays the current playing song's detailed information."),
-	async execute(interaction, client) {
+    data: new SlashCommandBuilder()
+        .setName('nowplaying')
+        .setDescription("Displays the current playing song's detailed information."),
+    async execute(interaction, client) {
 
         if (!requireSessionConditions(interaction, true, false, false)) return;
 
-        try{
+        try {
             const queue = useQueue(interaction.guild.id);
             if (!queue) {
-                interaction.reply({ embeds: [ errorEmbed(` Queue is currently empty`)]})
+                interaction.reply({ embeds: [errorEmbed(` Queue is currently empty`)] })
                 setTimeout(() => {
                     interaction.deleteReply()
                 }, ERROR_MSGE_DELETE_TIMEOUT);
-              return;
+                return;
             }
 
             const { currentTrack } = queue;
             if (!currentTrack) {
-                interaction.reply({ embeds: [ errorEmbed(`Can't fetch information of current playing song`)]})
-                setTimeout(()=> interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
-              return;
+                interaction.reply({ embeds: [errorEmbed(`Can't fetch information of current playing song`)] })
+                setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
+                return;
             }
-      
-            const npEmbed = nowPlayingEmbed(queue);
-            interaction.reply({ embeds: [ npEmbed ] });
+
+            const npEmbed = nowPlayingEmbed(interaction, client);
+            await interaction.reply({ embeds: [npEmbed] });
+
+            // const interval = setInterval(async () => {
+            //     if (!queue.currentTrack) {
+            //         clearInterval(interval);
+            //         return;
+            //     }
+            //     const embed = nowPlayingEmbed(queue, client);
+            //     const messageToEdit = await message;
+            //     await messageToEdit.edit({ embeds: [embed] });
+            // }, 10000);
 
         } catch (error) {
             await interaction.reply({
@@ -43,8 +53,9 @@ module.exports = {
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
+            console.log(error);
         }
-		
-	},
+
+    },
 };

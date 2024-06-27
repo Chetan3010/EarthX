@@ -7,8 +7,8 @@ const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'developer',
-    cooldown: 3,
-    aliases: [],
+    cooldown: 120,
+    aliases: ['activity'],
 	data: new SlashCommandBuilder()
 		.setName('set-presence')
 		.setDescription("Sets the bot's presence activity.")

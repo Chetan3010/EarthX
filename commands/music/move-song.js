@@ -11,7 +11,7 @@ const TO_OPTION_ID = 'to-position';
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['move'],
+    aliases: [],
 	data: new SlashCommandBuilder()
 		.setName('move')
 		.setDescription("Move a song that is current in /queue")

@@ -1,5 +1,5 @@
 const { errorLog } = require("../../configs/logger");
-const { startedPlayingEmbed } = require("../../helper/utils");
+const { startedPlayingEmbed, saveSongEmbed } = require("../../helper/utils");
 
 module.exports = {
   name: 'playerStart',
@@ -9,7 +9,6 @@ module.exports = {
           startedPlayingEmbed(queue, track, client)
         ]});
       queue.metadata.previousTrack = res.id
-      return
     } catch (error) {
       errorLog('An error occured with player event!')
       console.log(error);

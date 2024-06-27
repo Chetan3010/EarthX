@@ -1,6 +1,6 @@
 const { useMainPlayer, usePlayer, useQueue } = require('discord-player');
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed } = require('../../helper/utils');
+const { errorEmbed, saveSongEmbed } = require('../../helper/utils');
 const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { requireSessionConditions } = require('../../helper/music');
 const { errorLog } = require('../../configs/logger');
@@ -48,7 +48,7 @@ module.exports = {
                 const { track } = await player.play(channel, searchResult, {
                     requestedBy: interaction.user,
                     nodeOptions: {
-                        
+
                         repeatMode: clientSettings.repeatMode,
                         // noEmitInsert: true,
                         skipOnNoStream: false,
@@ -96,6 +96,16 @@ module.exports = {
                 // }, BOT_MSGE_DELETE_TIMEOUT);
                 // }
                 // return
+                // const { currentTrack } = queue
+
+                // console.log(`
+                //     releasedate: 
+                //     likes yt: 
+                //     `)
+                    
+                // const release = currentTrack.metadata?.source.releaseDate
+                // console.log(release);
+
                 interaction.deleteReply()
             } catch (error) {
                 interaction.editReply({

@@ -6,7 +6,7 @@ const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../he
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
-    category: '',
+    category: 'music',
     cooldown: 3,
     aliases: [],
 	data: new SlashCommandBuilder()

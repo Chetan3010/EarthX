@@ -11,7 +11,7 @@ module.exports = {
     if (!queue.options.leaveOnEmpty) msge = `${greenDot} Staying in channel as 24/7 is enabled.`
     else {
       if (queue.metadata?.previousTrack) queue.metadata.channel.messages.delete(queue.metadata.previousTrack)
-      msge = `${redDot} Leaving empty channel in ${parseInt(queue.options.leaveOnEmptyCooldown / 60000)} mins.`
+      msge = `${redDot} Leaving channel because there was no vc activity for the past ${parseInt(queue.options.leaveOnEmptyCooldown / 60000)} mins.`
     }
     queue.metadata.channel.send({
       embeds: [

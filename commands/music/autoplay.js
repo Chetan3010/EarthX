@@ -3,7 +3,7 @@ const { errorEmbed, successEmbed, startedPlayingEmbed, repeatModeEmojiStr } = re
 const { useQueue, QueueRepeatMode } = require('discord-player');
 const { requireSessionConditions } = require('../../helper/music');
 const { errorLog } = require('../../configs/logger');
-const { cyanDot, arrow } = require('../../configs/emojis');
+const { cyanDot, arrow, leftAngleDown } = require('../../configs/emojis');
 const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 
 module.exports = {
@@ -43,9 +43,8 @@ module.exports = {
 
                 const msg = await queue.metadata.channel.messages.fetch(queue.metadata.previousTrack)
                 const embedObject = msg.embeds[0].toJSON();
-                console.log(embedObject);
                 // Find the field you want to update by name and update its value
-                const fieldIndex = embedObject.fields.findIndex(field => field.name === `${cyanDot} Repeat-mode`);
+                const fieldIndex = embedObject.fields.findIndex(field => field.name === `${leftAngleDown} Repeat mode`);
                 if (fieldIndex !== -1) {
                     embedObject.fields[fieldIndex].value = `${arrow} ${repeatModeEmojiStr(queue.repeatMode)}`;
                 } else {
@@ -54,7 +53,7 @@ module.exports = {
                         interaction.deleteReply()
                     }, ERROR_MSGE_DELETE_TIMEOUT);
                     errorLog('Something went wrong while updating current track embed')
-                    console.log(error.message)
+                    console.log(error)
                     return;
                 }
 

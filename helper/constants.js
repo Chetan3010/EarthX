@@ -23,4 +23,6 @@ module.exports = {
      BYTES_IN_KIB : 1024,
      BYTES_IN_MIB : 1048576,
      BYTES_IN_GIB : 1048576 * 1024,
+     feedbackGuildId: process.env.feedbackGuildId,
+     feedbackChannelId: process.env.feedbackChannelId
 }

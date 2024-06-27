@@ -7,7 +7,7 @@ const { cyanDot } = require('../../configs/emojis');
 
 module.exports = {
 	category: 'utility',
-	cooldown: 3,
+	cooldown: 60,
 	aliases: ['latency'],
 	data: new SlashCommandBuilder()
 		.setName('ping')

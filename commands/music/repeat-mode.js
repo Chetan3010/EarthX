@@ -56,7 +56,7 @@ module.exports = {
                 const embedObject = msg.embeds[0].toJSON();
 
                 // Find the field you want to update by name and update its value
-                const fieldIndex = embedObject.fields.findIndex(field => field.name === `${cyanDot} Repeat-mode`);
+                const fieldIndex = embedObject.fields.findIndex(field => field.name === `${cyanDot} Repeat mode`);
                 if (fieldIndex !== -1) {
                     embedObject.fields[fieldIndex].value = `${arrow} ${repeatModeEmojiStr(queue.repeatMode)}`;
                 } else {

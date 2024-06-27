@@ -37,4 +37,7 @@ module.exports = {
     cyanArrow: `<a:cyanArrow:1255145575016431764>`,
     leftAngleDown: `<:leftangledown:1255538059491934250>`,
     leftt: `<:leftt:1255558399353950353>`,
+    greyline: `<:greyline:1255677061247402006>`,
+    disabled: `<:disabled:1255677068025270386>`,
+    enabled: `<:enabled:1255677070441316353>`
 }

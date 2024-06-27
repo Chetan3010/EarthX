@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { errorEmbed, titleCase, getCommandOptions } = require('../../helper/utils');
+const { errorEmbed, titleCase, getCommandOptions, msToHumanReadableTime, secondsToHumanReadableTime } = require('../../helper/utils');
 const fs = require('fs');
 const { botColor } = require('../../configs/config');
 const { errorLog } = require('../../configs/logger');
@@ -40,26 +40,16 @@ module.exports = {
             const { category, cooldown, aliases, data } = cmdInfo
             const { name, options, description } = data
 
-            let optionFields = []
-            if (options) {
-                optionFields = [
-                    { name: `${cyanDot} **Category**`, value: `${arrow} ${titleCase(category)}`, inline: false },
-                    { name: `${cyanDot} **Cooldown**`, value: `${arrow} You can use this command once every ${cooldown} seconds.`, inline: false },
-                    { name: `${cyanDot} **Aliases**`, value: `${arrow} ${aliases.join(" , ")}.`, inline: false },
-                    { name: `${cyanDot} **Category**`, value: `${arrow} ${titleCase(category)}`, inline: false },
-                    ...getCommandOptions(options)
-                ]
-            } else {
-                optionFields = [
-                    { name: `${cyanDot} **Category**`, value: `${arrow} ${titleCase(category)}`, inline: false },
-                    { name: `${cyanDot} **Cooldown**`, value: `${arrow} You can use this command once every ${cooldown} seconds.`, inline: false },
-                    { name: `${cyanDot} **Aliases**`, value: `${arrow} ${aliases.join(" , ")}.`, inline: false },
-                    { name: `${cyanDot} **Category**`, value: `${arrow} ${titleCase(category)}`, inline: false },
-                ]
-            }
+            const optionFields = [
+                { name: `${cyanDot} **Category**`, value: `${arrow} ${titleCase(category)}`, inline: false },
+                aliases.length > 0 && { name: `${cyanDot} **Aliases**`, value: `${arrow} ${aliases.join(" , ")}.`, inline: false },
+                cooldown && { name: `${cyanDot} **Cooldown**`, value: `${arrow} You can use this command once every **${cooldown}** seconds.`, inline: false },
+                ...(options.length > 0 ? getCommandOptions(options) : [])
+            ].filter(Boolean);
+
             embed = new EmbedBuilder()
                 .setAuthor({
-                    name: name,
+                    name: titleCase(name),
                     iconURL: client.user.displayAvatarURL()
                 })
                 .setDescription(`${cyanArrow} ${description}`)

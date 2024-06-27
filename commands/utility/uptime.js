@@ -6,7 +6,7 @@ const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'utility',
-    cooldown: 5,
+    cooldown: 120,
 	aliases: [],
 	data: new SlashCommandBuilder()
 		.setName('uptime')

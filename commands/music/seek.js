@@ -53,6 +53,7 @@ module.exports = {
         try {
           const queue = useQueue(interaction.guild.id);
           queue.node.seek(totalMs);
+          queue.currentTime = totalMs;
           await interaction.reply({ embeds: [ successEmbed(` Setting playback timestamp to ${ String(minutes).padStart(2, '0') }:${ String(seconds).padStart(2, '0') } - By ${interaction.user}`)]});
           setTimeout(()=> interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
         

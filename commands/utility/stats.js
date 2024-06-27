@@ -61,7 +61,7 @@ module.exports = {
                     {
                         color: botColor,
                         author: {
-                            name: `${client.user.username}`,
+                            name: `${client.user.username} Stats`,
                             iconURL: client.user.displayAvatarURL()
                         },
                         fields: [
@@ -83,7 +83,7 @@ module.exports = {
                             },
                             {
                                 name: `${cyanDot} Uptime`,
-                                value: stripIndents`**📊 I've been online for ${msToHumanReadableTime(Date.now() - client.readyTimestamp)}**`,
+                                value: stripIndents`**📊 I've been online for ${msToHumanReadableTime(Date.now() - client.readyTimestamp)}**.`,
                                 inline: false
                             },
                             {
@@ -103,7 +103,8 @@ module.exports = {
                                 inline: true
                             }
                         ],
-                        // footer: { text: `Made with ❤️ by Mirasaki#0001 ${emojis.separator} Open to collaborate ${emojis.separator} me@mirasaki.dev` }
+                        footer: { text: client.user.username, icon_url: client.user.displayAvatarURL()},
+                        timestamp: new Date().toISOString(),
                     }
                 ]
             });

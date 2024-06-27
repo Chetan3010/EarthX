@@ -1,7 +1,7 @@
 const { Collection, InteractionType } = require("discord.js");
 const { errorLog, cmdLog, warningLog, infoLog } = require("../../configs/logger");
 const chalk = require("chalk");
-const { getRuntime } = require("../../helper/utils");
+const { getRuntime, errorEmbed } = require("../../helper/utils");
 
 module.exports = {
 	name: 'interactionCreate',
@@ -33,7 +33,10 @@ module.exports = {
 
 				if (now < expirationTime) {
 					const expiredTimestamp = Math.round(expirationTime / 1000);
-					await interaction.reply({ content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again after <t:${expiredTimestamp}:R>.`, ephemeral: true });
+					await interaction.reply({
+						embeds: [errorEmbed(` Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again after <t:${expiredTimestamp}:R>.`)],
+						ephemeral: true
+					});
 					setTimeout(async () => {
 						try {
 							await interaction.deleteReply()
@@ -70,15 +73,15 @@ module.exports = {
 			const { customId } = interaction;
 			const button = buttons.get(customId)
 
-			if (!button) { 
+			if (!button) {
 				// if (customId.startsWith('@')) {
 				// 	const secondAtSignIndex = activeId.indexOf('@', 1);
 				// 	const sliceEndIndex = secondAtSignIndex >= 0 ? secondAtSignIndex : activeId.length;
 				// 	const dynamicCmd = button = getCommand(client, activeId.slice(1, sliceEndIndex));
 				// 	if (!dynamicCmd) return; // Should be ignored
 				// }
-				if(customId.startsWith('@')) return
-				return warningLog(`There is no code for ${customId} button.`) 
+				if (customId.startsWith('@')) return
+				return warningLog(`There is no code for ${customId} button.`)
 			}
 
 			try {

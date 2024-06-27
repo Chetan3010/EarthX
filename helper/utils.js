@@ -1,8 +1,8 @@
 const { stripIndents } = require("common-tags");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, ComponentType, escapeMarkdown } = require("discord.js");
 const { botColor, errorColor } = require("../configs/config");
-const { error, mode, sad, success, disk, cyanDot, arrow, bottomArrow, leftAngleDown, leftt } = require("../configs/emojis");
-const { GuildQueuePlayerNode, QueueRepeatMode } = require("discord-player");
+const { error, mode, sad, success, disk, cyanDot, arrow, bottomArrow, leftAngleDown, leftt, cyanVertical, greyline, cyanLine, separator } = require("../configs/emojis");
+const { GuildQueuePlayerNode, QueueRepeatMode, usePlayer } = require("discord-player");
 const { BOT_MSGE_DELETE_TIMEOUT, DEFAULT_DECIMAL_PRECISION, NS_IN_ONE_MS, NS_IN_ONE_SECOND } = require("./constants");
 
 const handlePagination = async (
@@ -91,7 +91,7 @@ const repeatModeEmojiStr = (repeatMode) => repeatMode === QueueRepeatMode.AUTOPL
     ? ':repeat: Queue'
     : repeatMode === QueueRepeatMode.TRACK
       ? ':repeat_one: Track'
-      : ':arrow_forward: Off';
+      : ':no_entry: Off';
 
 const queueEmbeds = (queue, guild, title) => {
   // Ok, display the queue!
@@ -258,19 +258,41 @@ const msToHumanReadableTime = (ms) => {
   }
 };
 
+const secondsToHumanReadableTime = (seconds) => {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+
+  const parts = [];
+  if (days > 0) parts.push(`${days} day${days === 1 ? '' : 's'}`);
+  if (hours > 0) parts.push(`${hours} hour${hours === 1 ? '' : 's'}`);
+  if (minutes > 0) parts.push(`${minutes} minute${minutes === 1 ? '' : 's'}`);
+  if (secs > 0) parts.push(`${secs} second${secs === 1 ? '' : 's'}`);
+
+  if (parts.length === 0) return '0 seconds';
+  else if (parts.length === 1) return parts[0];
+  else if (parts.length === 2) return `${parts[0]} and ${parts[1]}`;
+  else {
+    const lastPart = parts.pop();
+    const formattedParts = parts.join(', ');
+    return `${formattedParts}, and ${lastPart}`;
+  }
+};
+
 const errorEmbed = (content) => new EmbedBuilder().setColor(errorColor).setDescription(`${error} ${content}.`)
 
 const successEmbed = (content) => new EmbedBuilder().setColor(botColor).setDescription(`${success} ${content}.`)
 
 
-const nowPlayingEmbed = (queue, includeSessionDetails = true) => {
+const _nowPlayingEmbed = (queue, includeSessionDetails = true) => {
   const { currentTrack } = queue;
   const trackDescriptionOutputStr = currentTrack.description
     ? `\n\`\`\`\n${currentTrack.description}\`\`\`\n`
     : '';
 
   const ts = queue.node.getTimestamp();
-  const durationOut = ts === 'Forever' ? 'Live' : currentTrack.duration;
+  const durationOut = ts === '0:00' ? 'Live' : currentTrack.duration;
 
   const guildPlayerQueue = new GuildQueuePlayerNode(queue);
 
@@ -308,28 +330,109 @@ const nowPlayingEmbed = (queue, includeSessionDetails = true) => {
   return npEmbed;
 };
 
+const getProgressBar = node => {
+  
+  return node.createProgressBar({
+    indicator: `:large_orange_diamond:`,
+    rightChar: greyline,
+    leftChar: cyanLine,
+    // timecodes: true,
+    separator: cyanVertical,
+    length: 10
+    // .addFields(
+    //   { name: 'Progress bar', value: getProgressBar(node) }
+    // )
+  })
+}
+
+const nowPlayingEmbed = (interaction, client, includeSessionDetails = true) => {
+  const node = usePlayer(interaction.guild.id)
+  const queue = node.queue
+  const { currentTrack } = queue;
+
+  const np = new EmbedBuilder()
+    .setColor(botColor)
+    .setAuthor({
+      name: `Info about current song ${bottomArrow}`,
+      iconURL: client.user.displayAvatarURL()
+    })
+    .setTitle(`**${currentTrack.source === 'youtube' ? currentTrack.cleanTitle || currentTrack.title : currentTrack.title}**`)
+    .setURL(currentTrack.url)
+    // .setThumbnail(currentTrack.thumbnail)
+    .setImage(currentTrack.thumbnail)
+    .addFields(
+      { name: `${leftAngleDown} Duration`, value: `${arrow} ${currentTrack.duration === '0:00' ? 'Live' : currentTrack.duration}`, inline: true },
+      { name: `${leftAngleDown} Artist`, value: `${arrow} ${currentTrack.author.slice(0,18)}...`, inline: true },
+      { name: `${leftAngleDown} Source`, value: `${arrow} ${titleCase(currentTrack.source)}`, inline: true },
+    )
+    .addFields(
+      { name: `${leftAngleDown} Repeat mode`, value: `${arrow} ${repeatModeEmojiStr(queue.repeatMode)}`, inline: true },
+      { name: `${leftAngleDown} Volume`, value: `${arrow} ${queue.options.volume} %`, inline: true },
+      { name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${currentTrack.url})`, inline: true },   
+    )
+    .setFooter({
+      iconURL: interaction.user.displayAvatarURL(),
+      text: `Requested by ${interaction.user.username}`
+    })
+    .setTimestamp()
+    
+  return np
+}
+
+const saveSongEmbed = (interaction, client, queue) => {
+  const { currentTrack } = queue;
+
+  const np = new EmbedBuilder()
+    .setColor(botColor)
+    .setAuthor({
+      name: `Saved song ${bottomArrow}`,
+      iconURL: client.user.displayAvatarURL()
+    })
+    .setTitle(`**${currentTrack.source === 'youtube' ? currentTrack.cleanTitle || currentTrack.title : currentTrack.title}**`)
+    .setURL(currentTrack.url)
+    // .setThumbnail(currentTrack.thumbnail)
+    .setImage(currentTrack.thumbnail)
+    .addFields(
+      { name: `${leftAngleDown} Artist`, value: `${arrow} ${currentTrack.author.slice(0,18)}...`, inline: true },
+      { name: `${leftAngleDown} Duration`, value: `${arrow} ${currentTrack.duration === '0:00' ? 'Live' : currentTrack.duration}`, inline: true },
+      { name: `${leftAngleDown} Source`, value: `${arrow} ${titleCase(currentTrack.source)}`, inline: true },
+    )
+    .addFields(
+      { name: `${leftAngleDown} Uploaded at`, value: `${arrow} ${currentTrack.metadata?.uploadedAt || new Date(currentTrack.metadata?.source.releaseDate.isoString).toLocaleDateString('en-US') || 'NA'}`, inline: true },
+      { name: `${leftAngleDown} Likes`, value: `${arrow} ${currentTrack.raw?.likes || currentTrack.metadata.bridge?.likes || 'NA'}`, inline: true },
+      { name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${currentTrack.url})`, inline: true },   
+    )
+    .setFooter({
+      iconURL: interaction.user.displayAvatarURL(),
+      text: `Requested by ${interaction.user.username}`
+    })
+    .setTimestamp()
+    // console.log(currentTrack);
+  return np
+} 
+
 const startedPlayingEmbed = (queue, track, client) => {
   return new EmbedBuilder()
     .setColor(botColor)
     .setAuthor({
       iconURL: `https://media.discordapp.net/attachments/1253855563985584139/1253855637956329553/music.gif?ex=66775f8f&is=66760e0f&hm=4bb98ed7d4826424d9fda456900d08d6bfb27f7b295b86945dd20c733dab10cf&=&width=250&height=197`,
-      name: `Started Playing ${bottomArrow}`
+      name: `Now Playing ${bottomArrow}`
     })
     .setTitle(`${disk} ${track.title}`)
     .setURL(track.url)
     .setThumbnail(track.thumbnail)
     .addFields(
-      { name: `${cyanDot} Duration`, value: `${arrow} ${track.duration}`, inline: true },
-      { name: `${cyanDot} Artist`, value: `${arrow} ${track.author}`, inline: true },
-      { name: `${cyanDot} Repeat-mode`, value: `${arrow} ${ repeatModeEmojiStr(queue.repeatMode)}`, inline: true },
+      { name: `${leftAngleDown} Duration`, value: `${arrow} ${track.duration === '0:00' ? 'Live' : track.duration}`, inline: true },
+      { name: `${leftAngleDown} Artist`, value: `${arrow} ${track.author}`, inline: true },
+      { name: `${leftAngleDown} Repeat mode`, value: `${arrow} ${repeatModeEmojiStr(queue.repeatMode)}`, inline: true },
     )
-    // .addFields(
-    //   { name: `${cyanDot} Volume`, value: `┕> ${track.duration}`, inline: true },
-    //   { name: `${cyanDot} Repeat Mode`, value: `┕> ${track.author}`, inline: true },
-    //   { name: `${cyanDot} Autoplay`, value: `┕> ${queue.tracks.toArray().length} songs`, inline: true },
-    // )
     .addFields(
-      { name: `${cyanDot} Song link`, value: `${arrow} [Click here](${track.url})` }
+      { name: `${cyanDot} Volume`, value: `┕> ${track.volume}`, inline: true },
+      { name: `${cyanDot} Repeat Mode`, value: `┕> ${track.author}`, inline: true },
+      { name: `${cyanDot} Autoplay`, value: `┕> ${queue.tracks.toArray().length} songs`, inline: true },
+    )
+    .addFields(
+      { name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${track.url})` }
     )
     .setFooter({
       iconURL: client.user.displayAvatarURL(),
@@ -373,24 +476,24 @@ const ApplicationCommandType = (type) => {
   return optionTypes[type]
 }
 
-const getChoices = (type, choices=false, min=false, max=false) => {
-  if(choices){
+const getChoices = (type, choices = false, min = false, max = false) => {
+  if (choices) {
     return choices.map(choice => choice.name).join(", ")
-  }else{
+  } else {
     const optionTypes = ['Select any sub command', 'Select group of sub command', 'Enter text', 'Enter numbers', 'Select true or false', 'Select or mention any user', 'Select or type channel', 'Mention role', 'Mention user, role, channel etc..', 'Enter number', 'Attach external file']
     let string = optionTypes[type]
-    if(min && max) [4,9].includes(type+1) ? string+= ` between ${min} and ${max}` : string+=` minimum ${min} and maximum ${max} options.`
+    if (min && max) [4, 9].includes(type + 1) ? string += ` between ${min} and ${max}` : string += ` minimum ${min} and maximum ${max} options.`
     return string
   }
 }
 
 getCommandOptions = (optionsArray) => {
-  const title = { name: `${cyanDot} Options`, value: `${leftt} This command also supports options as mention below.`, inline: false}
-  const fields = optionsArray?.map(item => {
-    console.log(item);
+  const title = { name: `${leftAngleDown} Options`, value: `${leftt} This command also supports options as mention below.`, inline: false }
+  const size = optionsArray.length
+  const fields = optionsArray?.map((item, index) => {
     return {
-      name: `${leftAngleDown} ${titleCase(item.name)}`,
-      value: `${arrow} ${ApplicationCommandType(item.type-1)} Choices -> ${getChoices(item.type-1, item?.choices ? item.choices : false, item?.min_value ? item.min_value : false, item?.max_value ? item.max_value : false)}`
+      name: `${leftt} ${titleCase(item.name)}`,
+      value: `${index === size - 1 ? arrow : leftt} ${ApplicationCommandType(item.type - 1)} Choices -> ${getChoices(item.type - 1, item?.choices ? item.choices : false, item?.min_value ? item.min_value : false, item?.max_value ? item.max_value : false)}`
     }
   })
   return [title, ...fields]
@@ -399,6 +502,7 @@ getCommandOptions = (optionsArray) => {
 module.exports = {
   InteractionType,
   msToHumanReadableTime,
+  secondsToHumanReadableTime,
   handlePagination,
   repeatModeEmojiStr,
   queueEmbeds,
@@ -415,6 +519,7 @@ module.exports = {
   titleCase,
   ApplicationCommandType,
   getChoices,
+  saveSongEmbed,
   getCommandOptions
 }
 
