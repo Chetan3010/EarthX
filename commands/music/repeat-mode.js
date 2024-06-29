@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { errorEmbed, successEmbed, repeatModeEmojiStr, startedPlayingEmbed } = require('../../helper/utils');
-const { useQueue, QueueRepeatMode } = require('discord-player');
-const { requireSessionConditions } = require('../../helper/music');
+const { errorEmbed, successEmbed, repeatModeEmojiStr, requireSessionConditions } = require('../../helper/utils');
+const { useQueue } = require('discord-player');
 const { errorLog } = require('../../configs/logger');
 const GuildModel = require('../../schema/guild');
 const { cyanDot, arrow } = require('../../configs/emojis');
@@ -13,10 +12,10 @@ module.exports = {
     aliases: ['repeat'],
     data: new SlashCommandBuilder()
         .setName('repeat-mode')
-        .setDescription("Configure specific repeat-mode or disable it.")
+        .setDescription("Configure specific repeat-mode or disable it")
         .addStringOption(option =>
             option.setName('mode')
-                .setDescription('Select the mode to set.')
+                .setDescription('Select the mode to set')
                 .setRequired(false)
                 .addChoices(
                     { name: 'off', value: '0' },
@@ -26,7 +25,7 @@ module.exports = {
                 ))
         .addBooleanOption(option =>
             option.setName('persistent')
-                .setDescription('Save the selected repeat mode. Applies selected repeat mode to new sessions also.')
+                .setDescription('Save the selected repeat mode. Applies selected repeat mode to new sessions too')
                 .setRequired(false)),
 
     async execute(interaction, client) {
@@ -50,9 +49,9 @@ module.exports = {
             queue.setRepeatMode(repeatMode);
             const modeEmoji = repeatModeEmojiStr(repeatMode);
 
-            if (queue.metadata?.previousTrack) {
+            if (queue.metadata?.nowPlaying) {
 
-                const msg = await queue.metadata.channel.messages.fetch(queue.metadata.previousTrack)
+                const msg = await queue.metadata.channel.messages.fetch(queue.metadata.nowPlaying)
                 const embedObject = msg.embeds[0].toJSON();
 
                 // Find the field you want to update by name and update its value
@@ -71,7 +70,7 @@ module.exports = {
 
                 const updatedEmbed = new EmbedBuilder(embedObject);
 
-                await msg.edit({ embeds: [updatedEmbed] });
+                msg.edit({ embeds: [updatedEmbed] });
             }
 
             // Save for persistency
@@ -85,13 +84,13 @@ module.exports = {
             interaction.reply({ embeds: [successEmbed(`Updated ${shouldSave ? 'server' : 'current'} repeat mode to: ${modeEmoji}`)] });
         }
         catch (error) {
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/repeat-mode\` command`)
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
         }
 
     },

@@ -1,7 +1,6 @@
 const { useQueue } = require("discord-player");
 const { SlashCommandBuilder } = require("discord.js");
-const { errorEmbed, nowPlayingEmbed } = require("../../helper/utils");
-const { requireSessionConditions } = require("../../helper/music");
+const { errorEmbed, nowPlayingEmbed, requireSessionConditions } = require("../../helper/utils");
 const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../helper/constants");
 const { errorLog } = require("../../configs/logger");
 
@@ -33,29 +32,19 @@ module.exports = {
                 return;
             }
 
-            const npEmbed = nowPlayingEmbed(interaction, client);
+            const npEmbed = nowPlayingEmbed(interaction, client, queue);
             await interaction.reply({ embeds: [npEmbed] });
 
-            // const interval = setInterval(async () => {
-            //     if (!queue.currentTrack) {
-            //         clearInterval(interval);
-            //         return;
-            //     }
-            //     const embed = nowPlayingEmbed(queue, client);
-            //     const messageToEdit = await message;
-            //     await messageToEdit.edit({ embeds: [embed] });
-            // }, 10000);
+
 
         } catch (error) {
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
-                    errorEmbed(`Something went wrong while executing \`/now-playing\` command`)
+                    errorEmbed(`Something went wrong while executing \`/nowplaying\` command`)
                 ],
                 ephemeral: true
             });
             errorLog(error)
-            console.log(error);
         }
-
     },
 };

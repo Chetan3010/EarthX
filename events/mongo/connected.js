@@ -1,5 +1,5 @@
 const chalk = require("chalk")
-const { successLog, infoLog } = require("../../configs/logger")
+const { infoLog } = require("../../configs/logger")
 
 module.exports = {
     name: 'connected',

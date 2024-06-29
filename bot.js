@@ -1,11 +1,11 @@
 const fs = require('node:fs');
 require('dotenv').config()
-const {token,spotifyClientId, spotifyClientSecret, mongoConnection} = process.env
+const { token, spotifyClientId, spotifyClientSecret, mongoConnection } = process.env
 
-const DeezerExtractor = require("discord-player-deezer").default 
+const DeezerExtractor = require("discord-player-deezer").default
 const TidalExtractor = require('discord-player-tidal').default
 
-const { Client, Collection, GatewayIntentBits, ActivityType, PresenceUpdateStatus } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, ActivityType } = require('discord.js');
 const { Player } = require('discord-player');
 const {
 	SpotifyExtractor,
@@ -19,16 +19,15 @@ const {
 // "youtube-ext", "ytdl-core <- current", "@distube/ytdl-core", "play-dl", "yt-stream"
 
 const { connect } = require('mongoose');
-const { error } = require('node:console');
 const chalk = require('chalk');
 const { infoLog } = require('./configs/logger');
 
-const client = new Client({ 
+const client = new Client({
 	presence: {
 		status: 'online',
 		activities: [{ name: '/help', type: ActivityType.Listening }],
 	},
-	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] 
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates]
 });
 
 const player = new Player(client, {
@@ -43,19 +42,19 @@ const player = new Player(client, {
 });
 
 process.on('SIGINT', () => {
-	infoLog('INFO','',`Received SIGINT ${chalk.redBright('Ctrl-C')}`);
-	infoLog('INFO','',`Gracefully shutting down from SIGINT ${chalk.redBright('Ctrl-C')}`);
+	infoLog('INFO', '', `Received SIGINT ${chalk.redBright('Ctrl-C')}`);
+	infoLog('INFO', '', `Gracefully shutting down from SIGINT ${chalk.redBright('Ctrl-C')}`);
 	process.exit(0);
-  });
+});
 
 (async () => {
-	
+
 	await player.extractors.register(YouTubeExtractor, {});
 	await player.extractors.register(
 		SpotifyExtractor,
 		{
-		  clientId: spotifyClientId,
-		  clientSecret: spotifyClientSecret
+			clientId: spotifyClientId,
+			clientSecret: spotifyClientSecret
 		}
 	);
 	// await player.extractors.register(DeezerExtractor)
@@ -76,13 +75,13 @@ client.autoComplete = new Collection();
 client.commandArray = [];
 
 const functionFolders = fs.readdirSync('./functions');
-for( const folder of functionFolders){
+for (const folder of functionFolders) {
 	const functionFiles = fs
-	.readdirSync(`./functions/${folder}`)
-	.filter(file => file.endsWith('.js'))
-	for(const file of functionFiles)
+		.readdirSync(`./functions/${folder}`)
+		.filter(file => file.endsWith('.js'))
+	for (const file of functionFiles)
 		require(`./functions/${folder}/${file}`)(client);
-		
+
 }
 
 client.handleEvents();

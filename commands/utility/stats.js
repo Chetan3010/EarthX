@@ -5,6 +5,7 @@ const { version } = require('discord.js');
 const { BYTES_IN_KIB } = require('../../helper/constants');
 const { stripIndents } = require('common-tags');
 const { greenDot, yellowDot, redDot, cyanDot, wait } = require('../../configs/emojis');
+const { errorLog } = require('../../configs/logger');
 
 const discordVersion = version.indexOf('dev') < 0 ? version : version.slice(0, version.indexOf('dev') + 3);
 const discordVersionDocLink = `https://discord.js.org/#/docs/discord.js/v${discordVersion.split('.')[0]}/general/welcome`;
@@ -31,7 +32,6 @@ module.exports = {
 
         const fcLatency = sent.createdTimestamp - interaction.createdTimestamp;
 
-        // Utility function for getting appropriate status emojis
         const getMsEmoji = (ms) => {
             let emoji = undefined;
 
@@ -103,21 +103,20 @@ module.exports = {
                                 inline: true
                             }
                         ],
-                        footer: { text: client.user.username, icon_url: client.user.displayAvatarURL()},
+                        footer: { text: client.user.username, icon_url: client.user.displayAvatarURL() },
                         timestamp: new Date().toISOString(),
                     }
                 ]
             });
 
         } catch (error) {
-            await interaction.editReply({
+            interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/stats\` command`)
                 ],
                 ephemeral: true
             });
-            console.error(error)
+            errorLog(error)
         }
-
     },
 };

@@ -1,10 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { errorEmbed, successEmbed, startedPlayingEmbed, repeatModeEmojiStr } = require('../../helper/utils');
+const { errorEmbed, requireSessionConditions } = require('../../helper/utils');
 const { useQueue, QueueRepeatMode } = require('discord-player');
-const { requireSessionConditions } = require('../../helper/music');
 const { errorLog } = require('../../configs/logger');
-const { cyanDot, arrow, leftAngleDown } = require('../../configs/emojis');
+const { enabled, disabled } = require('../../configs/emojis');
 const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
+const { botColor } = require('../../configs/config');
 
 module.exports = {
     category: 'music',
@@ -12,7 +12,7 @@ module.exports = {
     aliases: ['ap'],
     data: new SlashCommandBuilder()
         .setName('autoplay')
-        .setDescription("Toggle autoplay, Autoplay plays recommended music when queue is empty applies to current session."),
+        .setDescription("Toggle autoplay, Autoplay plays recommended music when queue is empty applies to current session"),
 
     async execute(interaction, client) {
 
@@ -22,7 +22,7 @@ module.exports = {
         try {
             const queue = useQueue(interaction.guild.id);
             if (!queue) {
-                interaction.reply({ embeds: [errorEmbed(` No music is being played - initialize a session first to set mode.`)] })
+                interaction.reply({ embeds: [errorEmbed(` No music is being played - initialize a session first to set mode`)] })
                 setTimeout(() => {
                     interaction.deleteReply()
                 }, ERROR_MSGE_DELETE_TIMEOUT);
@@ -39,9 +39,9 @@ module.exports = {
             }
             // Resolve repeat mode
 
-            if (queue.metadata?.previousTrack) {
+            if (queue.metadata?.nowPlaying) {
 
-                const msg = await queue.metadata.channel.messages.fetch(queue.metadata.previousTrack)
+                const msg = await queue.metadata.channel.messages.fetch(queue.metadata.nowPlaying)
                 const embedObject = msg.embeds[0].toJSON();
                 // Find the field you want to update by name and update its value
                 const fieldIndex = embedObject.fields.findIndex(field => field.name === `${leftAngleDown} Repeat mode`);
@@ -64,20 +64,26 @@ module.exports = {
 
             let msge = ''
             if (isAutoplay) {
-                msge = ` Autoplay is now **[enabled](https://discord.com/channels/1248989810459152384/1254197147662815343/${queue.metadata.previousTrack})** for the current session.\nIf you want it persistent use \`/repeat-mode\` with persistent true`
+                msge = `${enabled} Autoplay is now **[enabled](https://discord.com/channels/1248989810459152384/1254197147662815343/${queue.metadata.nowPlaying})** for the current session.\nIf you want it persistent use \`/repeat-mode\` with persistent true`
             } else {
-                msge = ` Autoplay is now **[disabled](https://discord.com/channels/1248989810459152384/1254197147662815343/${queue.metadata.previousTrack})** for the current session.\nIf you want it persistent use \`/repeat-mode\` with persistent true`
+                msge = `${disabled} Autoplay is now **[disabled](https://discord.com/channels/1248989810459152384/1254197147662815343/${queue.metadata.nowPlaying})** for the current session.\nIf you want it persistent use \`/repeat-mode\` with persistent true`
             }
-            interaction.reply({ embeds: [successEmbed(msge)] });
+            interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor(botColor)
+                        .setDescription(msge)
+                ]
+            });
         }
         catch (error) {
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/autoplay\` command`)
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
         }
 
     },

@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed, queueEmbedResponse } = require('../../helper/utils');
-const { requireSessionConditions } = require('../../helper/music');
+const { errorEmbed, queueEmbedResponse, requireSessionConditions } = require('../../helper/utils');
 const { useQueue } = require('discord-player');
 const { errorLog } = require('../../configs/logger');
 
@@ -22,13 +21,13 @@ module.exports = {
           queueEmbedResponse(interaction, queue);
 
         } catch (error) {
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/shuffle\` command`)
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
         }
 		
 	},

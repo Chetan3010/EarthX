@@ -1,4 +1,5 @@
 const { useMainPlayer } = require("discord-player");
+const { errorLog } = require("../../configs/logger");
 
 module.exports = {
     data: {
@@ -7,6 +8,7 @@ module.exports = {
     async autocomplete(interaction, client) {
         const player = useMainPlayer();
         const query = interaction.options.getFocused();
+
         if (!query) return [];
         const result = await player.search(query);
 
@@ -32,11 +34,11 @@ module.exports = {
             });
 
         try {
-            await interaction.respond(
+            interaction.respond(
                 returnData.slice(0, 25)
             );
         } catch (error) {
-            console.error(error)
+            errorLog(error)
         }
     },
 }

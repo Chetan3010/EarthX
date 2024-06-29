@@ -20,7 +20,7 @@ module.exports = {
 			const message = await interaction.deferReply({
 				fetchReply: true
 			});
-			await interaction.editReply({
+			interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
 						.setColor(botColor)
@@ -33,13 +33,13 @@ module.exports = {
 			})
 
 		} catch (error) {
-			await interaction.editReply({
+			interaction.editReply({
 				embeds: [
 					errorEmbed(`Something went wrong while executing \`/ping\` command`)
 				],
 				ephemeral: true
 			});
-			errorLog(error.message)
+			errorLog(error)
 		}
 	},
 };

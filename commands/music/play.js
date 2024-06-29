@@ -1,8 +1,7 @@
-const { useMainPlayer, usePlayer, useQueue } = require('discord-player');
+const { useMainPlayer } = require('discord-player');
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed, saveSongEmbed } = require('../../helper/utils');
+const { errorEmbed, requireSessionConditions } = require('../../helper/utils');
 const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
-const { requireSessionConditions } = require('../../helper/music');
 const { errorLog } = require('../../configs/logger');
 const { getGuildSettings } = require('../../helper/db');
 
@@ -15,7 +14,7 @@ module.exports = {
         .setDescription('Plays the song from youtube, spotify, etc.')
         .addStringOption(option =>
             option.setName('search')
-                .setDescription('Play a song. Search youtube, spotify or provide a direct link.')
+                .setDescription('Play a song. Search youtube, spotify or provide a direct link')
                 .setRequired(true)
                 .setAutocomplete(true)
         ),
@@ -28,7 +27,7 @@ module.exports = {
 
         const query = interaction.options.getString('search')
 
-        await interaction.deferReply()
+        interaction.deferReply()
         const searchResult = await player.search(query, { requestedBy: interaction.user });
 
         if (!searchResult.hasTracks()) {
@@ -45,7 +44,7 @@ module.exports = {
             try {
                 const clientSettings = await getGuildSettings(interaction.guild.id)
                 // console.log(clientSettings);
-                const { track } = await player.play(channel, searchResult, {
+                await player.play(channel, searchResult, {
                     requestedBy: interaction.user,
                     nodeOptions: {
 
@@ -67,44 +66,10 @@ module.exports = {
                             channel: interaction.channel,
                             member: interaction.member,
                             timestamp: interaction.createdTimestamp,
-                            interaction
+                            interaction,
                         }
                     }
                 });
-
-                // console.log({...playerOptions});
-                // const queue = useQueue(interaction.guild.id);
-                // console.log(queue);
-                // queue.setRepeatMode(3);
-                // const cp = usePlayer(queue)
-                // console.log(cp)
-                // if(cp.isPlaying()){
-                //     await interaction.deleteReply()
-                // }else{
-                // await interaction.editReply({
-                //     embeds: [
-                //     new EmbedBuilder()
-                //         .setColor(botColor)
-                //         .setAuthor({
-                //             iconURL: client.user.displayAvatarURL(),
-                //             name: ` | Ready for playing ↴`,
-                //         })
-                //         .setDescription(`[${escapeMarkdown(track.title)}](${track.url}) - \`${track.duration}\`.`)]  
-                // })
-                // setTimeout(() => {
-                //     interaction.deleteReply()
-                // }, BOT_MSGE_DELETE_TIMEOUT);
-                // }
-                // return
-                // const { currentTrack } = queue
-
-                // console.log(`
-                //     releasedate: 
-                //     likes yt: 
-                //     `)
-                    
-                // const release = currentTrack.metadata?.source.releaseDate
-                // console.log(release);
 
                 interaction.deleteReply()
             } catch (error) {
@@ -114,7 +79,7 @@ module.exports = {
                     ],
                     ephemeral: true
                 })
-                errorLog(error.message)
+                errorLog(error)
             }
         }
     },

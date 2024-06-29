@@ -1,6 +1,10 @@
 require('dotenv').config
 
 module.exports = {
+     OWNERID: process.env.ownerId,
+     feedbackGuildId: process.env.feedbackGuildId,
+     feedbackChannelId: process.env.feedbackChannelId,
+
      NS_IN_ONE_MS: 1000000,
      NS_IN_ONE_SECOND: 1e9,
      MS_IN_ONE_SECOND: 1000,
@@ -12,7 +16,7 @@ module.exports = {
      MINUTES_IN_ONE_HOUR: 60,
      HOURS_IN_ONE_DAY: 24,
 
-     OWNERID: `${process.env.ownerId}`,
+
      ERROR_MSGE_DELETE_TIMEOUT: 30000,
      BOT_MSGE_DELETE_TIMEOUT: 60000,
 
@@ -20,9 +24,7 @@ module.exports = {
 
      DEFAULT_DECIMAL_PRECISION: 2,
 
-     BYTES_IN_KIB : 1024,
-     BYTES_IN_MIB : 1048576,
-     BYTES_IN_GIB : 1048576 * 1024,
-     feedbackGuildId: process.env.feedbackGuildId,
-     feedbackChannelId: process.env.feedbackChannelId
+     BYTES_IN_KIB: 1024,
+     BYTES_IN_MIB: 1048576,
+     BYTES_IN_GIB: 1048576 * 1024,
 }

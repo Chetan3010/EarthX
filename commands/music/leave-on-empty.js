@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../helper/utils');
-const { requireSessionConditions } = require('../../helper/music');
-const { useMainPlayer, useQueue, usePlayer } = require('discord-player');
-const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
+const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
+const { useMainPlayer, useQueue } = require('discord-player');
 const GuildModel = require('../../schema/guild');
 const { errorLog } = require('../../configs/logger');
 
@@ -12,7 +10,7 @@ module.exports = {
     aliases: [],
     data: new SlashCommandBuilder()
         .setName('247')
-        .setDescription("Toggle 247 mode and stays in the vc even if song end and empty channel."),
+        .setDescription("Toggle 247 mode and stays in the vc even if song end and empty channel"),
     async execute(interaction, client) {
         try {
             if (!requireSessionConditions(interaction, false, true, false)) return;
@@ -65,7 +63,7 @@ module.exports = {
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
         }
 
     },

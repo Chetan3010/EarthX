@@ -33,11 +33,11 @@ module.exports = {
             });
         
         try {
-            await interaction.respond(
+            interaction.respond(
                 returnData.slice(0, 25)
             );
         } catch (error) {
-            errorLog(error.message)
+            errorLog(error)
         }
     },
 }

@@ -1,41 +1,40 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../helper/utils');
+const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
 const { useQueue } = require('discord-player');
-const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
-const { requireSessionConditions } = require('../../helper/music');
+const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
     aliases: ['clearqueue'],
-	data: new SlashCommandBuilder()
-		.setName('clear')
-		.setDescription("Clear the entire queue"),
+    data: new SlashCommandBuilder()
+        .setName('clear')
+        .setDescription("Clear the entire queue"),
 
-	async execute(interaction, client) {
+    async execute(interaction, client) {
         // Check state
         if (!requireSessionConditions(interaction, true)) return;
 
         try {
-        const queue = useQueue(interaction.guild.id);
-        if (!queue) {
-            interaction.reply({ embeds: [ errorEmbed(` There is nothing in the queue nor playing anything`) ]})
-            setTimeout(()=> interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
-            return;
-        }
-        queue.clear();
-        await interaction.reply({ embeds: [ successEmbed(` The queue has been cleared - By ${interaction.user}`)]})
-        
+            const queue = useQueue(interaction.guild.id);
+            if (!queue) {
+                interaction.reply({ embeds: [errorEmbed(` There is nothing in the queue nor playing anything`)] })
+                setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
+                return;
+            }
+            queue.clear();
+            await interaction.reply({ embeds: [successEmbed(` The queue has been cleared - By ${interaction.user}`)] })
+
         } catch (error) {
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/clear\` command`)
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
         }
-		
-	},
+
+    },
 };

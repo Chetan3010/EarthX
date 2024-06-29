@@ -1,4 +1,3 @@
-
 const GuildModel = require('../schema/guild')
 
 const getGuildSettings = async (guildId, interaction) => {
@@ -10,10 +9,11 @@ const getGuildSettings = async (guildId, interaction) => {
             return settings
         }
         return settings
+        
     } catch (error) {
         const interactionWasAcknowledged = interaction.deferred || interaction.replied
         if (interactionWasAcknowledged) {
-            await interaction.followUp({
+            interaction.followUp({
                 embeds: [
                     errorEmbed(`Something went wrong while interacting with database`)
                 ],
@@ -21,7 +21,7 @@ const getGuildSettings = async (guildId, interaction) => {
             })
         }
         else {
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while interacting with database`)
                 ],

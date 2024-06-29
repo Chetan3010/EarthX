@@ -1,9 +1,9 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { errorEmbed, successEmbed } = require('../../helper/utils');
-const { feedbackGuildId, feedbackChannelId, MS_IN_ONE_HOUR, SECONDS_IN_ONE_MINUTE, MINUTES_IN_ONE_HOUR } = require('../../helper/constants');
+const { feedbackGuildId, feedbackChannelId, SECONDS_IN_ONE_MINUTE, MINUTES_IN_ONE_HOUR } = require('../../helper/constants');
 const { botColor } = require('../../configs/config');
 const { heartp } = require('../../configs/emojis');
-
+const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'utility',
@@ -67,7 +67,8 @@ module.exports = {
                 reason: 'feedback support for bot',
                 unique: true
             })
-            await channel.send({
+
+            channel.send({
                 embeds: [
                     new EmbedBuilder()
                         .setColor(botColor)
@@ -119,8 +120,7 @@ module.exports = {
                 ],
                 ephemeral: true
             });
-            console.error(error)
+            errorLog(error)
         }
-
     },
 };

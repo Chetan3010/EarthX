@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../helper/utils');
+const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
 const { MS_IN_ONE_SECOND, ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
-const { requireSessionConditions } = require('../../helper/music');
 const { useQueue } = require('discord-player');
 const { errorLog } = require('../../configs/logger');
 
@@ -54,17 +53,17 @@ module.exports = {
           const queue = useQueue(interaction.guild.id);
           queue.node.seek(totalMs);
           queue.currentTime = totalMs;
-          await interaction.reply({ embeds: [ successEmbed(` Setting playback timestamp to ${ String(minutes).padStart(2, '0') }:${ String(seconds).padStart(2, '0') } - By ${interaction.user}`)]});
+          interaction.reply({ embeds: [ successEmbed(` Setting playback timestamp to ${ String(minutes).padStart(2, '0') }:${ String(seconds).padStart(2, '0') } - By ${interaction.user}`)]});
           setTimeout(()=> interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
         
         } catch (error) {
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/seek\` command`)
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
         }
 		
 	},

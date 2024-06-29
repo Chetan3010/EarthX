@@ -1,22 +1,19 @@
-const { usePlayer, TrackSkipReason } = require('discord-player');
-const { SlashCommandBuilder, EmbedBuilder, escapeMarkdown } = require('discord.js');
-const { errorColor, botColor } = require('../../configs/config');
-const { requireSessionConditions } = require('../../helper/music');
+const { usePlayer } = require('discord-player');
+const { SlashCommandBuilder } = require('discord.js');
 const { BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
-const { errorEmbed, successEmbed } = require('../../helper/utils');
-const { success, error } = require('../../configs/emojis');
+const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
 const { errorLog } = require('../../configs/logger');
 
 module.exports = {
     category: 'music',
     cooldown: 3,
     aliases: ['next'],
-	data: new SlashCommandBuilder()
-		.setName('skip')
-		.setDescription('Skip the currently playing song.'),
+    data: new SlashCommandBuilder()
+        .setName('skip')
+        .setDescription('Skip the currently playing song'),
 
-	async execute(interaction, client) {
-        
+    async execute(interaction, client) {
+
         if (!requireSessionConditions(interaction, true)) return;
 
         try {
@@ -24,37 +21,38 @@ module.exports = {
 
             const currentTrack = guildPlayerNode.queue.currentTrack;
             if (!currentTrack) {
-              interaction.reply({ 
-                embeds: [
-                    errorEmbed(`No music is currently being played`)
-                ]})
+                interaction.reply({
+                    embeds: [
+                        errorEmbed(`No music is currently being played`)
+                    ]
+                })
                 setTimeout(() => {
                     interaction.deleteReply()
                 }, BOT_MSGE_DELETE_TIMEOUT);
-              return;
+                return;
             }
 
             const successSkip = guildPlayerNode.skip();
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
-                    successSkip 
-                    ? successEmbed(` Skipped **[${currentTrack }](${ currentTrack.url })** song - By ${interaction.user}.`)
-                    : errorEmbed(` Something went wrong - couldn't skip current playing song.`)
+                    successSkip
+                        ? successEmbed(` Skipped **[${currentTrack}](${currentTrack.url})** song - By ${interaction.user}.`)
+                        : errorEmbed(` Something went wrong - couldn't skip current playing song.`)
                 ]
             })
             setTimeout(() => {
                 interaction.deleteReply()
             }, BOT_MSGE_DELETE_TIMEOUT);
             return
-          }
-          catch (error) {
-            await interaction.reply({
+        }
+        catch (error) {
+            interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/skip\` command`)
-                ], 
+                ],
                 ephemeral: true
             });
-            errorLog(error.message)
-          }
-	},
+            errorLog(error)
+        }
+    },
 };

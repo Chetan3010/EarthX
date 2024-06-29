@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { errorEmbed, titleCase, getCommandOptions, msToHumanReadableTime, secondsToHumanReadableTime } = require('../../helper/utils');
+const { errorEmbed, titleCase, getCommandOptions } = require('../../helper/utils');
 const fs = require('fs');
 const { botColor } = require('../../configs/config');
 const { errorLog } = require('../../configs/logger');
@@ -11,7 +11,7 @@ module.exports = {
     aliases: ['commands'],
     data: new SlashCommandBuilder()
         .setName('help')
-        .setDescription("To get information about all commands.")
+        .setDescription("To get information about all commands")
         .addStringOption(option =>
             option.setName('command')
                 .setDescription('Select option to get detailed info about command')
@@ -21,7 +21,7 @@ module.exports = {
 
     async execute(interaction, client) {
         let query = interaction.options.getString('command')?.toLowerCase()
-        await interaction.deferReply()
+        interaction.deferReply()
         let embed = null
         if (query) {
             const { commands } = client
@@ -108,5 +108,3 @@ module.exports = {
 
     },
 };
-
-// setTimeout(()=> interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)

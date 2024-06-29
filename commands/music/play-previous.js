@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed, successEmbed } = require('../../helper/utils');
-const { requireSessionConditions } = require('../../helper/music');
+const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
 const { useHistory } = require('discord-player');
 const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
@@ -8,7 +7,7 @@ const { errorLog } = require('../../configs/logger');
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: [],
+    aliases: ['playlast'],
 	data: new SlashCommandBuilder()
 		.setName('play-previous')
 		.setDescription("Plays the previous song right away"),
@@ -32,13 +31,13 @@ module.exports = {
         setTimeout(()=> interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
         } catch (error) {
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/play-previous\` command`)
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
         }
 		
 	},

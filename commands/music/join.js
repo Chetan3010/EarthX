@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { requireSessionConditions } = require('../../helper/music');
-const { successEmbed, errorEmbed } = require("../../helper/utils");
+const { successEmbed, errorEmbed, requireSessionConditions } = require("../../helper/utils");
 const { useMainPlayer } = require("discord-player");
 const { BOT_MSGE_DELETE_TIMEOUT } = require("../../helper/constants");
 const { errorLog } = require("../../configs/logger");
@@ -12,7 +11,7 @@ module.exports = {
     aliases: ['connect'],
     data: new SlashCommandBuilder()
         .setName('join')
-        .setDescription('Let the bot join your voice channel.'),
+        .setDescription('Let the bot join your voice channel'),
 
     async execute(interaction, client) {
 
@@ -57,13 +56,13 @@ module.exports = {
             return
 
         } catch (error) {
-            await interaction.reply({
+            interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/join\` command`)
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
         }
     },
 };

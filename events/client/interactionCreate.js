@@ -33,13 +33,13 @@ module.exports = {
 
 				if (now < expirationTime) {
 					const expiredTimestamp = Math.round(expirationTime / 1000);
-					await interaction.reply({
+					interaction.reply({
 						embeds: [errorEmbed(` Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again after <t:${expiredTimestamp}:R>.`)],
 						ephemeral: true
 					});
 					setTimeout(async () => {
 						try {
-							await interaction.deleteReply()
+							interaction.deleteReply()
 						} catch (error) {
 							errorLog(`An error occured while deleting cooldown reply.`)
 							console.log(error);
@@ -58,9 +58,9 @@ module.exports = {
 				await command.execute(interaction, client);
 			} catch (error) {
 				if (interaction.replied || interaction.deferred) {
-					await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+					interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
 				} else {
-					await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+					interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 				}
 				errorLog(`An error has occurred while executing the ${chalk.redBright(`/${command.data.name}`)} command.`)
 				console.error(error);
@@ -74,12 +74,6 @@ module.exports = {
 			const button = buttons.get(customId)
 
 			if (!button) {
-				// if (customId.startsWith('@')) {
-				// 	const secondAtSignIndex = activeId.indexOf('@', 1);
-				// 	const sliceEndIndex = secondAtSignIndex >= 0 ? secondAtSignIndex : activeId.length;
-				// 	const dynamicCmd = button = getCommand(client, activeId.slice(1, sliceEndIndex));
-				// 	if (!dynamicCmd) return; // Should be ignored
-				// }
 				if (customId.startsWith('@')) return
 				return warningLog(`There is no code for ${customId} button.`)
 			}
@@ -88,9 +82,9 @@ module.exports = {
 				await button.execute(interaction, client)
 			} catch (error) {
 				if (interaction.replied || interaction.deferred) {
-					await interaction.followUp({ content: 'There was an error while executing this button!', ephemeral: true });
+					interaction.followUp({ content: 'There was an error while executing this button!', ephemeral: true });
 				} else {
-					await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
+					interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
 				}
 				errorLog(`An error has occurred while executing the button component.`)
 				console.error(error);
@@ -108,9 +102,9 @@ module.exports = {
 				await menu.execute(interaction, client);
 			} catch (error) {
 				if (interaction.replied || interaction.deferred) {
-					await interaction.followUp({ content: 'There was an error while executing this menu!', ephemeral: true });
+					interaction.followUp({ content: 'There was an error while executing this menu!', ephemeral: true });
 				} else {
-					await interaction.reply({ content: 'There was an error while executing this menu!', ephemeral: true });
+					interaction.reply({ content: 'There was an error while executing this menu!', ephemeral: true });
 				}
 				errorLog(`An error has occurred while executing the menu component.`)
 				console.error(error);
@@ -130,7 +124,6 @@ module.exports = {
 				errorLog(`Unknown error encountered while responding to autocomplete query in ${commandName}`)
 				console.error(error)
 			}
-			// cmdLog(command.data.name, 'ApplicationCommandAutocomplete', interaction.guild.name, interaction.channel.name, interaction.member.user.username)
 			infoLog('DEBUG', '', `<${chalk.cyanBright(commandName)}> | Auto Complete | Queried "${chalk.green(query)}" in ${getRuntime(autoResponseQueryStart).ms} ms`)
 		}
 	}

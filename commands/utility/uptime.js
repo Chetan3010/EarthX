@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { clock, cyanVertical, arrow, cyanArrow } = require('../../configs/emojis');
-const { botColor, errorColor } = require('../../configs/config');
+const { botColor } = require('../../configs/config');
 const { errorEmbed, msToHumanReadableTime } = require('../../helper/utils');
 const { errorLog } = require('../../configs/logger');
 
@@ -13,7 +12,7 @@ module.exports = {
 		.setDescription("Returns the bot's uptime!"),
 	async execute(interaction, client) {
 		try {
-			await interaction.reply({
+			interaction.reply({
 				embeds: [
 					new EmbedBuilder()
 						.setColor(botColor)
@@ -21,13 +20,13 @@ module.exports = {
 				]
 			})
 		} catch (error) {
-			await interaction.reply({
+			interaction.reply({
                 embeds: [
-                    errorEmbed(`Something went wrong while executing \`/vc-ping\` command`)
+                    errorEmbed(`Something went wrong while executing \`/uptime\` command`)
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
 		}
 	},
 };

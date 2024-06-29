@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { requireSessionConditions } = require('../../helper/music');
-const { successEmbed, errorEmbed } = require("../../helper/utils");
+const { successEmbed, errorEmbed, requireSessionConditions } = require("../../helper/utils");
 const { useQueue } = require("discord-player");
 const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require("../../helper/constants");
 const { errorLog } = require("../../configs/logger");
@@ -11,7 +10,7 @@ module.exports = {
     aliases: ['disconnect'],
 	data: new SlashCommandBuilder()
 		.setName('leave')
-		.setDescription('Clear the queue and leaves the voice channel.'),
+		.setDescription('Clear the queue and leaves the voice channel'),
 
 		async execute(interaction, client) {
  
@@ -27,7 +26,7 @@ module.exports = {
                 setTimeout(()=> interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                   return false;
                 }
-                if(queue.metadata?.previousTrack) queue.metadata.channel.messages.delete(queue.metadata.previousTrack)
+                if(queue.metadata?.nowPlaying) queue.metadata.channel.messages.delete(queue.metadata.nowPlaying)
                 if (!queue?.deleted) queue?.delete();
                 interaction.reply({
                     embeds: [successEmbed(" Left the voice channel")],
@@ -36,13 +35,13 @@ module.exports = {
                 return
     
             }catch (error) {
-                await interaction.reply({
+                interaction.reply({
                         embeds: [
                             errorEmbed(`Something went wrong while executing \`/leave\` command`)
                         ],
                         ephemeral: true
                 });
-                errorLog(error.message)
+                errorLog(error)
             }
         },
 }
