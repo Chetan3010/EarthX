@@ -1,10 +1,12 @@
 const GuildModel = require('../schema/guild')
 
-const getGuildSettings = async (guildId, interaction) => {
+const getGuildSettings = async (interaction) => {
+    const guildId = interaction.guild.id
+    const guildName = interaction.guild.name
     try {
         const settings = await GuildModel.findOne({ guildId })
         if (!settings) {
-            const guild = new GuildModel({ guildId })
+            const guild = new GuildModel({ guildId, guildName })
             const settings = await guild.save()
             return settings
         }
@@ -13,7 +15,7 @@ const getGuildSettings = async (guildId, interaction) => {
     } catch (error) {
         const interactionWasAcknowledged = interaction.deferred || interaction.replied
         if (interactionWasAcknowledged) {
-            interaction.followUp({
+            await interaction.followUp({
                 embeds: [
                     errorEmbed(`Something went wrong while interacting with database`)
                 ],
@@ -21,7 +23,7 @@ const getGuildSettings = async (guildId, interaction) => {
             })
         }
         else {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while interacting with database`)
                 ],

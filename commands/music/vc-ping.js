@@ -18,12 +18,12 @@ module.exports = {
             if (!requireSessionConditions(interaction, true, false, false)) return;
             const ping = useQueue(interaction.guild.id).ping
             if (!ping) {
-                interaction.reply({ embeds: [errorEmbed(`No ping fetched`)] })
+                await interaction.reply({ embeds: [errorEmbed(`No ping fetched`)] })
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                 return
             }
 
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor(botColor)
@@ -39,7 +39,7 @@ module.exports = {
             }, BOT_MSGE_DELETE_TIMEOUT);
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/vc-ping\` command`)
                 ],

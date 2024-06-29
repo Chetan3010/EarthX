@@ -21,7 +21,7 @@ module.exports = {
           queueEmbedResponse(interaction, queue);
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/shuffle\` command`)
                 ],

@@ -21,7 +21,7 @@ module.exports = {
 
             const currentTrack = guildPlayerNode.queue.currentTrack;
             if (!currentTrack) {
-                interaction.reply({
+                await interaction.reply({
                     embeds: [
                         errorEmbed(`No music is currently being played`)
                     ]
@@ -33,7 +33,7 @@ module.exports = {
             }
 
             const successSkip = guildPlayerNode.skip();
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     successSkip
                         ? successEmbed(` Skipped **[${currentTrack}](${currentTrack.url})** song - By ${interaction.user}.`)
@@ -46,7 +46,7 @@ module.exports = {
             return
         }
         catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/skip\` command`)
                 ],

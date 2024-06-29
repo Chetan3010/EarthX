@@ -3,7 +3,7 @@ const { errorEmbed, successEmbed, repeatModeEmojiStr, requireSessionConditions }
 const { useQueue } = require('discord-player');
 const { errorLog } = require('../../configs/logger');
 const GuildModel = require('../../schema/guild');
-const { cyanDot, arrow } = require('../../configs/emojis');
+const { cyanDot, arrow, leftAngleDown } = require('../../configs/emojis');
 const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 
 module.exports = {
@@ -34,11 +34,11 @@ module.exports = {
 
         // Check state
         if (!requireSessionConditions(interaction)) return;
-
         try {
+            await interaction.deferReply()
             const queue = useQueue(interaction.guild.id);
             if (!queue) {
-                interaction.reply({ embeds: [errorEmbed(` No music is being played - initialize a session first to set mode.`)] })
+                await interaction.editReply({ embeds: [errorEmbed(` No music is being played - initialize a session first to set mode.`)] })
                 setTimeout(() => {
                     interaction.deleteReply()
                 }, ERROR_MSGE_DELETE_TIMEOUT);
@@ -55,16 +55,15 @@ module.exports = {
                 const embedObject = msg.embeds[0].toJSON();
 
                 // Find the field you want to update by name and update its value
-                const fieldIndex = embedObject.fields.findIndex(field => field.name === `${cyanDot} Repeat mode`);
+                const fieldIndex = embedObject.fields.findIndex(field => field.name === `${leftAngleDown} Repeat mode`);
                 if (fieldIndex !== -1) {
                     embedObject.fields[fieldIndex].value = `${arrow} ${repeatModeEmojiStr(queue.repeatMode)}`;
                 } else {
-                    interaction.reply({ embeds: [ errorEmbed(`Something went wrong while updating current track embed`)]})
+                    await interaction.editReply({ embeds: [ errorEmbed(`Something went wrong while updating current track embed`)]})
                     setTimeout(() => {
                         interaction.deleteReply()
                     }, ERROR_MSGE_DELETE_TIMEOUT);
-                    errorLog('Something went wrong while updating current track embed')
-                    console.log(error.message)
+                    errorLog(error)
                     return;
                 }
 
@@ -81,10 +80,10 @@ module.exports = {
             }
 
             // Feedback
-            interaction.reply({ embeds: [successEmbed(`Updated ${shouldSave ? 'server' : 'current'} repeat mode to: ${modeEmoji}`)] });
+            await interaction.editReply({ embeds: [successEmbed(`Updated ${shouldSave ? 'server' : 'current'} repeat mode to: ${modeEmoji}`)] });
         }
         catch (error) {
-            interaction.reply({
+            await interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/repeat-mode\` command`)
                 ],

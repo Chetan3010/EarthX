@@ -24,7 +24,7 @@ module.exports = {
         const player = useMainPlayer();
         const query = interaction.options.getString('search')
         // Let's defer the interaction as things can take time to process
-        interaction.deferReply();
+        await interaction.deferReply();
 
         try {
             // Check is valid
@@ -32,7 +32,7 @@ module.exports = {
                 .search(query, { requestedBy: interaction.user })
                 .catch(() => null);
             if (!searchResult.hasTracks()) {
-                interaction.editReply({ embeds: [errorEmbed(` No tracks found for search \`${query}\``)] })
+                await interaction.editReply({ embeds: [errorEmbed(` No tracks found for search \`${query}\``)] })
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
 
                 return;
@@ -45,11 +45,11 @@ module.exports = {
 
             // Swap first and last conditionally
             queue.swapTracks(0, queue.tracks.data.length - 1);
-            interaction.editReply({ embeds: [successEmbed(` [${escapeMarkdown(firstMatchTrack.title)}](${firstMatchTrack.url}) song has been added to the front of the queue - By ${interaction.user}`)] })
+            await interaction.editReply({ embeds: [successEmbed(` [${escapeMarkdown(firstMatchTrack.title)}](${firstMatchTrack.url}) song has been added to the front of the queue - By ${interaction.user}`)] })
             setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
         } catch (error) {
-            interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/play-next\` command`)
                 ],

@@ -33,7 +33,7 @@ module.exports = {
     
         // Check is default params
         if (totalMs === 0) {
-            interaction.reply({ embeds: [ errorEmbed(` Default command options provided, if you want to replay a track, use \`/replay\``)]});
+            await interaction.reply({ embeds: [ errorEmbed(` Default command options provided, if you want to replay a track, use \`/replay\``)]});
             setTimeout(()=> interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
           return;
         }
@@ -44,7 +44,7 @@ module.exports = {
     
         // Not a point in duration
         if (totalMs > useQueue(interaction.guild.id).currentTrack?.durationMS) {
-          interaction.reply({ embeds: [ errorEmbed(` Not a valid timestamp for song`)]});
+            await interaction.reply({ embeds: [ errorEmbed(` Not a valid timestamp for song`)]});
           setTimeout(()=> interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
           return;
         }
@@ -53,11 +53,11 @@ module.exports = {
           const queue = useQueue(interaction.guild.id);
           queue.node.seek(totalMs);
           queue.currentTime = totalMs;
-          interaction.reply({ embeds: [ successEmbed(` Setting playback timestamp to ${ String(minutes).padStart(2, '0') }:${ String(seconds).padStart(2, '0') } - By ${interaction.user}`)]});
+          await interaction.reply({ embeds: [ successEmbed(` Setting playback timestamp to ${ String(minutes).padStart(2, '0') }:${ String(seconds).padStart(2, '0') } - By ${interaction.user}`)]});
           setTimeout(()=> interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
         
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/seek\` command`)
                 ],

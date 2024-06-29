@@ -32,7 +32,7 @@ module.exports = {
 
 			// Not enough songs in queue
 			if ((queue?.size ?? 0) < 2) {
-				interaction.reply({ embeds: [errorEmbed(` Not enough songs in the queue to remove`)] });
+				await interaction.reply({ embeds: [errorEmbed(` Not enough songs in the queue to remove`)] });
 				setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
 
 				return;
@@ -41,7 +41,7 @@ module.exports = {
 			// Check bounds/constraints
 			const queueSizeZeroOffset = queue.size - 1;
 			if (songPosition > queueSizeZeroOffset) {
-				interaction.reply({
+				await interaction.reply({
 					embeds: [errorEmbed(` The \`${SONG_POSITION_OPTION_ID + '` Given position is'
 						} not within valid range of 1-${queue.size}`)]
 				});
@@ -52,7 +52,7 @@ module.exports = {
 			// Remove song - assign track before #removeTrack
 			const track = queue.tracks.data.at(songPosition);
 			queue.removeTrack(songPosition);
-			interaction.reply({ embeds: [successEmbed(` [${escapeMarkdown(track.title)}](${track.url}) has been removed from the queue - By ${interaction.user}`)] });
+			await interaction.reply({ embeds: [successEmbed(` [${escapeMarkdown(track.title)}](${track.url}) has been removed from the queue - By ${interaction.user}`)] });
 			setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
 		} catch (error) {

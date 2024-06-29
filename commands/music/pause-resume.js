@@ -13,16 +13,16 @@ module.exports = {
     async execute(interaction, client) {
         // Check state
         if (!requireSessionConditions(interaction, true)) return;
-        interaction.deferReply()
+        await interaction.deferReply()
 
         try {
             const guildPlayerNode = usePlayer(interaction.guild.id);
             const newPauseState = !guildPlayerNode.isPaused();
             guildPlayerNode.setPaused(newPauseState);
-            interaction.deleteReply()
+            await interaction.deleteReply()
 
         } catch (error) {
-            interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/pause-resume\` command`)
                 ],

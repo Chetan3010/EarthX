@@ -8,8 +8,8 @@ module.exports = {
 	name: 'disconnect',
 	async execute(queue) {
 		try {
-			if (queue.metadata?.nowPlaying) queue.metadata.channel.messages.delete(queue.metadata.nowPlaying);
-			queue.metadata.channel.send({
+			if (queue.metadata?.nowPlaying) await queue.metadata.channel.messages.delete(queue.metadata.nowPlaying);
+			await queue.metadata.channel.send({
 				embeds: [
 					new EmbedBuilder()
 						.setColor(botColor)

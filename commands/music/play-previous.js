@@ -20,7 +20,7 @@ module.exports = {
         // No prev track
         const history = useHistory(interaction.guild.id);
         if (!history?.previousTrack) {
-            interaction.reply({ embeds: [ errorEmbed(` No tracks in history`)]});
+            await interaction.reply({ embeds: [ errorEmbed(` No tracks in history`)]});
             setTimeout(()=> interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
             return;
         }
@@ -31,7 +31,7 @@ module.exports = {
         setTimeout(()=> interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/play-previous\` command`)
                 ],

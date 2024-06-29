@@ -18,12 +18,12 @@ module.exports = {
         try {
             // Rewind to 0:00
             const queue = useQueue(interaction.guild.id);
-            queue.node.seek(0);
-            interaction.reply({ embeds: [successEmbed(` Replaying current song - By ${interaction.user}`)] });
+            await queue.node.seek(0);
+            await interaction.reply({ embeds: [successEmbed(` Replaying current song - By ${interaction.user}`)] });
             setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/replay\` command`)
                 ],

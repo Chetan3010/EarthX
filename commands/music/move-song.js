@@ -42,7 +42,7 @@ module.exports = {
 
 			// Not enough songs in queue
 			if ((queue?.size ?? 0) < 2) {
-				interaction.reply({ embeds: [errorEmbed(` Not enough songs in queue to perform any move action`)] });
+				await interaction.reply({ embeds: [errorEmbed(` Not enough songs in queue to perform any move action`)] });
 				setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
 
 				return;
@@ -55,7 +55,7 @@ module.exports = {
 				|| toPosition > queueSizeZeroOffset
 			) {
 
-				interaction.reply({
+				await interaction.reply({
 					emebeds: [errorEmbed(` The \`${fromPosition > queueSizeZeroOffset
 						? toPosition > queueSizeZeroOffset
 							? `${FROM_OPTION_ID} and ${TO_OPTION_ID}\` parameters are both`
@@ -70,7 +70,7 @@ module.exports = {
 
 			// Is same
 			if (fromPosition === toPosition) {
-				interaction.reply({ emebeds: [errorEmbed(` \`${FROM_OPTION_ID}\` and \`${TO_OPTION_ID}\` are both identical`)] });
+				await interaction.reply({ emebeds: [errorEmbed(` \`${FROM_OPTION_ID}\` and \`${TO_OPTION_ID}\` are both identical`)] });
 				setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
 				return;
 			}
@@ -79,12 +79,12 @@ module.exports = {
 			queue.moveTrack(fromPosition, toPosition);
 			// use toPosition, because it's after #swap
 			const firstTrack = queue.tracks.data.at(toPosition);
-			interaction.reply({ embeds: [successEmbed(` [${escapeMarkdown(firstTrack.title)}](${firstTrack.url}) song has been moved to position **\`${toPosition + 1}\`**`)] });
+			await interaction.reply({ embeds: [successEmbed(` [${escapeMarkdown(firstTrack.title)}](${firstTrack.url}) song has been moved to position **\`${toPosition + 1}\`**`)] });
 			setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
 
 		} catch (error) {
-			interaction.reply({
+			await interaction.reply({
 				embeds: [
 					errorEmbed(`Something went wrong while executing \`/move-song\` command`)
 				],

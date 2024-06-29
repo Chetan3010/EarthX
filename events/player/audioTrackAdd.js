@@ -10,7 +10,7 @@ module.exports = {
 	async execute(queue, track, client) {
 		const cp = usePlayer(queue)
 		if (cp.isPlaying()) {
-			queue.metadata.channel.send({
+			await queue.metadata.channel.send({
 				embeds: [
 					new EmbedBuilder()
 						.setColor(botColor)
@@ -23,7 +23,7 @@ module.exports = {
 
 		} else {
 
-			queue.metadata.channel.send({
+			await queue.metadata.channel.send({
 				embeds: [
 					new EmbedBuilder()
 						.setColor(botColor)

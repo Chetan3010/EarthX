@@ -33,7 +33,7 @@ module.exports = {
             });
         
         try {
-            interaction.respond(
+            await interaction.respond(
                 returnData.slice(0, 25)
             );
         } catch (error) {

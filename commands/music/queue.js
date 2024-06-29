@@ -20,7 +20,7 @@ module.exports = {
         try {
             const queue = useQueue(interaction.guild.id);
             if (!queue) {
-                interaction.reply({
+                await interaction.reply({
                     embeds: [
                         new EmbedBuilder()
                             .setColor(botColor)
@@ -36,7 +36,7 @@ module.exports = {
             queueEmbedResponse(interaction, queue);
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/queue\` command`)
                 ],

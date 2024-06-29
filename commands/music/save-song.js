@@ -14,19 +14,19 @@ module.exports = {
 
     async execute(interaction, client) {
         if (!requireSessionConditions(interaction, true, false, false)) return;
-        interaction.deferReply()
+        await interaction.deferReply()
 
         try {
             const queue = useQueue(interaction.guild.id);
             if (!queue || !queue.isPlaying()) {
-                interaction.editReply({ embeds: [errorEmbed(` No song is currently being player`)] });
+                await interaction.editReply({ embeds: [errorEmbed(` No song is currently being player`)] });
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                 return;
             }
 
             const { currentTrack } = queue;
             if (!currentTrack) {
-                interaction.editReply({ embeds: [errorEmbed(` Can't fetch information of currently playing song`)] });
+                await interaction.editReply({ embeds: [errorEmbed(` Can't fetch information of currently playing song`)] });
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                 return;
             }
@@ -35,7 +35,7 @@ module.exports = {
             const save = saveSongEmbed(interaction, client, queue)
             const channel = await interaction.user.createDM().catch(() => null);
             if (!channel) {
-                interaction.editReply({ embeds: [errorEmbed(` I don't have permission to DM you`)] });
+                await interaction.editReply({ embeds: [errorEmbed(` I don't have permission to DM you`)] });
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                 return;
             }
@@ -45,17 +45,17 @@ module.exports = {
                 channel.send({ embeds: [save] });
             }
             catch {
-                interaction.editReply({ embeds: [errorEmbed(`I don't have permission to DM you`)] });
+                await interaction.editReply({ embeds: [errorEmbed(`I don't have permission to DM you`)] });
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                 return;
             }
 
             // Feedback
-            interaction.editReply({ embeds: [successEmbed(` [${escapeMarkdown(currentTrack.cleanTitle || currentTrack.title)}](${currentTrack.url}) song saved into your DMs`)] });
+            await interaction.editReply({ embeds: [successEmbed(` [${escapeMarkdown(currentTrack.cleanTitle || currentTrack.title)}](${currentTrack.url}) song saved into your DMs`)] });
             setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
         } catch (error) {
-            interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/save-song\` command`)
                 ],

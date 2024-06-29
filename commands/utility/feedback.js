@@ -37,7 +37,7 @@ module.exports = {
         const description = interaction.options.getString('description')
 
         if (!(subject && title && description)) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [errorEmbed(` You didn't provided the required fields`)]
             })
         }
@@ -46,7 +46,7 @@ module.exports = {
 
             const guild = await client.guilds.fetch(feedbackGuildId);
             if (!guild) {
-                interaction.reply({
+                await interaction.reply({
                     embeds: [errorEmbed(` Guild not found, please contact developer`)],
                     ephemeral: true
                 })
@@ -55,7 +55,7 @@ module.exports = {
 
             const channel = guild.channels.cache.get(feedbackChannelId) || await guild.channels.fetch(feedbackChannelId);
             if (!channel || !channel.isTextBased()) {
-                interaction.reply({
+                await interaction.reply({
                     embeds: [errorEmbed(` Channel not found or channel is not a text-based channel, please contact developer`)],
                     ephemeral: true
                 })
@@ -68,7 +68,7 @@ module.exports = {
                 unique: true
             })
 
-            channel.send({
+            await channel.send({
                 embeds: [
                     new EmbedBuilder()
                         .setColor(botColor)
@@ -109,12 +109,12 @@ module.exports = {
                 ]
             });
 
-            interaction.reply({
+            await interaction.reply({
                 embeds: [successEmbed(` Your feedback has been recorded. Thank you. ${heartp}`)]
             })
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/feedback\` command`)
                 ],

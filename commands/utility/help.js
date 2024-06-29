@@ -21,7 +21,7 @@ module.exports = {
 
     async execute(interaction, client) {
         let query = interaction.options.getString('command')?.toLowerCase()
-        interaction.deferReply()
+        await interaction.deferReply()
         let embed = null
         if (query) {
             const { commands } = client
@@ -29,7 +29,7 @@ module.exports = {
             if (!cmdInfo) {
                 cmdInfo = commands.filter(cmd => cmd?.aliases.includes(query))?.values().next().value;
                 if (!cmdInfo) {
-                    interaction.editReply({
+                    await interaction.editReply({
                         embeds: [errorEmbed(`I couldn't find the command \`/${query}\` or provide a valid command`)],
                         ephemeral: true
                     });
@@ -95,9 +95,9 @@ module.exports = {
                 .setFields(fields)
         }
         try {
-            interaction.editReply({ embeds: [embed] })
+            await interaction.editReply({ embeds: [embed] })
         } catch (error) {
-            interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/help\` command`)
                 ],

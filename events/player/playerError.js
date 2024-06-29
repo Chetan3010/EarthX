@@ -6,7 +6,7 @@ module.exports = {
     name: 'playerError',
     async execute(queue, error) {
         console.log(error);
-        queue.metadata.channel.send({ embeds: [
+        await queue.metadata.channel.send({ embeds: [
             errorEmbed('Something went wrong with player. Sorry.')
         ]}).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT )).catch(error => {
             errorLog('An error occured with player event!')

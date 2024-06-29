@@ -7,7 +7,7 @@ const { cyanDot } = require('../../configs/emojis');
 
 module.exports = {
 	category: 'utility',
-	cooldown: 60,
+	cooldown: 30,
 	aliases: ['latency'],
 	data: new SlashCommandBuilder()
 		.setName('ping')
@@ -20,7 +20,7 @@ module.exports = {
 			const message = await interaction.deferReply({
 				fetchReply: true
 			});
-			interaction.editReply({
+			await interaction.editReply({
 				embeds: [
 					new EmbedBuilder()
 						.setColor(botColor)
@@ -33,7 +33,7 @@ module.exports = {
 			})
 
 		} catch (error) {
-			interaction.editReply({
+			await interaction.editReply({
 				embeds: [
 					errorEmbed(`Something went wrong while executing \`/ping\` command`)
 				],

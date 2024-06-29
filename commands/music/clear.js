@@ -19,7 +19,7 @@ module.exports = {
         try {
             const queue = useQueue(interaction.guild.id);
             if (!queue) {
-                interaction.reply({ embeds: [errorEmbed(` There is nothing in the queue nor playing anything`)] })
+                await interaction.reply({ embeds: [errorEmbed(` There is nothing in the queue nor playing anything`)] })
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                 return;
             }
@@ -27,7 +27,7 @@ module.exports = {
             await interaction.reply({ embeds: [successEmbed(` The queue has been cleared - By ${interaction.user}`)] })
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/clear\` command`)
                 ],

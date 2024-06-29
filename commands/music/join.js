@@ -21,7 +21,7 @@ module.exports = {
             if (interaction.guild.members.me?.voice?.channel === interaction.member.voice?.channel) {
                 return interaction.reply({ embeds: [errorEmbed(`I'm already in <#${interaction.guild.members.me?.voice?.channel.id}> channel`)] })
             }
-            const clientSettings = await getGuildSettings(interaction.guild.id)
+            const clientSettings = await getGuildSettings(interaction)
             const player = useMainPlayer();
             const queue = player.queues.create(interaction.guild.id, {
 
@@ -49,14 +49,14 @@ module.exports = {
 
             await queue.connect(interaction.member.voice.channel);
 
-            interaction.reply({
+            await interaction.reply({
                 embeds: [successEmbed(`Joined the <#${queue.channel.id}> channel`)],
             })
             setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
             return
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/join\` command`)
                 ],

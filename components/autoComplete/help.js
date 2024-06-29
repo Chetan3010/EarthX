@@ -26,7 +26,7 @@ module.exports = {
             .sort((a, b) => a.name.localeCompare(b.name));
 
         try {
-            interaction.respond(
+            await interaction.respond(
                 returnData.slice(0, 25)
             );
         } catch (error) {

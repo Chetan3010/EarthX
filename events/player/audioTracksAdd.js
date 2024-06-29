@@ -7,7 +7,7 @@ const { errorLog } = require("../../configs/logger");
 module.exports = {
 	name: 'audioTracksAdd',
 	async execute(queue, tracks, client) {
-		queue.metadata.channel.send({
+		await queue.metadata.channel.send({
 			embeds: [
 				new EmbedBuilder()
 					.setColor(botColor)

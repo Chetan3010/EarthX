@@ -10,10 +10,10 @@ module.exports = {
         let msge = ''
         if (!queue.options.leaveOnEmpty) msge = `${greenDot} Staying in channel as 24/7 is enabled.`
         else {
-            if (queue.metadata?.nowPlaying) queue.metadata.channel.messages.delete(queue.metadata.nowPlaying)
+            if (queue.metadata?.nowPlaying) await queue.metadata.channel.messages.delete(queue.metadata.nowPlaying)
             msge = `${redDot} Leaving channel because there was no vc activity for the past ${parseInt(queue.options.leaveOnEmptyCooldown / 60000)} mins.`
         }
-        queue.metadata.channel.send({
+        await queue.metadata.channel.send({
             embeds: [
                 new EmbedBuilder()
                     .setColor(botColor)

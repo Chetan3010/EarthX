@@ -9,7 +9,7 @@ module.exports = {
 		if (reason) {
 			if (reason === 'JUMPED_TO_ANOTHER_TRACK' || 'SKIP_TO_ANOTHER_TRACK') return
 			console.log(reason);
-			queue.metadata.channel.send({
+			await queue.metadata.channel.send({
 				embeds: [
 					errorEmbed(`Track skipped because the audio stream couldn't be extracted: **[${escapeMarkdown(track.cleanTitle || track.title)}](${track.url})**.`)
 				]

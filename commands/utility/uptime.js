@@ -12,7 +12,7 @@ module.exports = {
 		.setDescription("Returns the bot's uptime!"),
 	async execute(interaction, client) {
 		try {
-			interaction.reply({
+			await interaction.reply({
 				embeds: [
 					new EmbedBuilder()
 						.setColor(botColor)
@@ -20,7 +20,7 @@ module.exports = {
 				]
 			})
 		} catch (error) {
-			interaction.reply({
+			await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/uptime\` command`)
                 ],

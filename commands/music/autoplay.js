@@ -1,8 +1,8 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { errorEmbed, requireSessionConditions } = require('../../helper/utils');
+const { errorEmbed, requireSessionConditions, repeatModeEmojiStr } = require('../../helper/utils');
 const { useQueue, QueueRepeatMode } = require('discord-player');
 const { errorLog } = require('../../configs/logger');
-const { enabled, disabled } = require('../../configs/emojis');
+const { enabled, disabled, leftAngleDown, arrow } = require('../../configs/emojis');
 const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { botColor } = require('../../configs/config');
 
@@ -22,7 +22,7 @@ module.exports = {
         try {
             const queue = useQueue(interaction.guild.id);
             if (!queue) {
-                interaction.reply({ embeds: [errorEmbed(` No music is being played - initialize a session first to set mode`)] })
+                await interaction.reply({ embeds: [errorEmbed(` No music is being played - initialize a session first to set mode`)] })
                 setTimeout(() => {
                     interaction.deleteReply()
                 }, ERROR_MSGE_DELETE_TIMEOUT);
@@ -48,12 +48,11 @@ module.exports = {
                 if (fieldIndex !== -1) {
                     embedObject.fields[fieldIndex].value = `${arrow} ${repeatModeEmojiStr(queue.repeatMode)}`;
                 } else {
-                    interaction.reply({ embeds: [errorEmbed(`Something went wrong while updating current track embed`)] })
+                    await interaction.reply({ embeds: [errorEmbed(`Something went wrong while updating current track embed`)] })
                     setTimeout(() => {
                         interaction.deleteReply()
                     }, ERROR_MSGE_DELETE_TIMEOUT);
-                    errorLog('Something went wrong while updating current track embed')
-                    console.log(error)
+                    errorLog(error)
                     return;
                 }
 
@@ -68,7 +67,7 @@ module.exports = {
             } else {
                 msge = `${disabled} Autoplay is now **[disabled](https://discord.com/channels/1248989810459152384/1254197147662815343/${queue.metadata.nowPlaying})** for the current session.\nIf you want it persistent use \`/repeat-mode\` with persistent true`
             }
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor(botColor)
@@ -77,7 +76,7 @@ module.exports = {
             });
         }
         catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/autoplay\` command`)
                 ],

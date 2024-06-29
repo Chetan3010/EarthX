@@ -30,7 +30,7 @@ module.exports = {
       // Check has queue
       const queue = useQueue(interaction.guild.id);
       if (queue.isEmpty()) {
-        interaction.reply({ embeds: [errorEmbed(`Queue is currently empty`)] });
+        await interaction.reply({ embeds: [errorEmbed(`Queue is currently empty`)] });
         setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
         return;
       }
@@ -38,18 +38,18 @@ module.exports = {
       // Check bounds
       const queueSizeZeroOffset = queue.size - 1;
       if (jumpToIndex > queueSizeZeroOffset) {
-        interaction.reply({ embeds: [errorEmbed(`There is nothing at song position ${jumpToIndex + 1}, The highest position is ${queue.size}`)] });
+        await interaction.reply({ embeds: [errorEmbed(`There is nothing at song position ${jumpToIndex + 1}, The highest position is ${queue.size}`)] });
         setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
         return;
       }
 
       // Try to jump to new position/queue
       queue.node.jump(jumpToIndex);
-      interaction.reply({ embeds: [successEmbed(`Jumping to **${jumpToIndex + 1}** song`)] });
+      await interaction.reply({ embeds: [successEmbed(`Jumping to **${jumpToIndex + 1}** song`)] });
       setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
     } catch (error) {
-      interaction.reply({
+      await interaction.reply({
         embeds: [
           errorEmbed(`Something went wrong while executing \`/jump\` command`)
         ],

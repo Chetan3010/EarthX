@@ -18,7 +18,7 @@ module.exports = {
         try {
             const history = useHistory(interaction.guild.id);
             if (!history) {
-                interaction.reply({ embeds: [errorEmbed(`History is currently empty`)] })
+                await interaction.reply({ embeds: [errorEmbed(`History is currently empty`)] })
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                 return;
             }
@@ -27,7 +27,7 @@ module.exports = {
             queueEmbedResponse(interaction, history, 'History');
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/history\` command`)
                 ],

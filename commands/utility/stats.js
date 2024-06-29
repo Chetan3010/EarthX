@@ -55,7 +55,7 @@ module.exports = {
 
         // Replying to the interaction with our embed data
         try {
-            interaction.editReply({
+            await interaction.editReply({
                 content: '\u200b',
                 embeds: [
                     {
@@ -110,7 +110,7 @@ module.exports = {
             });
 
         } catch (error) {
-            interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/stats\` command`)
                 ],

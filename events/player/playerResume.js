@@ -12,7 +12,7 @@ module.exports = {
 			// Reset the flag
 			if (queue.metadata.interaction.guild.members.me?.voice?.channel.members.size === 1) return; // Ignore this resume event
 
-			queue.metadata.channel.send({
+			await queue.metadata.channel.send({
 				embeds: [
 					new EmbedBuilder()
 						.setColor(botColor)

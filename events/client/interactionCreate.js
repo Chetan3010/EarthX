@@ -33,18 +33,10 @@ module.exports = {
 
 				if (now < expirationTime) {
 					const expiredTimestamp = Math.round(expirationTime / 1000);
-					interaction.reply({
+					await interaction.reply({
 						embeds: [errorEmbed(` Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again after <t:${expiredTimestamp}:R>.`)],
 						ephemeral: true
 					});
-					setTimeout(async () => {
-						try {
-							interaction.deleteReply()
-						} catch (error) {
-							errorLog(`An error occured while deleting cooldown reply.`)
-							console.log(error);
-						}
-					}, expirationTime - now)
 					return;
 				}
 			}
@@ -58,9 +50,9 @@ module.exports = {
 				await command.execute(interaction, client);
 			} catch (error) {
 				if (interaction.replied || interaction.deferred) {
-					interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+					await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
 				} else {
-					interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+					await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 				}
 				errorLog(`An error has occurred while executing the ${chalk.redBright(`/${command.data.name}`)} command.`)
 				console.error(error);
@@ -82,9 +74,9 @@ module.exports = {
 				await button.execute(interaction, client)
 			} catch (error) {
 				if (interaction.replied || interaction.deferred) {
-					interaction.followUp({ content: 'There was an error while executing this button!', ephemeral: true });
+					await interaction.followUp({ content: 'There was an error while executing this button!', ephemeral: true });
 				} else {
-					interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
+					await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
 				}
 				errorLog(`An error has occurred while executing the button component.`)
 				console.error(error);
@@ -102,9 +94,9 @@ module.exports = {
 				await menu.execute(interaction, client);
 			} catch (error) {
 				if (interaction.replied || interaction.deferred) {
-					interaction.followUp({ content: 'There was an error while executing this menu!', ephemeral: true });
+					await interaction.followUp({ content: 'There was an error while executing this menu!', ephemeral: true });
 				} else {
-					interaction.reply({ content: 'There was an error while executing this menu!', ephemeral: true });
+					await interaction.reply({ content: 'There was an error while executing this menu!', ephemeral: true });
 				}
 				errorLog(`An error has occurred while executing the menu component.`)
 				console.error(error);

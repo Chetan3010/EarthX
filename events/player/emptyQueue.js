@@ -6,7 +6,7 @@ const { errorLog } = require("../../configs/logger");
 module.exports = {
 	name: 'emptyQueue',
 	async execute(queue, client) {
-		queue.metadata.channel.send({
+		await queue.metadata.channel.send({
 			embeds: [
 				new EmbedBuilder()
 					.setColor(botColor)

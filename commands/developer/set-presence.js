@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, PresenceUpdateStatus, ActivityType } = require('discord.js');
 const { botColor } = require('../../configs/config');
 const { errorEmbed } = require('../../helper/utils');
-const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT, OWNERID } = require('../../helper/constants');
+const { BOT_MSGE_DELETE_TIMEOUT, OWNERID } = require('../../helper/constants');
 const { success } = require('../../configs/emojis');
 const { errorLog } = require('../../configs/logger');
 
@@ -64,12 +64,12 @@ module.exports = {
                 if (type === "CUSTOM") return ActivityType.Custom
             }
 
-            client.user.setPresence({
+            await client.user.setPresence({
                 activities: [{ name: activity, type: activityTypes(type) }],
                 status: status
             });
 
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor(botColor)
@@ -82,7 +82,7 @@ module.exports = {
             }, BOT_MSGE_DELETE_TIMEOUT)
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/set-presence\` command`)
                 ],

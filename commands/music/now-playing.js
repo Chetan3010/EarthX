@@ -18,7 +18,7 @@ module.exports = {
         try {
             const queue = useQueue(interaction.guild.id);
             if (!queue) {
-                interaction.reply({ embeds: [errorEmbed(` Queue is currently empty`)] })
+                await interaction.reply({ embeds: [errorEmbed(` Queue is currently empty`)] })
                 setTimeout(() => {
                     interaction.deleteReply()
                 }, ERROR_MSGE_DELETE_TIMEOUT);
@@ -27,7 +27,7 @@ module.exports = {
 
             const { currentTrack } = queue;
             if (!currentTrack) {
-                interaction.reply({ embeds: [errorEmbed(`Can't fetch information of current playing song`)] })
+                await interaction.reply({ embeds: [errorEmbed(`Can't fetch information of current playing song`)] })
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                 return;
             }
@@ -38,7 +38,7 @@ module.exports = {
 
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/nowplaying\` command`)
                 ],

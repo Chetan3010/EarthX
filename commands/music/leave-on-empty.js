@@ -20,24 +20,23 @@ module.exports = {
             await clientSettings.save()
 
             const queue = useQueue(interaction.guild.id)
-            if(queue){
+            if (queue) {
                 queue.options.leaveOnEmpty = clientSettings.leaveOnEmpty
-            }else{
-                if(!clientSettings.leaveOnEmpty) {
+            } else {
+                if (!clientSettings.leaveOnEmpty) {
                     const player = useMainPlayer();
                     const queue = player.queues.create(interaction.guild.id, {
-                    // requestedBy: interaction.user,
-                    // nodeOptions: {
-                        
-                    repeatMode: clientSettings.repeatMode,
-                    // noEmitInsert: true,
-                    skipOnNoStream: true,
-                    // preferBridgedMetadata: true,
-                    // disableBiquad: true,
-                    volume: clientSettings.volume,
-                    leaveOnEmpty: clientSettings.leaveOnEmpty, //If the player should leave when the voice channel is empty
-                    leaveOnEmptyCooldown: clientSettings.leaveOnEmptyCooldown, //Cooldown in ms
-                    leaveOnStop: clientSettings.leaveOnStop, //If player should leave the voice channel after user stops the player
+                        // requestedBy: interaction.user,
+                        // nodeOptions: {
+                        repeatMode: clientSettings.repeatMode,
+                        // noEmitInsert: true,
+                        skipOnNoStream: true,
+                        // preferBridgedMetadata: true,
+                        // disableBiquad: true,
+                        volume: clientSettings.volume,
+                        leaveOnEmpty: clientSettings.leaveOnEmpty, //If the player should leave when the voice channel is empty
+                        leaveOnEmptyCooldown: clientSettings.leaveOnEmptyCooldown, //Cooldown in ms
+                        leaveOnStop: clientSettings.leaveOnStop, //If player should leave the voice channel after user stops the player
                         leaveOnStopCooldown: clientSettings.leaveOnStopCooldown, //Cooldown in ms
                         leaveOnEnd: clientSettings.leaveOnEnd, //If player should leave after the whole queue is over
                         leaveOnEndCooldown: clientSettings.leaveOnEmptyCooldown, //Cooldown in ms
@@ -50,14 +49,14 @@ module.exports = {
                         }
                         // },
                     });
-                    queue.connect(interaction.member.voice.channel);
+                    await queue.connect(interaction.member.voice.channel);
                 }
             }
 
-            interaction.reply({ embeds: [successEmbed(` 24/7 mode is now **${clientSettings.leaveOnEmpty ? 'disabled' : 'enabled'}**`)] })
+            await interaction.reply({ embeds: [successEmbed(` 24/7 mode is now **${clientSettings.leaveOnEmpty ? 'disabled' : 'enabled'}**`)] })
 
         } catch (error) {
-            interaction.reply({
+            await interaction.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/247\` command`)
                 ],

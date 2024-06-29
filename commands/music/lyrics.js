@@ -25,8 +25,9 @@ module.exports = {
 
     async execute(interaction, client) {
         let query = interaction.options.getString('query-lyrics') ?? interaction.options.getString('query-lyrics-no-auto-complete') ?? useQueue(interaction.guild.id)?.currentTrack?.title;
+        await interaction.deferReply();
         if (!query) {
-            interaction.reply({ embeds: [errorEmbed(`Please provide a query, currently playing song can only be used when playback is active`)] })
+            await interaction.editReply({ embeds: [errorEmbed(`Please provide a query, currently playing song can only be used when playback is active`)] })
             setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
             return;
         }
@@ -34,7 +35,6 @@ module.exports = {
         // Check state
         if (!requireSessionConditions(interaction, false, false, false)) return;
         // Let's defer the interaction as things can take time to process
-        interaction.deferReply();
 
         query &&= query.toLowerCase();
         const lyricsClient = lyricsExtractor()
@@ -45,7 +45,7 @@ module.exports = {
                 .catch(() => null);
 
             if (!res) {
-                interaction.editReply({ embeds: [errorEmbed(`Could not find lyrics for **\`${query}\`**, please try a different query`)] })
+                await interaction.editReply({ embeds: [errorEmbed(`Could not find lyrics for **\`${query}\`**, please try a different query`)] })
                 setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
                 return;
             }
@@ -77,10 +77,10 @@ module.exports = {
             if (fullTitle) lyricsEmbed.setFooter({ text: fullTitle });
 
             // Feedback
-            interaction.editReply({ embeds: [lyricsEmbed] });
+            await interaction.editReply({ embeds: [lyricsEmbed] });
 
         } catch (error) {
-            interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/lyrics\` command`)
                 ],

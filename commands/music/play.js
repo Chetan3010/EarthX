@@ -27,11 +27,11 @@ module.exports = {
 
         const query = interaction.options.getString('search')
 
-        interaction.deferReply()
+        await interaction.deferReply()
         const searchResult = await player.search(query, { requestedBy: interaction.user });
 
         if (!searchResult.hasTracks()) {
-            interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     errorEmbed(`No track found for ${query}`)
                 ],
@@ -42,7 +42,7 @@ module.exports = {
             return;
         } else {
             try {
-                const clientSettings = await getGuildSettings(interaction.guild.id)
+                const clientSettings = await getGuildSettings(interaction)
                 // console.log(clientSettings);
                 await player.play(channel, searchResult, {
                     requestedBy: interaction.user,
@@ -71,15 +71,15 @@ module.exports = {
                     }
                 });
 
-                interaction.deleteReply()
+                await interaction.deleteReply()
             } catch (error) {
-                interaction.editReply({
+                await interaction.editReply({
                     embeds: [
                         errorEmbed(`Something went wrong while executing \`/play\` command`)
                     ],
                     ephemeral: true
                 })
-                errorLog(error)
+                errorLog(error.message)
             }
         }
     },

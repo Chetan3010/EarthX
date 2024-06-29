@@ -18,7 +18,7 @@ module.exports = {
                 if (!requireSessionConditions(interaction, false, false, false)) return;
                 const queue = useQueue(interaction.guild.id);
                 if (!(queue && queue?.channel?.id)) {
-                  interaction.reply({
+                    await interaction.reply({
                     embeds: [
                         errorEmbed(` I'm not connected to any voice channel`)
                     ],
@@ -28,14 +28,14 @@ module.exports = {
                 }
                 if(queue.metadata?.nowPlaying) queue.metadata.channel.messages.delete(queue.metadata.nowPlaying)
                 if (!queue?.deleted) queue?.delete();
-                interaction.reply({
+                await interaction.reply({
                     embeds: [successEmbed(" Left the voice channel")],
                 })
                 setTimeout(()=> interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
                 return
     
             }catch (error) {
-                interaction.reply({
+                await interaction.reply({
                         embeds: [
                             errorEmbed(`Something went wrong while executing \`/leave\` command`)
                         ],

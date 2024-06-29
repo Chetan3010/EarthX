@@ -29,7 +29,7 @@ module.exports = {
 		// Check has queue
 		const queue = useQueue(interaction.guild.id);
 		if (queue.isEmpty()) {
-			interaction.reply({ embeds: [errorEmbed(` Queue is currently empty`)] });
+			await interaction.reply({ embeds: [errorEmbed(` Queue is currently empty`)] });
 			setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
 			return;
 		}
@@ -37,7 +37,7 @@ module.exports = {
 		// Check bounds
 		const queueSizeZeroOffset = queue.size - 1;
 		if (skipToIndex > queueSizeZeroOffset) {
-			interaction.reply({ embeds: [errorEmbed(` There is nothing at queue position ${skipToIndex + 1}, The highest position is ${queue.size}`)] });
+			await interaction.reply({ embeds: [errorEmbed(` There is nothing at queue position ${skipToIndex + 1}, The highest position is ${queue.size}`)] });
 			setTimeout(() => interaction.deleteReply(), ERROR_MSGE_DELETE_TIMEOUT)
 			return;
 		}
@@ -50,7 +50,7 @@ module.exports = {
 			setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
 		} catch (error) {
-			interaction.reply({
+			await interaction.reply({
 				embeds: [
 					errorEmbed(`Something went wrong while executing \`/skip-to\` command`)
 				],
