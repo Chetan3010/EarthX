@@ -1,8 +1,9 @@
-const { SlashCommandBuilder, escapeMarkdown } = require('discord.js');
+const { SlashCommandBuilder, escapeMarkdown, EmbedBuilder } = require('discord.js');
 const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
 const { useQueue } = require('discord-player');
 const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
+const { leftAngleDown, arrow } = require('../../configs/emojis');
 
 const SONG_POSITION_OPTION_ID = 'song-position';
 
@@ -52,6 +53,32 @@ module.exports = {
 			// Remove song - assign track before #removeTrack
 			const track = queue.tracks.data.at(songPosition);
 			queue.removeTrack(songPosition);
+			if (songPosition === 0) {
+				if (queue.metadata?.nowPlaying) {
+					const { tracks } = queue
+					const nextTrack = tracks.toArray()[0]
+					if (!nextTrack) return
+					const msg = await queue.metadata.channel.messages.fetch(queue.metadata.nowPlaying)
+					const embedObject = msg.embeds[0].toJSON();
+
+					// Find the field you want to update by name and update its value
+					const fieldIndex = embedObject.fields.findIndex(field => field.name === `${leftAngleDown} Next song`);
+					if (fieldIndex !== -1) {
+						embedObject.fields[fieldIndex].value = `${arrow} ${nextTrack ? `[${nextTrack.cleanTitle}](${nextTrack.url})` : 'No more songs in the queue.'}`
+					} else {
+						await interaction.reply({ embeds: [errorEmbed(`Something went wrong while updating current track embed`)] })
+						setTimeout(() => {
+							interaction.deleteReply()
+						}, ERROR_MSGE_DELETE_TIMEOUT);
+						errorLog(error)
+						return;
+					}
+
+					const updatedEmbed = new EmbedBuilder(embedObject);
+
+					msg.edit({ embeds: [updatedEmbed] });
+				}
+			}
 			await interaction.reply({ embeds: [successEmbed(` [${escapeMarkdown(track.title)}](${track.url}) has been removed from the queue - By ${interaction.user}`)] });
 			setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 

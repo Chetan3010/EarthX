@@ -2,6 +2,7 @@ const { Collection, InteractionType } = require("discord.js");
 const { errorLog, cmdLog, warningLog, infoLog } = require("../../configs/logger");
 const chalk = require("chalk");
 const { getRuntime, errorEmbed } = require("../../helper/utils");
+const { OWNERID } = require("../../helper/constants");
 
 module.exports = {
 	name: 'interactionCreate',
@@ -41,10 +42,12 @@ module.exports = {
 				}
 			}
 
-			timestamps.set(interaction.user.id, now);
-			setTimeout(() => {
-				timestamps.delete(interaction.user.id)
-			}, cooldownAmount);
+			if (interaction.user.id !== OWNERID) {
+				timestamps.set(interaction.user.id, now);
+				setTimeout(() => {
+					timestamps.delete(interaction.user.id)
+				}, cooldownAmount);
+			}
 
 			try {
 				await command.execute(interaction, client);

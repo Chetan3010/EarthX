@@ -2,10 +2,11 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { botColor } = require('../../configs/config');
 const { errorEmbed, msToHumanReadableTime } = require('../../helper/utils');
 const { errorLog } = require('../../configs/logger');
+const { MINUTES_IN_ONE_HOUR, SECONDS_IN_ONE_MINUTE } = require('../../helper/constants');
 
 module.exports = {
     category: 'utility',
-    cooldown: 120,
+    cooldown:  (SECONDS_IN_ONE_MINUTE * MINUTES_IN_ONE_HOUR) * 2,
 	aliases: [],
 	data: new SlashCommandBuilder()
 		.setName('uptime')

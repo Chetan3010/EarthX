@@ -1,8 +1,10 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
 const { useMainPlayer, useQueue } = require('discord-player');
 const GuildModel = require('../../schema/guild');
 const { errorLog } = require('../../configs/logger');
+const { botColor } = require('../../configs/config');
+const { disabled, enabled } = require('../../configs/emojis');
 
 module.exports = {
     category: 'music',
@@ -53,7 +55,13 @@ module.exports = {
                 }
             }
 
-            await interaction.reply({ embeds: [successEmbed(` 24/7 mode is now **${clientSettings.leaveOnEmpty ? 'disabled' : 'enabled'}**`)] })
+            await interaction.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor(botColor)
+                        .setDescription(`${clientSettings.leaveOnEmpty ? disabled : enabled} 24/7 mode is now **${clientSettings.leaveOnEmpty ? 'disabled' : 'enabled'}**`)
+                ]
+            })
 
         } catch (error) {
             await interaction.reply({

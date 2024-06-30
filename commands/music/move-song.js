@@ -1,8 +1,9 @@
-const { SlashCommandBuilder, escapeMarkdown } = require('discord.js');
+const { SlashCommandBuilder, escapeMarkdown, EmbedBuilder } = require('discord.js');
 const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
 const { useQueue } = require('discord-player');
 const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
+const { leftAngleDown, arrow } = require('../../configs/emojis');
 
 const FROM_OPTION_ID = 'from-position';
 const TO_OPTION_ID = 'to-position';
@@ -77,6 +78,32 @@ module.exports = {
 
 			// Swap src and dest
 			queue.moveTrack(fromPosition, toPosition);
+			if(toPosition === 0){
+				if (queue.metadata?.nowPlaying) {
+					const { tracks } = queue
+					const nextTrack = tracks.toArray()[0]
+					if (!nextTrack) return
+					const msg = await queue.metadata.channel.messages.fetch(queue.metadata.nowPlaying)
+					const embedObject = msg.embeds[0].toJSON();
+	
+					// Find the field you want to update by name and update its value
+					const fieldIndex = embedObject.fields.findIndex(field => field.name === `${leftAngleDown} Next song`);
+					if (fieldIndex !== -1) {
+						embedObject.fields[fieldIndex].value = `${arrow} ${nextTrack ? `[${nextTrack.cleanTitle}](${nextTrack.url})` : 'No more songs in the queue.'}`
+					} else {
+						await interaction.reply({ embeds: [errorEmbed(`Something went wrong while updating current track embed`)] })
+						setTimeout(() => {
+							interaction.deleteReply()
+						}, ERROR_MSGE_DELETE_TIMEOUT);
+						errorLog(error)
+						return;
+					}
+	
+					const updatedEmbed = new EmbedBuilder(embedObject);
+	
+					msg.edit({ embeds: [updatedEmbed] });
+				}
+			}
 			// use toPosition, because it's after #swap
 			const firstTrack = queue.tracks.data.at(toPosition);
 			await interaction.reply({ embeds: [successEmbed(` [${escapeMarkdown(firstTrack.title)}](${firstTrack.url}) song has been moved to position **\`${toPosition + 1}\`**`)] });

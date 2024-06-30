@@ -7,11 +7,11 @@ module.exports = {
 	name: 'playerSkip',
 	async execute(queue, track, reason) {
 		if (reason) {
-			if (reason === 'JUMPED_TO_ANOTHER_TRACK' || 'SKIP_TO_ANOTHER_TRACK') return
+			if (reason === 'JUMPED_TO_ANOTHER_TRACK' || reason ===  'SKIP_TO_ANOTHER_TRACK' || reason === "MANUAL") return
 			console.log(reason);
 			await queue.metadata.channel.send({
 				embeds: [
-					errorEmbed(`Track skipped because the audio stream couldn't be extracted: **[${escapeMarkdown(track.cleanTitle || track.title)}](${track.url})**.`)
+					errorEmbed(`Track skipped because the audio stream couldn't be extracted: [${reason}] **[${escapeMarkdown(track.cleanTitle || track.title)}](${track.url})**.`)
 				]
 			}).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(error => {
 				errorLog('An error occured with player event!')
