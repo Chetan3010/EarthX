@@ -26,7 +26,7 @@ module.exports = {
             const queue = player.queues.create(interaction.guild.id, {
 
                 repeatMode: clientSettings.repeatMode,
-                // noEmitInsert: true,
+                noEmitInsert: true,
                 skipOnNoStream: true,
                 // preferBridgedMetadata: true,
                 // disableBiquad: true,

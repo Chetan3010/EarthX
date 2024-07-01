@@ -403,7 +403,7 @@ const nowPlayingEmbed = (interaction, client, queue) => {
 		.setImage(currentTrack.thumbnail)
 		.addFields(
 			{ name: `${leftAngleDown} Duration`, value: `${arrow} ${currentTrack.duration === '0:00' ? 'Live' : currentTrack.duration}`, inline: true },
-			{ name: `${leftAngleDown} Artists`, value: `${arrow} ${currentTrack.author.slice(0, 18)}...`, inline: true },
+			{ name: `${leftAngleDown} Artists`, value: `${arrow} ${currentTrack.author}`, inline: true },
 			{ name: `${leftAngleDown} Source`, value: `${arrow} ${titleCase(currentTrack.source)}`, inline: true },
 		)
 		.addFields(
@@ -433,7 +433,7 @@ const saveSongEmbed = (interaction, client, queue) => {
 		.setURL(currentTrack.url)
 		.setImage(currentTrack.thumbnail)
 		.addFields(
-			{ name: `${leftAngleDown} Artists`, value: `${arrow} ${currentTrack.author.slice(0, 18)}...`, inline: true },
+			{ name: `${leftAngleDown} Artists`, value: `${arrow} ${currentTrack.author}`, inline: true },
 			{ name: `${leftAngleDown} Duration`, value: `${arrow} ${currentTrack.duration === '0:00' ? 'Live' : currentTrack.duration}`, inline: true },
 			{ name: `${leftAngleDown} Source`, value: `${arrow} ${titleCase(currentTrack.source)}`, inline: true },
 		)
@@ -484,7 +484,7 @@ const startedPlayingEmbed = (queue, track, client) => {
 		// .setThumbnail(track.thumbnail)
 		.addFields(
 			{ name: `${leftAngleDown} Duration`, value: `${arrow} ${track.duration === '0:00' ? 'Live' : track.duration}`, inline: true },
-			{ name: `${leftAngleDown} Artists`, value: `${arrow} ${track.author.slice(0, 18)}...`, inline: true },
+			{ name: `${leftAngleDown} Artists`, value: `${arrow} ${track.author}`, inline: true },
 			{ name: `${leftAngleDown} Repeat mode`, value: `${arrow} ${repeatModeEmojiStr(queue.repeatMode)}`, inline: true },
 			{ name: `${leftAngleDown} Next song`, value: `${arrow} ${nextTrack ? `[${nextTrack.cleanTitle}](${nextTrack.url})` : 'No more songs in the queue.'}`, inline: false }
 		)
@@ -496,10 +496,9 @@ const startedPlayingEmbed = (queue, track, client) => {
 		// .addFields(
 		//   { name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${track.url})` }
 		// )
-		// .addFields(
-		//   { name: `${cyanDot} Progress ${bottomArrow}`, value: getProgressBar(node), inline: false }
-		// )
-
+		.addFields(
+		  { name: `${cyanDot} Progress ${bottomArrow}`, value: getProgressBar(node), inline: false }
+		)
 		.setFooter({
 			iconURL: client.user.displayAvatarURL(),
 			text: `Requested by ${track.requestedBy.username}.`
@@ -586,6 +585,7 @@ module.exports = {
 	ApplicationCommandType,
 	getChoices,
 	saveSongEmbed,
-	getCommandOptions
+	getCommandOptions,
+	getProgressBar
 }
 

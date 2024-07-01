@@ -1,8 +1,9 @@
-const { SlashCommandBuilder } = require('discord.js');
-const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { errorEmbed, successEmbed, requireSessionConditions, getProgressBar } = require('../../helper/utils');
 const { useQueue } = require('discord-player');
 const { BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
+const { cyanDot, bottomArrow } = require('../../configs/emojis');
 
 module.exports = {
     category: 'music',
@@ -16,21 +17,48 @@ module.exports = {
         if (!requireSessionConditions(interaction, true)) return;
 
         try {
+
+            await interaction.reply({
+                embeds: [new EmbedBuilder()
+                    .setDescription(` Replaying, please wait... ${wait}`)
+                ]
+            });
+
             // Rewind to 0:00
             const queue = useQueue(interaction.guild.id);
             await queue.node.seek(0);
-            await interaction.reply({ embeds: [successEmbed(` Replaying current song - By ${interaction.user}`)] });
-            setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT)
 
+            // Create success response
+            await interaction.editReply({ embeds: [successEmbed(` Replaying current song - By ${interaction.user}`)] });
+            setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT);
+
+            // Check if there is a now-playing message to update
+            if (queue.metadata?.nowPlaying) {
+                const channel = queue.metadata.channel;
+                const nowPlayingMessageId = queue.metadata.nowPlaying;
+
+                try {
+                    const nowPlayingMessage = await channel.messages.fetch(nowPlayingMessageId);
+                    const embed = nowPlayingMessage.embeds[0];
+
+                    const progressBarFieldIndex = embed.fields.findIndex(field => field.name === `${cyanDot} Progress ${bottomArrow}`);
+                    if (progressBarFieldIndex !== -1) {
+                        embed.fields[progressBarFieldIndex].value = getProgressBar(queue.node);
+                    }
+
+                    await nowPlayingMessage.edit({ embeds: [embed] });
+                } catch (error) {
+                    console.log(`Failed to fetch or edit now-playing message: ${error}`);
+                }
+            }
         } catch (error) {
-            await interaction.reply({
+            await interaction.editReply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`/replay\` command`)
                 ],
                 ephemeral: true
             });
-            errorLog(error)
+            errorLog(error);
         }
-
     },
 };

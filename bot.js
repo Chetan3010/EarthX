@@ -48,7 +48,8 @@ process.on('SIGINT', () => {
 });
 
 (async () => {
-
+	
+	await player.extractors.register(YouTubeExtractor, {});
 	await player.extractors.register(
 		SpotifyExtractor,
 		{
@@ -56,7 +57,6 @@ process.on('SIGINT', () => {
 			clientSecret: spotifyClientSecret
 		}
 	);
-	await player.extractors.register(YouTubeExtractor, {});
 	// await player.extractors.register(DeezerExtractor)
 	// await player.extractors.register(TidalExtractor);
 	// await player.extractors.register(AppleMusicExtractor, {});

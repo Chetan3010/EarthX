@@ -35,8 +35,6 @@ module.exports = {
             const npEmbed = nowPlayingEmbed(interaction, client, queue);
             await interaction.reply({ embeds: [npEmbed] });
 
-
-
         } catch (error) {
             await interaction.reply({
                 embeds: [

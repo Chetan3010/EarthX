@@ -49,7 +49,7 @@ module.exports = {
                     nodeOptions: {
 
                         repeatMode: clientSettings.repeatMode,
-                        // noEmitInsert: true,
+                        noEmitInsert: true,
                         skipOnNoStream: false,
                         // preferBridgedMetadata: true,
                         // disableBiquad: true,
