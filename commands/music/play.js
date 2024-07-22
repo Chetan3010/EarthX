@@ -11,10 +11,10 @@ module.exports = {
     aliases: [],
     data: new SlashCommandBuilder()
         .setName('play')
-        .setDescription('Plays the song from youtube, spotify, etc.')
+        .setDescription('Plays the song from youtube.')
         .addStringOption(option =>
             option.setName('search')
-                .setDescription('Play a song. Search youtube, spotify or provide a direct link')
+                .setDescription('Play a song. Search youtube or provide a direct link')
                 .setRequired(true)
                 .setAutocomplete(true)
         ),
@@ -47,7 +47,6 @@ module.exports = {
                 await player.play(channel, searchResult, {
                     requestedBy: interaction.user,
                     nodeOptions: {
-
                         repeatMode: clientSettings.repeatMode,
                         noEmitInsert: true,
                         skipOnNoStream: false,

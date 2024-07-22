@@ -21,6 +21,7 @@ const {
 const { connect } = require('mongoose');
 const chalk = require('chalk');
 const { infoLog } = require('./configs/logger');
+const { generateOauthTokens, YoutubeiExtractor } = require('discord-player-youtubei');
 
 const client = new Client({
 	presence: {
@@ -32,7 +33,7 @@ const client = new Client({
 
 const player = new Player(client, {
 	skipFFmpeg: false,
-	useLegacyFFmpeg: false,
+	useLegacyFFmpeg: true,
 	ytdlOptions: {
 		highWaterMark: 1 << 25,
 		filter: 'audioonly',
@@ -41,6 +42,19 @@ const player = new Player(client, {
 	}
 });
 
+const FFmpeg = require('prism-media').FFmpeg;
+const ffmpegProcess = new FFmpeg({ /* FFmpeg options */ });
+try {
+	ffmpegProcess.destroy(); // Attempt to terminate the FFmpeg process
+} catch (error) {
+	if (error.code === 'EPERM') {
+		errorLog(`Permission error while trying to terminate FFmpeg: ${error.message}`);
+		console.error('Ensure the process has the necessary permissions to terminate FFmpeg.');
+	} else {
+		console.error('An error occurred while trying to terminate FFmpeg:', error);
+	}
+}
+
 process.on('SIGINT', () => {
 	infoLog('INFO', '', `Received SIGINT ${chalk.redBright('Ctrl-C')}`);
 	infoLog('INFO', '', `Gracefully shutting down from SIGINT ${chalk.redBright('Ctrl-C')}`);
@@ -48,23 +62,24 @@ process.on('SIGINT', () => {
 });
 
 (async () => {
-	
-	await player.extractors.register(YouTubeExtractor, {});
-	await player.extractors.register(
-		SpotifyExtractor,
-		{
-			clientId: spotifyClientId,
-			clientSecret: spotifyClientSecret
-		}
-	);
-	// await player.extractors.register(DeezerExtractor)
+
+	await player.extractors.register(YoutubeiExtractor, {})
+	// await player.extractors.register(
+	// 	SpotifyExtractor,
+	// 	{
+	// 		clientId: spotifyClientId,
+	// 		clientSecret: spotifyClientSecret
+	// 	}
+	// );
+	// await player.extractors.register(YouTubeExtractor, {});
+	// await player.extractors.register(DeezerExtractor);
 	// await player.extractors.register(TidalExtractor);
 	// await player.extractors.register(AppleMusicExtractor, {});
 	// await player.extractors.register(SoundCloudExtractor, {});
 	// await player.extractors.register(AttachmentExtractor, {});
 	// await player.extractors.register(VimeoExtractor, {});
 	// await player.extractors.register(ReverbnationExtractor, {});
-	await player.extractors.loadDefault();
+	// await player.extractors.loadDefault();
 })();
 
 client.commands = new Collection();

@@ -13,29 +13,29 @@ module.exports = {
 
 			if (queue.metadata.interaction.guild.members.me?.voice?.channel.members.size === 1) return; // Ignore this resume event
 			// Restart the interval updates
-			const interval = setInterval(async () => {
-				if (!queue.currentTrack || queue.currentTrack.id !== queue.metadata.currentTrackId) {
-					clearInterval(interval);
-					return;
-				}
+			// const interval = setInterval(async () => {
+			// 	if (!queue.currentTrack || queue.currentTrack.id !== queue.metadata.currentTrackId) {
+			// 		clearInterval(interval);
+			// 		return;
+			// 	}
 
-				try {
-                    const nowPlayingMessage = await queue.metadata.channel.messages.fetch(queue.metadata.nowPlaying);
-					const embed = nowPlayingMessage.embeds[0];
+			// 	try {
+            //         const nowPlayingMessage = await queue.metadata.channel.messages.fetch(queue.metadata.nowPlaying);
+			// 		const embed = nowPlayingMessage.embeds[0];
 
-                    const progressBarFieldIndex = embed.fields.findIndex(field => field.name === `${cyanDot} Progress ${bottomArrow}`);
-					if (progressBarFieldIndex !== -1) {
-						embed.fields[progressBarFieldIndex].value = getProgressBar(queue.node);
-					}
+            //         const progressBarFieldIndex = embed.fields.findIndex(field => field.name === `${cyanDot} Progress ${bottomArrow}`);
+			// 		if (progressBarFieldIndex !== -1) {
+			// 			embed.fields[progressBarFieldIndex].value = getProgressBar(queue.node);
+			// 		}
 
-					await nowPlayingMessage.edit({ embeds: [embed] });
-				} catch (error) {
-					console.log(error);
-					clearInterval(interval);
-				}
-			}, 10000);
+			// 		await nowPlayingMessage.edit({ embeds: [embed] });
+			// 	} catch (error) {
+			// 		console.log(error);
+			// 		clearInterval(interval);
+			// 	}
+			// }, 10000);
 
-			queue.metadata.updateInterval = interval;
+			// queue.metadata.updateInterval = interval;
 
 			// Send resume message
 

@@ -24,7 +24,6 @@ module.exports = {
             const clientSettings = await getGuildSettings(interaction)
             const player = useMainPlayer();
             const queue = player.queues.create(interaction.guild.id, {
-
                 repeatMode: clientSettings.repeatMode,
                 noEmitInsert: true,
                 skipOnNoStream: true,

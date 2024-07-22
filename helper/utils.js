@@ -496,9 +496,9 @@ const startedPlayingEmbed = (queue, track, client) => {
 		// .addFields(
 		//   { name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${track.url})` }
 		// )
-		.addFields(
-		  { name: `${cyanDot} Progress ${bottomArrow}`, value: getProgressBar(node), inline: false }
-		)
+		// .addFields(
+		//   { name: `${cyanDot} Progress ${bottomArrow}`, value: getProgressBar(node), inline: false }
+		// )
 		.setFooter({
 			iconURL: client.user.displayAvatarURL(),
 			text: `Requested by ${track.requestedBy.username}.`

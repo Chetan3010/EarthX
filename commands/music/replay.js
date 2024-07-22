@@ -33,24 +33,24 @@ module.exports = {
             setTimeout(() => interaction.deleteReply(), BOT_MSGE_DELETE_TIMEOUT);
 
             // Check if there is a now-playing message to update
-            if (queue.metadata?.nowPlaying) {
-                const channel = queue.metadata.channel;
-                const nowPlayingMessageId = queue.metadata.nowPlaying;
+            // if (queue.metadata?.nowPlaying) {
+            //     const channel = queue.metadata.channel;
+            //     const nowPlayingMessageId = queue.metadata.nowPlaying;
 
-                try {
-                    const nowPlayingMessage = await channel.messages.fetch(nowPlayingMessageId);
-                    const embed = nowPlayingMessage.embeds[0];
+            //     try {
+            //         const nowPlayingMessage = await channel.messages.fetch(nowPlayingMessageId);
+            //         const embed = nowPlayingMessage.embeds[0];
 
-                    const progressBarFieldIndex = embed.fields.findIndex(field => field.name === `${cyanDot} Progress ${bottomArrow}`);
-                    if (progressBarFieldIndex !== -1) {
-                        embed.fields[progressBarFieldIndex].value = getProgressBar(queue.node);
-                    }
+            //         const progressBarFieldIndex = embed.fields.findIndex(field => field.name === `${cyanDot} Progress ${bottomArrow}`);
+            //         if (progressBarFieldIndex !== -1) {
+            //             embed.fields[progressBarFieldIndex].value = getProgressBar(queue.node);
+            //         }
 
-                    await nowPlayingMessage.edit({ embeds: [embed] });
-                } catch (error) {
-                    console.log(`Failed to fetch or edit now-playing message: ${error}`);
-                }
-            }
+            //         await nowPlayingMessage.edit({ embeds: [embed] });
+            //     } catch (error) {
+            //         console.log(`Failed to fetch or edit now-playing message: ${error}`);
+            //     }
+            // }
         } catch (error) {
             await interaction.editReply({
                 embeds: [
