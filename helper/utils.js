@@ -438,7 +438,7 @@ const saveSongEmbed = (interaction, client, queue) => {
 			{ name: `${leftAngleDown} Source`, value: `${arrow} ${titleCase(currentTrack.source)}`, inline: true },
 		)
 		.addFields(
-			{ name: `${leftAngleDown} Uploaded at`, value: `${arrow} ${currentTrack.metadata?.uploadedAt || new Date(currentTrack.metadata?.source.releaseDate.isoString).toLocaleDateString('en-US') || 'NA'}`, inline: true },
+			{ name: `${leftAngleDown} Uploaded at`, value: `${arrow} ${currentTrack.metadata?.uploadedAt || new Date(currentTrack.metadata?.source?.releaseDate.isoString).toLocaleDateString('en-US') || 'NA'}`, inline: true },
 			{ name: `${leftAngleDown} Likes`, value: `${arrow} ${currentTrack.raw?.likes || currentTrack.metadata.bridge?.likes || 'NA'}`, inline: true },
 			{ name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${currentTrack.url})`, inline: true },
 		)
