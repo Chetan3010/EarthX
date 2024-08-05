@@ -63,7 +63,12 @@ process.on('SIGINT', () => {
 
 (async () => {
 
-	await player.extractors.register(YoutubeiExtractor, {})
+	await player.extractors.register(YoutubeiExtractor, {
+		streamOptions: {
+			useClient: "ANDROID"
+		}
+	}
+	)
 	// await player.extractors.register(
 	// 	SpotifyExtractor,
 	// 	{
