@@ -92,7 +92,7 @@ For developers looking to host their own instance:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/earthx-bot.git
+   git clone https://github.com/Chetan3010/EarthX.git
    ```
 2. Install dependencies:
    ```bash
