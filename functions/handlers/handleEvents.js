@@ -42,7 +42,6 @@ module.exports = (client) => {
                     }
                     infoLog('DEBUG', 'END', 'MongoDB events loaded.')
                     break;
-                    
                 default:
                     break;
             }
