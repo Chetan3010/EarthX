@@ -12,7 +12,7 @@ module.exports = {
                     startedPlayingEmbed(queue, track, client)
                 ],
                 components: [
-                    await startedPlayingMenu(track)
+                    await startedPlayingMenu(queue, track)
                 ]
             });
             
@@ -21,14 +21,13 @@ module.exports = {
             queue.metadata.nowPlaying = np.id;
             queue.metadata.currentTrackId = track.id;
 
-            // Calculate collector duration based on track duration
-            const collectorDuration = track.duration === '0:00' ? 3600000 : track.durationMS; // Use 1 hour for live streams
-
             // Create a collector for the menu interactions
-            const collector = np.createMessageComponentCollector({ time: collectorDuration });
+            const collector = np.createMessageComponentCollector({ time: 3600000 });
 
             collector.on('collect', async (interaction) => {
                 if (interaction.customId === 'add_suggested_song') {
+                    const defer = await interaction.deferReply();
+
                     const selectedUrl = interaction.values[0];
                     try {
                         const result = await player.search(selectedUrl, {
@@ -48,6 +47,8 @@ module.exports = {
                             interaction.deleteReply()
                         }, 5000))
                     }
+
+                    await defer.delete()
                 }
             });
 

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { errorEmbed, queueEmbedResponse, requireSessionConditions } = require('../../helper/utils');
+const { errorEmbed, queueEmbedResponse, requireSessionConditions, successEmbed, startedPlayingMenu } = require('../../helper/utils');
 const { useQueue } = require('discord-player');
 const { errorLog } = require('../../configs/logger');
 const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
@@ -17,6 +17,7 @@ module.exports = {
 
         try {
             const queue = useQueue(interaction.guild.id);
+            const {currentTrack} = queue
             queue.tracks.shuffle();
 
             if (queue.metadata?.nowPlaying) {
@@ -40,11 +41,21 @@ module.exports = {
                 }
 
                 const updatedEmbed = new EmbedBuilder(embedObject);
+                const updatedSuggestionMenu = await startedPlayingMenu(queue, currentTrack)
 
-                msg.edit({ embeds: [updatedEmbed] });
+                msg.edit({
+                    embeds: [updatedEmbed],
+                    components: [
+                        updatedSuggestionMenu
+                    ]
+                });
             }
-            // Show queue, interactive
-            queueEmbedResponse(interaction, queue);
+
+            await interaction.reply({
+                embeds: [
+                    successEmbed('Queue has been shuffled. Use \`/queue\` to view shuffled queue.')
+                ]
+            })
 
         } catch (error) {
             await interaction.reply({

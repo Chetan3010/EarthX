@@ -499,8 +499,10 @@ const getSuggestedSongs = async (track) => {
     }
 }
 
-const startedPlayingMenu = async (track) => {
-    const suggestedSongs = await getSuggestedSongs(track)
+const startedPlayingMenu = async (queue, track) => {
+    const {tracks} = queue
+    const trackForSuggestions = tracks.toArray().pop() || track
+    const suggestedSongs = await getSuggestedSongs(trackForSuggestions)
 
     const options = suggestedSongs.slice(0, 20).map((song, index) => ({
         label: `${index + 1}. ${song.title}`.slice(0,100),

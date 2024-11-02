@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { errorEmbed, successEmbed, requireSessionConditions } = require('../../helper/utils');
+const { errorEmbed, successEmbed, requireSessionConditions, startedPlayingMenu } = require('../../helper/utils');
 const { useQueue } = require('discord-player');
 const { ERROR_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
@@ -44,9 +44,16 @@ module.exports = {
                     return;
                 }
 
+                const { currentTrack } = queue
                 const updatedEmbed = new EmbedBuilder(embedObject);
+                const updatedSuggestionMenu = await startedPlayingMenu(queue, currentTrack)
 
-                msg.edit({ embeds: [updatedEmbed] });
+                msg.edit({
+                    embeds: [updatedEmbed],
+                    components: [
+                        updatedSuggestionMenu
+                    ]
+                });
             }
 
             await interaction.reply({ embeds: [successEmbed(` The queue has been cleared - By ${interaction.user}`)] })
