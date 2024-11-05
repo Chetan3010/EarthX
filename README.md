@@ -98,7 +98,18 @@ For developers looking to host their own instance:
    ```bash
    npm install
    ```
-3. Set up your `.example.env` file with your secrets and rename it to `.env`.
+3. Install FFmpeg:
+   - **For Windows**: Download the FFmpeg build from [FFmpeg's official site](https://ffmpeg.org/download.html), extract it, and add the `bin` folder to your system's PATH.
+   - **For macOS**: Use Homebrew to install FFmpeg:
+     ```bash
+     brew install ffmpeg
+     ```
+   - **For Linux**: Use your package manager to install FFmpeg. For example, on Ubuntu:
+     ```bash
+     sudo apt update
+     sudo apt install ffmpeg
+     ```
+4. Set up your `.example.env` file with your secrets and rename it to `.env`.
 
 #### Prerequisite
 
@@ -111,7 +122,7 @@ For developers looking to host their own instance:
 - Community guild id
 - Community guild channel id
 
-4. Start the bot:
+5. Start the bot:
    ```bash
    npm start
    ```

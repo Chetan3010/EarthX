@@ -91,7 +91,10 @@ module.exports = {
 			const { customId } = interaction;
 			const menu = selectMenus.get(customId)
 
-			if (!menu) return console.error("There is no code for this menu.");
+            if (!menu) {
+				if (customId.startsWith('@')) return
+				return warningLog(`There is no code for ${customId} menu.`)
+			}
 
 			try {
 				await menu.execute(interaction, client);

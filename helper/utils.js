@@ -511,7 +511,7 @@ const startedPlayingMenu = async (queue, track) => {
     }))
 
     const selectMenu = new StringSelectMenuBuilder()
-        .setCustomId('add_suggested_song')
+        .setCustomId('@add_suggested_song')
         .setPlaceholder('Add a suggested song to the queue')
         .addOptions(options);
 

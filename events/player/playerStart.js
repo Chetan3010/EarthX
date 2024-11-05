@@ -25,7 +25,7 @@ module.exports = {
             const collector = np.createMessageComponentCollector({ time: 3600000 });
 
             collector.on('collect', async (interaction) => {
-                if (interaction.customId === 'add_suggested_song') {
+                if (interaction.customId === '@add_suggested_song') {
                     const defer = await interaction.deferReply();
 
                     const selectedUrl = interaction.values[0];
