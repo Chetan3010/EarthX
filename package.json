@@ -18,7 +18,7 @@
     "discord-player": "^6.7.1",
     "discord-player-deezer": "^1.0.1",
     "discord-player-tidal": "^0.1.0",
-    "discord-player-youtubei": "^1.3.4",
+    "discord-player-youtubei": "^1.3.5",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
     "mediaplex": "^0.0.9",
