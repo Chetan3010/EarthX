@@ -3,7 +3,7 @@ const { errorEmbed, successEmbed, requireSessionConditions, getProgressBar } = r
 const { useQueue } = require('discord-player');
 const { BOT_MSGE_DELETE_TIMEOUT } = require('../../helper/constants');
 const { errorLog } = require('../../configs/logger');
-const { cyanDot, bottomArrow } = require('../../configs/emojis');
+const { cyanDot, bottomArrow, wait } = require('../../configs/emojis');
 
 module.exports = {
     category: 'music',
@@ -16,14 +16,14 @@ module.exports = {
         // Check state
         if (!requireSessionConditions(interaction, true)) return;
 
-        try {
-
+        try {            
             await interaction.reply({
-                embeds: [new EmbedBuilder()
+                embeds: [
+                    new EmbedBuilder()
                     .setDescription(` Replaying, please wait... ${wait}`)
                 ]
             });
-
+            
             // Rewind to 0:00
             const queue = useQueue(interaction.guild.id);
             await queue.node.seek(0);
@@ -52,12 +52,21 @@ module.exports = {
             //     }
             // }
         } catch (error) {
-            await interaction.editReply({
-                embeds: [
-                    errorEmbed(`Something went wrong while executing \`/replay\` command`)
-                ],
-                ephemeral: true
-            });
+            if(interaction.replied || interaction.deferred){
+                await interaction.editReply({
+                    embeds: [
+                        errorEmbed(`Something went wrong while executing \`/replay\` command`)
+                    ],
+                    ephemeral: true
+                });
+            }else{
+                await interaction.reply({
+                    embeds: [
+                        errorEmbed(`Something went wrong while executing \`/replay\` command`)
+                    ],
+                    ephemeral: true
+                });
+            }
             errorLog(error);
         }
     },

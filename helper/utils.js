@@ -472,43 +472,45 @@ const getSuggestedSongs = async (track) => {
     const player = useMainPlayer()
     try {
         const recommendations = await player.search(`${track.title} ${track.author}`, {
-            fallbackSearchEngine: 'youtube'
+            fallbackSearchEngine: 'auto'
         });
 
-        if (recommendations.tracks.length > 0) {
-            return recommendations.tracks.map(recommendedTrack => ({
-                title: recommendedTrack.title,
-                url: recommendedTrack.url,
-                author: recommendedTrack.author
-            }));
-        }
-
-        const genre = track.raw?.genre || 'pop'; // Default to 'pop' if genre is not available
-        const fallbackRecommendations = await player.search(`${genre} music`, {
-            fallbackSearchEngine: 'youtube'
-        });
-
-        return fallbackRecommendations.tracks.map(recommendedTrack => ({
+        return recommendations.tracks.map(recommendedTrack => ({
             title: recommendedTrack.title,
             url: recommendedTrack.url,
             author: recommendedTrack.author
         }));
+
     } catch (error) {
         console.error('Error getting song recommendations:', error);
-        return []; // Return an empty array if there's an error
+        return []; 
     }
 }
 
 const startedPlayingMenu = async (queue, track) => {
-    const {tracks} = queue
+    const { tracks } = queue
     const trackForSuggestions = tracks.toArray().pop() || track
     const suggestedSongs = await getSuggestedSongs(trackForSuggestions)
 
-    const options = suggestedSongs.slice(0, 20).map((song, index) => ({
-        label: `${index + 1}. ${song.title}`.slice(0,100),
-        description: `By ${song.author}`.slice(0,100),
-        value: song.url
-    }))
+    // Early return if no suggestions or less than 1 song
+    if (!suggestedSongs || suggestedSongs.length < 1) {
+        return null; // Return null instead of false to clearly indicate no menu should be created
+    }
+
+    // Create options array from valid suggestions
+    const options = suggestedSongs
+        .slice(0, 20)
+        .map((song, index) => ({
+            label: `${index + 1}. ${song.title}`.slice(0, 100),
+            description: `By ${song.author}`.slice(0, 100),
+            value: song.url
+        }))
+        .filter(option => option.label && option.value); // Ensure all options have required properties
+
+    // Return null if no valid options after filtering
+    if (options.length < 1) {
+        return null;
+    }
 
     const selectMenu = new StringSelectMenuBuilder()
         .setCustomId('@add_suggested_song')

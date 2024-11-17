@@ -7,14 +7,19 @@ module.exports = {
     name: 'playerStart',
     async execute(queue, track, client) {
         try {
+            const menu = await startedPlayingMenu(queue, track)
             const np = await queue.metadata.channel.send({
                 embeds: [
                     startedPlayingEmbed(queue, track, client)
                 ],
-                components: [
-                    await startedPlayingMenu(queue, track)
-                ]
             });
+            if(menu){
+                await np.edit({ 
+                    components: [
+                        menu
+                    ]
+                })
+            }
             
             const player = useMainPlayer();
 
@@ -57,6 +62,7 @@ module.exports = {
                 np.edit({ components: [] }).catch(console.error);
             });
 
+            // Continous song interval
             // const interval = setInterval(async () => {
             //     if (!queue.currentTrack || queue.currentTrack.id !== queue.metadata.currentTrackId) {
             //         clearInterval(interval);

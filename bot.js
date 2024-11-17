@@ -10,7 +10,6 @@ const { Player } = require('discord-player');
 const {
     SpotifyExtractor,
     SoundCloudExtractor,
-    YouTubeExtractor,
     AttachmentExtractor,
     AppleMusicExtractor,
     VimeoExtractor,
