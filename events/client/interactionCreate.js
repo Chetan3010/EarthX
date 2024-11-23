@@ -8,11 +8,11 @@ module.exports = {
 	name: 'interactionCreate',
 	async execute(interaction, client) {
 		if (interaction.isChatInputCommand()) {
-			const { commands } = client;
+			const { slashCommands } = client;
 			const { commandName } = interaction;
-			const command = commands.get(commandName)
+			const command = slashCommands.get(commandName)
 
-			// For message commandds aliases -> || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+			// For message commandds aliases -> || slashCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
 			if (!command) {
 				warningLog(`No command matching ${commandName} was found.`)

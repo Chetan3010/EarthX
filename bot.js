@@ -27,7 +27,13 @@ const client = new Client({
         status: 'online',
         activities: [{ name: '/help', type: ActivityType.Listening }],
     },
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates]
+    intents: [
+        GatewayIntentBits.Guilds, 
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessageReactions
+    ]
 });
 
 const player = new Player(client, {
@@ -86,7 +92,9 @@ process.on('SIGINT', () => {
     // await player.extractors.loadDefault();
 })();
 
-client.commands = new Collection();
+client.prefixCommands = new Collection();
+client.prefixAliases = new Collection();
+client.slashCommands = new Collection();
 client.buttons = new Collection();
 client.selectMenus = new Collection();
 client.cooldowns = new Collection();
