@@ -7,12 +7,15 @@ const { GuildQueuePlayerNode, QueueRepeatMode, usePlayer, useQueue, useMainPlaye
 const { BOT_MSGE_DELETE_TIMEOUT, DEFAULT_DECIMAL_PRECISION, NS_IN_ONE_MS, NS_IN_ONE_SECOND } = require("./constants");
 
 const requireSessionConditions = (
-    interaction,
+    interactionOrMessage,
     requireVoiceSession = false,
     useInitializeSessionConditions = false,
     requireDJRole = false // Explicit set to false for public commands not available as of now
 ) => {
-    const { guild, member } = interaction;
+    // Determine if it's an interaction or a message
+    const isInteraction = interactionOrMessage.isCommand?.(); 
+    const guild = isInteraction ? interactionOrMessage.guild : interactionOrMessage.member.guild;
+    const member = isInteraction ? interactionOrMessage.member : interactionOrMessage.member;
 
     // Return early
     // if (!requireMusicChannel(interaction)) return false;
@@ -20,8 +23,9 @@ const requireSessionConditions = (
 
     // Check voice channel requirement
     const channel = member.voice?.channel;
+
     if (!channel) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 new EmbedBuilder()
                     .setColor(errorColor)
@@ -34,7 +38,7 @@ const requireSessionConditions = (
 
     const queue = useQueue(guild.id);
     if (queue && queue.channel.id !== channel.id) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 errorEmbed(`I'm playing in <#${queue.channel.id}>`)
             ],
@@ -45,14 +49,14 @@ const requireSessionConditions = (
 
     if (
         useInitializeSessionConditions === true
-        && requireInitializeSessionConditions(interaction) !== true
+        && requireInitializeSessionConditionsUnified(interactionOrMessage) !== true
     ) return false;
 
     else if (
         requireVoiceSession === true
         && !usePlayer(guild.id)?.queue
     ) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 errorEmbed(`No music is currently being played - use \`/play\` command to play something first.`)
             ],
@@ -64,16 +68,14 @@ const requireSessionConditions = (
     return true;
 };
 
-const requireInitializeSessionConditions = (interaction) => {
-    // Destructure
-    const { member } = interaction;
-
-    // Check voice channel requirement
+const requireInitializeSessionConditionsUnified = (interactionOrMessage) => {
+    const isInteraction = interactionOrMessage.isCommand?.();
+    const member = isInteraction ? interactionOrMessage.member : interactionOrMessage.member;
     const channel = member.voice?.channel;
 
     // Can't see channel
     if (!channel.viewable) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 errorEmbed(`I don't have permission to see your voice channel - maybe I don't have permissions or something`)
             ],
@@ -84,7 +86,7 @@ const requireInitializeSessionConditions = (interaction) => {
 
     // Join channel
     if (!channel.joinable) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 errorEmbed(`I don't have permission to join your voice channel - maybe I don't have permissions or something`)
             ],
@@ -94,12 +96,11 @@ const requireInitializeSessionConditions = (interaction) => {
     }
 
     // Channel is full
-    // channel.userLimit >= channel.members.size
     if (
         channel.full
-        && !channel.members.some((m) => m.id === interaction.client.user.id)
+        && !channel.members.some((m) => m.id === interactionOrMessage.client.user.id)
     ) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 errorEmbed(`Your voice channel is currently full.`)
             ],
@@ -108,7 +109,6 @@ const requireInitializeSessionConditions = (interaction) => {
         return false;
     }
 
-    // Ok
     return true;
 };
 
