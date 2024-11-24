@@ -36,8 +36,8 @@ module.exports = {
             await interaction.reply({
                 embeds: [
                     successSkip
-                        ? successEmbed(` Skipped **[${currentTrack}](${currentTrack.url})** song - By ${interaction.user}.`)
-                        : errorEmbed(` Something went wrong - couldn't skip current playing song.`)
+                        ? successEmbed(` Skipped **[${currentTrack}](${currentTrack.url})** song - By ${interaction.user}`)
+                        : errorEmbed(` Something went wrong - couldn't skip current playing song`)
                 ]
             })
             setTimeout(() => {

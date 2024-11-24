@@ -58,7 +58,7 @@ const requireSessionConditions = (
     ) {
         interactionOrMessage.reply?.({
             embeds: [
-                errorEmbed(`No music is currently being played - use \`/play\` command to play something first.`)
+                errorEmbed(`No music is currently being played - use \`/play\` command to play something first`)
             ],
             ephemeral: true
         });
@@ -102,7 +102,7 @@ const requireInitializeSessionConditionsUnified = (interactionOrMessage) => {
     ) {
         interactionOrMessage.reply?.({
             embeds: [
-                errorEmbed(`Your voice channel is currently full.`)
+                errorEmbed(`Your voice channel is currently full`)
             ],
             ephemeral: true
         });

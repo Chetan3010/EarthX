@@ -1,6 +1,6 @@
 const { useMainPlayer } = require("discord-player");
 const { requireSessionConditions, errorEmbed } = require("../../../helper/utils");
-const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
+const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 const { getGuildSettingsForMessage } = require("../../../helper/db");
 const { errorLog } = require("../../../configs/logger");
 
@@ -12,21 +12,21 @@ module.exports = {
         name: 'play'
     },
     async execute(client, message, params) {
-        
+
         const player = useMainPlayer();
-        
+
         const channel = message.member.voice.channelId;
 
         if (!requireSessionConditions(message, false, true, false)) return;
-        
+
         const query = params?.join(' ')
 
-        if(!query){
+        if (!query) {
             return message.reply({
                 embeds: [
                     errorEmbed(`Please provide query to play the song`)
                 ],
-            });
+            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT))
         }
 
         const searchResult = await player.search(query, { requestedBy: message.author });
@@ -36,7 +36,7 @@ module.exports = {
                 embeds: [
                     errorEmbed(`No track found for ${query}`)
                 ],
-            });
+            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT))
         } else {
             try {
                 const clientSettings = await getGuildSettingsForMessage(message)
@@ -73,7 +73,7 @@ module.exports = {
                     embeds: [
                         errorEmbed(`Something went wrong while executing \`play\` command`)
                     ],
-                })
+                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT))
             }
         }
     },
