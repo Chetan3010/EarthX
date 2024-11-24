@@ -17,6 +17,11 @@ module.exports = (client) => {
                 const command = require(`../../commands/prefix/${folder}/${file}`);
                 if ('data' in command && 'execute' in command) {
                     prefixCommands.set(command.data.name, command);
+                if (command.aliases) {
+                    for (const alias of command.aliases) {
+                        prefixAliases.set(alias, command.data.name);
+                    }
+                }
                 } else {
                     warningLog(`The prefix command at ${command} is missing a required "data" or "execute" property.`)
                 }

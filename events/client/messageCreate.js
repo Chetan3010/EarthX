@@ -1,4 +1,6 @@
+const { BOT_MSGE_DELETE_TIMEOUT } = require("../../helper/constants");
 const { getGuildSettingsForMessage } = require("../../helper/db");
+const { errorEmbed } = require("../../helper/utils");
 
 module.exports = {
     name: 'messageCreate',
@@ -19,6 +21,15 @@ module.exports = {
         }
         if (cmd) {
             cmd.execute(client, message, params);
+        } else {
+            message.reply({
+                embeds: [
+                    errorEmbed(`Please check supported command list by typing or using \`help\` command`)
+                ],
+            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                errorLog('An error occured in messageCreate event!')
+                console.log(err);
+            })
         }
 
     }

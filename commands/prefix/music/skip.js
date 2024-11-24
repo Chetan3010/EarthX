@@ -24,7 +24,10 @@ module.exports = {
                     embeds: [
                         errorEmbed(`No music is currently being played`)
                     ]
-                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT))
+                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                    errorLog('An error occured with prefix skip command!')
+                    console.log(err);
+                })
             }
 
             const successSkip = guildPlayerNode.skip();
@@ -34,7 +37,10 @@ module.exports = {
                         ? successEmbed(` Skipped **[${currentTrack}](${currentTrack.url})** song - By ${message.author}`)
                         : errorEmbed(` Something went wrong - couldn't skip current playing song`)
                 ]
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT))
+            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                errorLog('An error occured with prefix skip command!')
+                console.log(err);
+            })
         }
         catch (error) {
             errorLog(error.message)
@@ -42,7 +48,10 @@ module.exports = {
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`skip\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT))
+            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                errorLog('An error occured with prefix skip command!')
+                console.log(err);
+            })
         }
     },
 };

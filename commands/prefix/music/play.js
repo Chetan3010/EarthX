@@ -26,7 +26,10 @@ module.exports = {
                 embeds: [
                     errorEmbed(`Please provide query to play the song`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT))
+            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                errorLog('An error occured with prefix play command!')
+                console.log(err);
+            })
         }
 
         const searchResult = await player.search(query, { requestedBy: message.author });
@@ -36,7 +39,10 @@ module.exports = {
                 embeds: [
                     errorEmbed(`No track found for ${query}`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT))
+            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                errorLog('An error occured with prefix play command!')
+                console.log(err);
+            })
         } else {
             try {
                 const clientSettings = await getGuildSettingsForMessage(message)
@@ -62,7 +68,7 @@ module.exports = {
                             channel: message.channel,
                             member: message.member,
                             timestamp: message.createdTimestamp,
-                            message,
+                            interaction: message
                         }
                     }
                 });
@@ -73,7 +79,10 @@ module.exports = {
                     embeds: [
                         errorEmbed(`Something went wrong while executing \`play\` command`)
                     ],
-                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT))
+                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                    errorLog('An error occured with prefix play command!')
+                    console.log(err);
+                })
             }
         }
     },
