@@ -53,7 +53,7 @@ module.exports = {
 
             await interaction.reply({
                 embeds: [
-                    successEmbed('Queue has been shuffled. Use \`/queue\` to view shuffled queue.')
+                    successEmbed('Queue has been shuffled. Use \`/queue\` to view shuffled queue')
                 ]
             })
 
