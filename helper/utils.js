@@ -112,8 +112,16 @@ const requireInitializeSessionConditionsUnified = (interactionOrMessage) => {
     return true;
 };
 
+const repeatModeEmojiStr = (repeatMode) => repeatMode === QueueRepeatMode.AUTOPLAY
+    ? ':gear: Autoplay'
+    : repeatMode === QueueRepeatMode.QUEUE
+        ? ':repeat: Queue'
+        : repeatMode === QueueRepeatMode.TRACK
+            ? ':repeat_one: Track'
+            : ':no_entry: Off';
+
 const handlePagination = async (
-    interaction,
+    messageOrInteraction,
     member,
     usableEmbeds,
     activeDurationMs = 60000 * 3,
@@ -128,9 +136,10 @@ const handlePagination = async (
         components: getPaginationComponents(pageNow, usableEmbeds.length, prevCustomId, nextCustomId),
         fetchReply: true
     };
-    const replyFunction = dynamicInteractionReplyFn(interaction, shouldFollowUpIfReplied);
+
+    const replyFunction = dynamicInteractionReplyFn(messageOrInteraction, shouldFollowUpIfReplied);
     const interactionMessage = await replyFunction
-        .call(interaction, initialCtx)
+        .call(messageOrInteraction, initialCtx)
         .catch((err) => {
             console.log('Error encountered while responding to interaction with dynamic reply function:');
             console.dir({
@@ -179,25 +188,30 @@ const handlePagination = async (
     });
 
     paginationCollector.on('end', () => {
-        interaction.editReply({
-            components: getPaginationComponents(
-                pageNow,
-                usableEmbeds.length,
-                prevCustomId,
-                nextCustomId,
-                true
-            )
-        }).catch(() => { /* Void */ });
+        const isInteraction = messageOrInteraction.isCommand?.();
+        if (isInteraction) {
+            messageOrInteraction.editReply({
+                components: getPaginationComponents(
+                    pageNow,
+                    usableEmbeds.length,
+                    prevCustomId,
+                    nextCustomId,
+                    true
+                )
+            }).catch(() => { /* Void */ });
+        } else {
+            messageOrInteraction.edit({
+                components: getPaginationComponents(
+                    pageNow,
+                    usableEmbeds.length,
+                    prevCustomId,
+                    nextCustomId,
+                    true
+                )
+            }).catch(() => { /* Void */ });
+        }
     });
 };
-
-const repeatModeEmojiStr = (repeatMode) => repeatMode === QueueRepeatMode.AUTOPLAY
-    ? ':gear: Autoplay'
-    : repeatMode === QueueRepeatMode.QUEUE
-        ? ':repeat: Queue'
-        : repeatMode === QueueRepeatMode.TRACK
-            ? ':repeat_one: Track'
-            : ':no_entry: Off';
 
 const queueEmbeds = (queue, guild, title) => {
     // Ok, display the queue!
@@ -237,13 +251,13 @@ const queueEmbeds = (queue, guild, title) => {
     return usableEmbeds;
 };
 
-const queueEmbedResponse = (interaction, queue, title = 'Queue') => {
-    const { guild, member } = interaction;
+const queueEmbedResponse = (messageOrInteraction, queue, title = 'Queue') => {
+    const { guild, member } = messageOrInteraction;
     // Ok, display the queue!
     const usableEmbeds = queueEmbeds(queue, guild, title);
     // Queue empty
     if (usableEmbeds.length === 0) {
-        interaction.reply({
+        messageOrInteraction.reply({
             embeds: [
                 new EmbedBuilder()
                     .setColor(botColor)
@@ -253,16 +267,16 @@ const queueEmbedResponse = (interaction, queue, title = 'Queue') => {
 
         try {
             setTimeout(() => {
-                interaction.deleteReply()
+                messageOrInteraction.deleteReply()
             }, BOT_MSGE_DELETE_TIMEOUT)
         } catch (error) {
             console.log(error);
         }
     }
     // Reply to the interaction with the SINGLE embed
-    else if (usableEmbeds.length === 1) interaction.reply({ embeds: usableEmbeds }).catch(() => { /* Void */ });
+    else if (usableEmbeds.length === 1) messageOrInteraction.reply({ embeds: usableEmbeds }).catch(() => { /* Void */ });
     // Properly handle pagination for multiple embeds
-    else handlePagination(interaction, member, usableEmbeds);
+    else handlePagination(messageOrInteraction, member, usableEmbeds);
 };
 
 const getPaginationComponents = (pageNow, pageTotal, prevCustomId, nextCustomId, disableAll = false) => {
@@ -283,15 +297,6 @@ const getPaginationComponents = (pageNow, pageTotal, prevCustomId, nextCustomId,
                     .setStyle(ButtonStyle.Secondary)
             )
     ];
-};
-
-const dynamicInteractionReplyFn = (interaction, shouldFollowUpIfReplied = false) => {
-    const interactionWasAcknowledged = interaction.deferred || interaction.replied;
-    return interactionWasAcknowledged
-        ? shouldFollowUpIfReplied
-            ? interaction.followUp
-            : interaction.editReply
-        : interaction.reply;
 };
 
 const handlePaginationButtons = (i, componentMember, pageNow, prevCustomId, nextCustomId, usableEmbeds) => {
@@ -336,6 +341,15 @@ const handlePaginationButtons = (i, componentMember, pageNow, prevCustomId, next
 
     // Passed checks
     return true;
+};
+
+const dynamicInteractionReplyFn = (messageOrInteraction, shouldFollowUpIfReplied = false) => {
+    const isInteraction = messageOrInteraction.deferred || messageOrInteraction.replied;
+    if (isInteraction) {
+        return shouldFollowUpIfReplied ? messageOrInteraction.followUp : messageOrInteraction.editReply;
+    } else {
+        return messageOrInteraction.reply;
+    }
 };
 
 const queueTrackCb = (track, idx) => `${++idx}. [${track.title}](${track.url}) - \`${track.duration}\`- ${track.requestedBy}`;
