@@ -28,9 +28,9 @@ module.exports = {
                 return false;
             }
 
-            if (queue.metadata?.nowPlaying) {
+            if (queue?.metadata?.nowPlaying) {
                 try {
-                    await queue.metadata.channel.messages.delete(queue.metadata.nowPlaying);
+                    await queue.metadata?.channel?.messages.delete(queue.metadata.nowPlaying);
                 } catch (error) {
                     if (error.code !== 10008) {
                         errorLog('Failed to delete now playing message:', error);

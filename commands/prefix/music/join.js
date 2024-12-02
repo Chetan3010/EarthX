@@ -8,7 +8,7 @@ const { errorLog } = require("../../../configs/logger");
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: [],
+    aliases: ['j'],
     data: {
         name: 'join'
     },
