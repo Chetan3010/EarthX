@@ -1,7 +1,7 @@
 const { usePlayer } = require("discord-player");
 const { errorLog } = require("../../../configs/logger");
 const { requireSessionConditions, errorEmbed } = require("../../../helper/utils");
-const { BOT_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
+const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 const { success } = require("../../../configs/emojis");
 
 module.exports = {
@@ -39,7 +39,7 @@ module.exports = {
                     embeds: [
                         errorEmbed(`Something went wrong - couldn't skip current playing song`)
                     ]
-                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                     errorLog('An error occurred with prefix skip command!')
                     console.log(err);
                 });
@@ -51,7 +51,7 @@ module.exports = {
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`skip\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                 errorLog('An error occurred with prefix skip command!')
                 console.log(err);
             });

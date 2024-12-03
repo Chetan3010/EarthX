@@ -1,6 +1,6 @@
 const { useMainPlayer } = require("discord-player");
 const { requireSessionConditions, errorEmbed } = require("../../../helper/utils");
-const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
+const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 const { getGuildSettingsForMessage } = require("../../../helper/db");
 const { errorLog } = require("../../../configs/logger");
 
@@ -39,7 +39,7 @@ module.exports = {
                 embeds: [
                     errorEmbed(`No track found for ${query}`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                 errorLog('An error occured with prefix play command!')
                 console.log(err);
             })
@@ -79,7 +79,7 @@ module.exports = {
                     embeds: [
                         errorEmbed(`Something went wrong while executing \`play\` command`)
                     ],
-                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                     errorLog('An error occured with prefix play command!')
                     console.log(err);
                 })

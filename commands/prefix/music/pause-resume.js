@@ -2,7 +2,7 @@ const { usePlayer } = require("discord-player");
 const { requireSessionConditions, errorEmbed } = require("../../../helper/utils");
 const { success } = require("../../../configs/emojis");
 const { errorLog } = require("../../../configs/logger");
-const { BOT_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
+const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 
 module.exports = {
     category: 'music',
@@ -28,7 +28,7 @@ module.exports = {
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`pause-resume\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                 errorLog('An error occurred with prefix pause-resume command!')
                 console.log(err);
             });

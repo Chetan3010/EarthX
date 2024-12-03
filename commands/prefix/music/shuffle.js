@@ -1,6 +1,6 @@
 const { useQueue } = require("discord-player");
 const { requireSessionConditions, errorEmbed, startedPlayingMenu, successEmbed } = require("../../../helper/utils");
-const { BOT_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
+const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 const { arrow, leftAngleDown } = require("../../../configs/emojis");
 const { EmbedBuilder } = require("discord.js");
 const { errorLog } = require("../../../configs/logger");
@@ -36,7 +36,7 @@ module.exports = {
                     embedObject.fields[fieldIndex].value = `${arrow} ${nextTrack ? `[${nextTrack.cleanTitle}](${nextTrack.url})` : 'No more songs in the queue.'}`
                 } else {
                     await message.reply({ embeds: [errorEmbed(`Something went wrong while updating current track embed`)] })
-                    .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                         errorLog('An error occured with prefix shuffle command!')
                         console.log(err);
                     })
@@ -64,8 +64,8 @@ module.exports = {
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`shuffle\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix pause-resume command!')
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
+                errorLog('An error occurred with prefix shuffle command!')
                 console.log(err);
             });
         }

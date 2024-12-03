@@ -1,8 +1,7 @@
-const { useMainPlayer, useQueue } = require("discord-player");
-const { getGuildSettingsForMessage } = require("../../../helper/db");
+const { useQueue } = require("discord-player");
 const { requireSessionConditions, errorEmbed } = require("../../../helper/utils");
 const { success } = require("../../../configs/emojis");
-const { BOT_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
+const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 const { errorLog } = require("../../../configs/logger");
 
 module.exports = {
@@ -25,7 +24,7 @@ module.exports = {
                     embeds: [
                         errorEmbed(` I'm not connected to any voice channel`)
                     ],
-                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+                }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                     errorLog('An error occurred while deleting message in leave prefix command')
                     console.log(err);
                 });
@@ -56,7 +55,7 @@ module.exports = {
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`leave\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                 errorLog('An error occurred with prefix leave command!')
                 console.log(err);
             });

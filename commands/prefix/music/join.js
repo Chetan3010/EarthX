@@ -56,7 +56,7 @@ module.exports = {
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`join\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                 errorLog('An error occurred with prefix join command!')
                 console.log(err);
             });

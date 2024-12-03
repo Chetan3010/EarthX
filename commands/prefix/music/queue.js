@@ -1,7 +1,7 @@
 const { useQueue } = require("discord-player");
 const { requireSessionConditions, queueEmbedResponse, errorEmbed } = require("../../../helper/utils");
 const { EmbedBuilder } = require("discord.js");
-const { BOT_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
+const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 const { errorLog } = require("../../../configs/logger");
 
 module.exports = {
@@ -40,7 +40,7 @@ module.exports = {
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`queue\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
                 errorLog('An error occurred with prefix queue command!')
                 console.log(err);
             });
