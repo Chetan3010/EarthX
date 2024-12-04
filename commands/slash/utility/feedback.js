@@ -47,7 +47,7 @@ module.exports = {
             const guild = await client.guilds.fetch(feedbackGuildId);
             if (!guild) {
                 await interaction.reply({
-                    embeds: [errorEmbed(` Guild not found, please contact developer`)],
+                    embeds: [errorEmbed(` Feedback is not supported yet, please contact developer directly`)],
                     ephemeral: true
                 })
                 return;
@@ -56,7 +56,7 @@ module.exports = {
             const channel = guild.channels.cache.get(feedbackChannelId) || await guild.channels.fetch(feedbackChannelId);
             if (!channel || !channel.isTextBased()) {
                 await interaction.reply({
-                    embeds: [errorEmbed(` Channel not found or channel is not a text-based channel, please contact developer`)],
+                    embeds: [errorEmbed(` Feedback is not supported yet, please contact developer directly`)],
                     ephemeral: true
                 })
                 return;
