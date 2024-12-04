@@ -264,14 +264,6 @@ const queueEmbedResponse = (messageOrInteraction, queue, title = 'Queue') => {
                     .setDescription(`${sad} Queue is currently empty.`)
             ]
         });
-
-        try {
-            setTimeout(() => {
-                messageOrInteraction.deleteReply()
-            }, BOT_MSGE_DELETE_TIMEOUT)
-        } catch (error) {
-            console.log(error);
-        }
     }
     // Reply to the interaction with the SINGLE embed
     else if (usableEmbeds.length === 1) messageOrInteraction.reply({ embeds: usableEmbeds }).catch(() => { /* Void */ });
