@@ -127,6 +127,13 @@ For developers looking to host their own instance:
    npm start
    ```
 
+##### Note :-
+Emojis in the embed will not work unless your bot has access to them. You have two options: 
+1. Upload all emojis to the Discord Developer Portal's bot emojis API. Replace markdown with `config/emojis.js` respective emojis.
+2. Alternatively, you can upload the emojis to a server and replace the IDs in the `config/emojis.js` file with the corresponding emoji IDs. Ensure that your bot is in the same server as the emojis you are using.
+
+Checkout emojis folder to get all your emojis.
+
 ## 🛠️ Technologies Used
 
 - [discord.js](https://discord.js.org/) v14 - A powerful JavaScript library for interacting with the Discord API
