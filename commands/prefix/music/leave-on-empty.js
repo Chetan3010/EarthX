@@ -1,33 +1,38 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { errorEmbed, successEmbed, requireSessionConditions } = require('../../../helper/utils');
-const { useMainPlayer, useQueue } = require('discord-player');
-const GuildModel = require('../../../schema/guild');
-const { errorLog } = require('../../../configs/logger');
-const { botColor } = require('../../../configs/config');
-const { disabled, enabled } = require('../../../configs/emojis');
+const { useQueue, useMainPlayer } = require("discord-player");
+const { errorLog } = require("../../../configs/logger");
+const { requireSessionConditions, errorEmbed } = require("../../../helper/utils");
+const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
+const GuildModel = require("../../../schema/guild");
+const { botColor } = require("../../../configs/config");
+const { EmbedBuilder } = require("discord.js");
+const { disabled, enabled } = require("../../../configs/emojis");
 
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: [],
-    data: new SlashCommandBuilder()
-        .setName('247')
-        .setDescription("Toggle 247 mode and stays in the vc even if song end and empty channel"),
-    async execute(interaction, client) {
-        try {
-            if (!requireSessionConditions(interaction, false, true, false)) return;
+    aliases: ['loe', '247', '24/7'],
+    data: {
+        name: 'leave-on-empty'
+    },
 
-            const clientSettings = await GuildModel.findOne({ guildId: interaction.guild.id })
+    async execute(client, message) {
+
+        try {
+
+            // Check state
+            if (!requireSessionConditions(message, false, true, false)) return;
+
+            const clientSettings = await GuildModel.findOne({ guildId: message.guildId })
             clientSettings.leaveOnEmpty = !clientSettings.leaveOnEmpty
             await clientSettings.save()
 
-            const queue = useQueue(interaction.guild.id)
+            const queue = useQueue(message.guildId)
             if (queue) {
                 queue.options.leaveOnEmpty = clientSettings.leaveOnEmpty
             } else {
                 if (!clientSettings.leaveOnEmpty) {
                     const player = useMainPlayer();
-                    const queue = player.queues.create(interaction.guild.id, {
+                    const queue = player.queues.create(message.guildId, {
                         // requestedBy: interaction.user,
                         // nodeOptions: {
                         repeatMode: clientSettings.repeatMode,
@@ -45,17 +50,19 @@ module.exports = {
                         pauseOnEmpty: clientSettings.pauseOnEmpty,
                         selfDeaf: clientSettings.selfDeaf,
                         metadata: {
-                            channel: interaction.channel,
-                            member: interaction.member,
-                            timestamp: interaction.createdTimestamp
+                            channel: message.channel,
+                            member: message.member,
+                            timestamp: message.createdTimestamp,
+                            interaction: message
                         }
                         // },
                     });
-                    await queue.connect(interaction.member.voice.channel);
+
+                    await queue.connect(message.member.voice.channel);
                 }
             }
 
-            await interaction.reply({
+            await message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor(botColor)
@@ -63,15 +70,17 @@ module.exports = {
                 ]
             })
 
-        } catch (error) {
-            await interaction.reply({
-                embeds: [
-                    errorEmbed(`Something went wrong while executing \`/247\` command`)
-                ],
-                ephemeral: true
-            });
-            errorLog(error)
         }
-
+        catch (error) {
+            errorLog(error.message);
+            return message.reply({
+                embeds: [
+                    errorEmbed(`Something went wrong while executing \`leave-on-empty\` command`)
+                ],
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
+                errorLog('An error occurred with prefix leave-on-empty command!')
+                console.log(err);
+            });
+        }
     },
 };

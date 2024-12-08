@@ -1,8 +1,7 @@
-const { usePlayer, useQueue } = require("discord-player");
+const { useQueue } = require("discord-player");
 const { errorLog } = require("../../../configs/logger");
 const { requireSessionConditions, errorEmbed, successEmbed } = require("../../../helper/utils");
-const { BOT_MSGE_DELETE_TIMEOUT, ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
-const { success } = require("../../../configs/emojis");
+const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 
 module.exports = {
     category: 'music',
