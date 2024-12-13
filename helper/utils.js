@@ -13,7 +13,7 @@ const requireSessionConditions = (
     requireDJRole = false // Explicit set to false for public commands not available as of now
 ) => {
     // Determine if it's an interaction or a message
-    const isInteraction = interactionOrMessage.isCommand?.(); 
+    const isInteraction = interactionOrMessage.isCommand?.();
     const guild = isInteraction ? interactionOrMessage.guild : interactionOrMessage.member.guild;
     const member = isInteraction ? interactionOrMessage.member : interactionOrMessage.member;
 
@@ -394,7 +394,7 @@ const errorEmbed = (content) => new EmbedBuilder().setColor(errorColor).setDescr
 
 const successEmbed = (content) => new EmbedBuilder().setColor(botColor).setDescription(`${success} ${content}.`)
 
-const nowPlayingEmbed = (interaction, client, queue) => {
+const nowPlayingEmbed = (interactionOrMessage, client, queue) => {
     const { currentTrack } = queue;
 
     const np = new EmbedBuilder()
@@ -418,8 +418,8 @@ const nowPlayingEmbed = (interaction, client, queue) => {
             { name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${currentTrack.url})`, inline: true },
         )
         .setFooter({
-            iconURL: interaction.user.displayAvatarURL(),
-            text: `Requested by ${interaction.user.username}`
+            iconURL: interactionOrMessage?.user?.displayAvatarURL() || interactionOrMessage?.author?.displayAvatarURL() || "NA",
+            text: `Requested by ${interactionOrMessage?.user?.username || interactionOrMessage?.author?.username || "NA"}`
         })
         .setTimestamp()
 
@@ -489,7 +489,7 @@ const getSuggestedSongs = async (track) => {
 
     } catch (error) {
         console.error('Error getting song recommendations:', error);
-        return []; 
+        return [];
     }
 }
 
