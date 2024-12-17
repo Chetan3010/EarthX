@@ -1,4 +1,4 @@
-# 🎵 EarthX Discord Music Bot
+# 🎵 EarthX Discord Music Bot ( 🚅 v2 is on the way...)
 
 ![EarthX Banner](./assets/images/earthx-banner.png)
 
@@ -24,7 +24,8 @@ EarthX is a feature-rich Discord music bot built with discord.js v14+, discord-p
 - 🧹 Automatic message cleanup for a clutter-free chat experience
 - 📊 Comprehensive logging system for easy monitoring and debugging
 - 🔧 Easily extendable for future feature additions
-
+- 🗨️ Prefix will be available soon... 
+- 🔍 better error handling soon...
 ## 🎮 Commands
 
 EarthX offers a variety of music-related commands to enhance your Discord server's audio experience:
