@@ -2,7 +2,6 @@ const fs = require('node:fs');
 require('dotenv').config()
 const { token, spotifyClientId, spotifyClientSecret, mongoConnection } = process.env
 
-const DeezerExtractor = require("discord-player-deezer").default
 const TidalExtractor = require('discord-player-tidal').default
 
 const { Client, Collection, GatewayIntentBits, ActivityType } = require('discord.js');
@@ -21,6 +20,7 @@ const { connect } = require('mongoose');
 const chalk = require('chalk');
 const { infoLog } = require('./configs/logger');
 const { generateOauthTokens, YoutubeiExtractor } = require('discord-player-youtubei');
+const { DeezerExtractor } = require('discord-player-deezer');
 
 const client = new Client({
     presence: {

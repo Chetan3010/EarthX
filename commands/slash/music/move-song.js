@@ -101,7 +101,7 @@ module.exports = {
 	
 					const updatedEmbed = new EmbedBuilder(embedObject);
 	
-					msg.edit({ embeds: [updatedEmbed] });
+					await msg.edit({ embeds: [updatedEmbed] });
 				}
 			}
 			// use toPosition, because it's after #swap
