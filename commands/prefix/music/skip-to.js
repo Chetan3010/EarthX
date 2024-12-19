@@ -14,6 +14,7 @@ module.exports = {
 
     async execute(client, message, params) {
 
+        return null;
         const jumpToIndex = Number(params[0]) - 1;
 
         // Check state
