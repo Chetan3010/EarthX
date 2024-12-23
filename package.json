@@ -13,7 +13,7 @@
   "dependencies": {
     "@discord-player/extractor": "^4.5.1",
     "@discordjs/rest": "^2.4.0",
-    "chalk": "^4.1.2",
+    "chalk": "^5.4.1",
     "common-tags": "^1.8.2",
     "discord-player": "^6.7.1",
     "discord-player-deezer": "^2.1.0",
