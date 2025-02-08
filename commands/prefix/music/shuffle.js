@@ -10,7 +10,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['mix'],
     data: {
-        name: 'shuffle'
+        name: 'shuffle',
+        description: "Randomly shuffle all songs in the current queue"
     },
 
     async execute(client, message) {
@@ -36,10 +37,7 @@ module.exports = {
                     embedObject.fields[fieldIndex].value = `${arrow} ${nextTrack ? `[${nextTrack.cleanTitle}](${nextTrack.url})` : 'No more songs in the queue.'}`
                 } else {
                     await message.reply({ embeds: [errorEmbed(`Something went wrong while updating current track embed`)] })
-                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occured with prefix shuffle command!')
-                        console.log(err);
-                    })
+                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
                 }
 
                 const updatedEmbed = new EmbedBuilder(embedObject);
@@ -59,15 +57,12 @@ module.exports = {
                 ]
             })
         } catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`shuffle\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix shuffle command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

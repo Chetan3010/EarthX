@@ -8,9 +8,10 @@ const { wait } = require("../../../configs/emojis");
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['rp'],
+    aliases: ['restart'],
     data: {
-        name: 'replay'
+        name: 'replay',
+        description: "Restart the currently playing song from the beginning"
     },
     async execute(client, message) {
 
@@ -31,21 +32,15 @@ module.exports = {
 
             // Create success response
             await msge.edit({ embeds: [successEmbed(` Replaying current song - By ${message.author}`)] })
-                .then(msg => setTimeout(() => msg.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                    errorLog('An error occurred with prefix queue command!')
-                    console.log(err);
-                });
+                .then(msg => setTimeout(() => msg.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
 
         } catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`replay\` command`)
                 ],
-            }).then(msg => setTimeout(() => msg.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix replay command!')
-                console.log(err);
-            });
+            }).then(msg => setTimeout(() => msg.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

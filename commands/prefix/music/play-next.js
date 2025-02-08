@@ -9,7 +9,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['pn'],
     data: {
-        name: 'play-next'
+        name: 'play-next',
+        description: "Add a song to play immediately after the current song. Usage: play-next <song name/URL>"
     },
     async execute(client, message, params) {
 
@@ -28,10 +29,7 @@ module.exports = {
                     embeds: [
                         errorEmbed(`Please provide query to play the song`)
                     ],
-                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
-                    errorLog('An error occured with prefix play-next command!')
-                    console.log(err);
-                })
+                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
             // Check is valid
@@ -41,10 +39,7 @@ module.exports = {
 
             if (!searchResult.hasTracks()) {
                 return message.reply({ embeds: [errorEmbed(` No tracks found for search \`${query}\``)] })
-                    .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occured with prefix play-next command!')
-                        console.log(err);
-                    })
+                    .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
             // Ok
@@ -55,21 +50,15 @@ module.exports = {
             // Swap first and last conditionally
             queue.swapTracks(0, queue.tracks.data.length - 1);
             return message.reply({ embeds: [successEmbed(` [${escapeMarkdown(firstMatchTrack.title)}](${firstMatchTrack.url}) song has been added to the front of the queue - By ${message.author}`)] })
-                .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
-                    errorLog('An error occured with prefix play-next command!')
-                    console.log(err);
-                })
+                .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
 
         } catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`play-next\` command`)
                 ],
-            }).then(msg => setTimeout(() => msg.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix play-next command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

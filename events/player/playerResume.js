@@ -11,7 +11,7 @@ module.exports = {
 		try {
 			if (queue.metadata?.pauseMsge) queue.metadata.channel.messages.delete(queue.metadata.pauseMsge);
 
-			if (queue.metadata.interaction.guild.members.me?.voice?.channel.members.size === 1) return; // Ignore this resume event
+			if (!queue.metadata.interaction.guild.members.me?.voice?.channel || queue.metadata.interaction.guild.members.me.voice.channel.members.size === 1) return; // Ignore this resume event
 			// Restart the interval updates
 			// const interval = setInterval(async () => {
 			// 	if (!queue.currentTrack || queue.currentTrack.id !== queue.metadata.currentTrackId) {
@@ -47,8 +47,7 @@ module.exports = {
 				]
 			}).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT));
 		} catch (error) {
-			errorLog('An error occurred with player event!');
-			console.log(error);
+			errorLog(error);
 		}
 	}
 }

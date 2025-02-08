@@ -1,6 +1,6 @@
 const { useQueue, QueueRepeatMode } = require("discord-player");
-const { requireSessionConditions, errorEmbed, startedPlayingMenu, successEmbed, repeatModeEmojiStr } = require("../../../helper/utils");
-const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
+const { requireSessionConditions, errorEmbed, repeatModeEmojiStr } = require("../../../helper/utils");
+const { ERROR_MSGE_DELETE_TIMEOUT, BOT_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 const { arrow, leftAngleDown, enabled, disabled } = require("../../../configs/emojis");
 const { EmbedBuilder } = require("discord.js");
 const { errorLog } = require("../../../configs/logger");
@@ -11,7 +11,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['ap'],
     data: {
-        name: 'autoplay'
+        name: 'autoplay',
+        description: "Toggle autoplay mode which automatically plays similar songs when the queue is empty"
     },
 
     async execute(client, message) {
@@ -20,14 +21,11 @@ module.exports = {
         if (!requireSessionConditions(message)) return;
 
         try {
-            
+
             const queue = useQueue(message.guildId);
             if (!queue) {
                 return message.reply({ embeds: [errorEmbed(` No music is being played - initialize a session first to set mode`)] })
-                .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                    errorLog('An error occurred with prefix autoplay command!')
-                    console.log(err);
-                });
+                    .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
             let isAutoplay = null
@@ -50,10 +48,7 @@ module.exports = {
                     embedObject.fields[fieldIndex].value = `${arrow} ${repeatModeEmojiStr(queue.repeatMode)}`;
                 } else {
                     return message.reply({ embeds: [errorEmbed(`Something went wrong while updating current track embed`)] })
-                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occurred with prefix autoplay command!')
-                        console.log(err);
-                    });
+                        .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
                 }
 
                 const updatedEmbed = new EmbedBuilder(embedObject);
@@ -76,15 +71,12 @@ module.exports = {
             });
 
         } catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`autoplay\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix autoplay command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

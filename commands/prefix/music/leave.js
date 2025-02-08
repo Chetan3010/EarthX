@@ -9,7 +9,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['l'],
     data: {
-        name: 'leave'
+        name: 'leave',
+        description: "Make the bot leave the current voice channel and clear the queue"
     },
 
     async execute(client, message) {
@@ -24,10 +25,7 @@ module.exports = {
                     embeds: [
                         errorEmbed(` I'm not connected to any voice channel`)
                     ],
-                }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                    errorLog('An error occurred while deleting message in leave prefix command')
-                    console.log(err);
-                });
+                }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
                 
             }
 
@@ -50,15 +48,12 @@ module.exports = {
             return message.react(success)
 
         } catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`leave\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix leave command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

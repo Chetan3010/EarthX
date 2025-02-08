@@ -79,8 +79,7 @@ module.exports = {
                 });
             }
         } catch (error) {
-            errorLog('An error occurred in audioTrackAdd event');
-            console.error(error);
+            errorLog(error);
         }
     }
 };

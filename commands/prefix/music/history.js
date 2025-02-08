@@ -8,7 +8,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['h'],
     data: {
-        name: 'history'
+        name: 'history',
+        description: "Display the history of previously played songs in this session"
     },
 
     async execute(client, message) {
@@ -29,15 +30,12 @@ module.exports = {
             queueEmbedResponse(message, history, 'History');
 
         } catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`history\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix history command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

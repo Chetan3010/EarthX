@@ -1,8 +1,9 @@
 const chalk = require("chalk");
 const { infoLog } = require("../../configs/logger");
+const { Events } = require("discord.js");
 
 module.exports = {
-	name: 'ready',
+	name: Events.ClientReady,
 	on: true,
 	async execute(client) {
 		const upTimeStr = chalk.yellow(`${Math.floor(process.uptime()) || 1} second(s)`);

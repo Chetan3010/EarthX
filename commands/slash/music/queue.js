@@ -42,7 +42,7 @@ module.exports = {
                 ],
                 ephemeral: true
             });
-            errorLog(error.message)
+            errorLog(error)
         }
     },
 };

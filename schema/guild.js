@@ -9,6 +9,10 @@ const guildSchema = new mongoose.Schema({
     guildName: {
         type: String,
     },
+    isPrefixCmdEnable: {
+        type: Boolean,
+        default: false
+    },
     prefix: {
         type: String,
         default: '.'

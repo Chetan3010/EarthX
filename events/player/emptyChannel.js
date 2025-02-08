@@ -19,9 +19,6 @@ module.exports = {
                     .setColor(botColor)
                     .setDescription(msge)
             ]
-        }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(error => {
-            errorLog('An error occured with player event!')
-            console.log(error);
-        })
+        }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
     }
 }

@@ -1,28 +1,36 @@
 {
   "name": "earthex",
-  "version": "1.0.0",
-  "description": "Discord Bot",
+  "version": "1.5.0",
+  "description": "A Discord music bot with high quality audio and Spotify support",
   "main": "bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./bot.js",
-    "docker": "docker run --env-file .env  earthx-server"
+    "start": "node bot.js",
+    "dev": "nodemon bot.js"
   },
-  "author": "Chetan Kale",
+  "keywords": [
+    "discord",
+    "bot",
+    "music",
+    "spotify",
+    "youtube"
+  ],
+  "author": "EarthX",
   "license": "ISC",
   "dependencies": {
     "@discord-player/extractor": "^4.5.1",
     "@discordjs/rest": "^2.4.0",
+    "@discordjs/voice": "^0.18.0",
     "chalk": "^4.1.2",
     "common-tags": "^1.8.2",
     "discord-player": "^6.7.1",
     "discord-player-deezer": "^1.0.1",
     "discord-player-tidal": "^0.1.0",
-    "discord-player-youtubei": "^1.3.5",
+    "discord-player-youtubei": "^1.3.7",
     "discord.js": "^14.16.3",
     "dotenv": "^16.4.5",
     "mediaplex": "^0.0.9",
-    "mongoose": "^8.8.1",
+    "mongoose": "^8.9.2",
+    "play-dl": "^1.9.7",
     "ytdl-core": "^4.11.5"
   }
 }

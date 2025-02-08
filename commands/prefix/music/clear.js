@@ -10,7 +10,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['c'],
     data: {
-        name: 'clear'
+        name: 'clear',
+        description: "Clear all songs from the current queue except the currently playing song"
     },
 
     async execute(client, message) {
@@ -22,10 +23,7 @@ module.exports = {
 
             if (queue?.tracks.toArray().length === 0) {
                 return message.reply({ embeds: [errorEmbed(` There is nothing in the queue nor playing anything`)] })
-                .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                    errorLog('An error occurred with prefix clear command!')
-                    console.log(err);
-                });
+                .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
             queue.clear();
@@ -42,10 +40,7 @@ module.exports = {
                     embedObject.fields[fieldIndex].value = `${arrow} ${nextTrack ? `[${nextTrack.cleanTitle}](${nextTrack.url})` : 'No more songs in the queue.'}`
                 } else {
                     return message.reply({ embeds: [errorEmbed(`Something went wrong while updating current track embed`)] })
-                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occurred while updating current track embed!')
-                        console.log(err);
-                    });
+                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
                 }
 
                 const { currentTrack } = queue;
@@ -61,19 +56,14 @@ module.exports = {
             }
 
             return message.reply({ embeds: [successEmbed(` The queue has been cleared - By ${message.author}`)] })
-            .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
-                console.log(err);
-            });
+            .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         } catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`clear\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix clear command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

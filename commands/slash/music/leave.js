@@ -38,10 +38,6 @@ module.exports = {
                 }
             }
 
-            // if (queue.metadata?.updateInterval) {
-            //     clearInterval(queue.metadata.updateInterval);
-            // }
-
             if (!queue?.deleted) queue?.delete();
 
             await interaction.reply({

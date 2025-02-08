@@ -9,7 +9,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['pause', 'resume', 'pr'],
     data: {
-        name: 'pause-resume'
+        name: 'pause-resume',
+        description: "Toggle between pausing and resuming the current song"
     },
 
     async execute(client, message) {
@@ -23,15 +24,12 @@ module.exports = {
             guildPlayerNode.setPaused(newPauseState);
             return message.react(success)
         } catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`pause-resume\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix pause-resume command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

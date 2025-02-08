@@ -9,12 +9,12 @@ module.exports = {
     cooldown: 3,
     aliases: ['st'],
     data: {
-        name: 'skip-to'
+        name: 'skip-to',
+        description: "Skip to a specific position in the queue. Usage: skip-to <position number>"
     },
 
     async execute(client, message, params) {
 
-        return null;
         const jumpToIndex = Number(params[0]) - 1;
 
         // Check state
@@ -25,43 +25,35 @@ module.exports = {
             // Check has queue
             const queue = useQueue(message.guildId);
             if (queue.isEmpty()) {
-                return message.reply({ embeds: [errorEmbed(` Queue is currently empty`)] })
-                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occurred while executing jump-to command!')
-                        console.log(err);
-                    });
+                return message.reply({ embeds: [errorEmbed(`Queue is currently empty`)] })
+                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
+            if (jumpToIndex <= 0) {
+                return message.reply({ embeds: [errorEmbed(`Please provide the valid value more than 0`)] })
+                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
+            }
             // Check bounds
             const queueSizeZeroOffset = queue.size - 1;
             if (jumpToIndex > queueSizeZeroOffset) {
-                return message.reply({ embeds: [errorEmbed(` There is nothing at queue position ${jumpToIndex + 1}, The highest position is ${queue.size}`)] })
-                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occurred while executing jump-to command!')
-                        console.log(err);
-                    });
+                return message.reply({ embeds: [errorEmbed(`There is nothing at queue position ${jumpToIndex + 1}, The highest position is ${queue.size}`)] })
+                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
             // Jump to position
             const track = queue.tracks.at(jumpToIndex);
             queue.node.skipTo(jumpToIndex);
             return message.reply({ embeds: [successEmbed(` Skipping to [${escapeMarkdown(track.title)}](${track.url}) song directly and removed everything up to the song - By ${message.author}`)] })
-                .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
-                    errorLog('An error occurred while executing jump-to command!')
-                    console.log(err);
-                });
+                .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
 
         }
         catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`skip-to\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix skip-to command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

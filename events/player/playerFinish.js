@@ -17,8 +17,7 @@ module.exports = {
             queue.metadata.currentTrackId = null;
 
         } catch (error) {
-            errorLog('An error occurred in playerFinish event!');
-            console.log(error);
+            errorLog(error);
         }
     }
 };

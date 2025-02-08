@@ -95,7 +95,7 @@ module.exports = {
 						setTimeout(() => {
 							interaction.deleteReply()
 						}, ERROR_MSGE_DELETE_TIMEOUT);
-						errorLog(error)
+						errorLog(new Error('Failed to update current track embed'));
 						return;
 					}
 	

@@ -6,9 +6,10 @@ const { ERROR_MSGE_DELETE_TIMEOUT } = require("../../../helper/constants");
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['jump-to', 'jt'],
+    aliases: ['jt'],
     data: {
-        name: 'jump'
+        name: 'jump-to',
+        description: "Jump to a specific position in the queue without removing other songs. Usage: jump-to <position number>"
     },
 
     async execute(client, message, params) {
@@ -49,15 +50,12 @@ module.exports = {
                 });
         }
         catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`jump-to\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix jump-to command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

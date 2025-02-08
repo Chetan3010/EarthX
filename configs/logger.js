@@ -3,7 +3,17 @@ const { separator } = require("./emojis");
 
 const maxLevelLength = 10
 
-const errorLog = (content) => console.log(`${chalk.cyan(`[${new Date().toLocaleTimeString()}]`)} ${chalk.redBright(`${'[ERROR]'.padEnd(maxLevelLength)}`)} : ${chalk.red(content)}`);
+const errorLog = (error) => {
+    let msge = null
+    if (error && error.stack) {
+        const stackLines = error.stack.split("\n");
+        const callerInfo = stackLines[1];
+        msge = chalk.red(`${error.message} -> ${callerInfo}`)
+    } else {
+        msge = chalk.red(`${error.message || error} -> Unknown caller`)
+    }
+    console.log(`${chalk.cyan(`[${new Date().toLocaleTimeString()}]`)} ${chalk.redBright(`${'[ERROR]'.padEnd(maxLevelLength)}`)} : ${msge}`);
+}
 
 const cmdLog = (commandName, commandType, guildName, channelName, member) => {
     const time = chalk.cyan(`[${new Date().toLocaleTimeString()}]`)

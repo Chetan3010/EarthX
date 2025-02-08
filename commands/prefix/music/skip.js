@@ -9,7 +9,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['next', 's'],
     data: {
-        name: 'skip'
+        name: 'skip',
+        description: "Skip the currently playing song and play the next song in queue"
     },
 
     async execute(client, message) {
@@ -25,10 +26,7 @@ module.exports = {
                     embeds: [
                         errorEmbed(`No music is currently being played`)
                     ]
-                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
-                    errorLog('An error occurred with prefix skip command!')
-                    console.log(err);
-                });
+                }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
             const successSkip = guildPlayerNode.skip();
@@ -39,22 +37,16 @@ module.exports = {
                     embeds: [
                         errorEmbed(`Something went wrong - couldn't skip current playing song`)
                     ]
-                }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                    errorLog('An error occurred with prefix skip command!')
-                    console.log(err);
-                });
+                }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
         }
         catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`skip\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix skip command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

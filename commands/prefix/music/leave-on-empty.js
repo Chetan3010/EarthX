@@ -10,9 +10,10 @@ const { disabled, enabled } = require("../../../configs/emojis");
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['loe', '247', '24/7'],
+    aliases: ['loe', '24/7'],
     data: {
-        name: 'leave-on-empty'
+        name: 'leave-on-empty',
+        description: "Toggle whether the bot should leave when the voice channel is empty. Use for 24/7 mode"
     },
 
     async execute(client, message) {
@@ -72,15 +73,12 @@ module.exports = {
 
         }
         catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`leave-on-empty\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix leave-on-empty command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

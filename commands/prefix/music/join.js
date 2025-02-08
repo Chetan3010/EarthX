@@ -10,7 +10,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['j'],
     data: {
-        name: 'join'
+        name: 'join',
+        description: "Make the bot join your current voice channel"
     },
 
     async execute(client, message) {
@@ -51,15 +52,12 @@ module.exports = {
             return message.react(success)
 
         } catch (error) {
-            errorLog(error.message);
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`join\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occurred with prefix join command!')
-                console.log(err);
-            });
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     },
 };

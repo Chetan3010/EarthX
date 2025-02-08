@@ -426,7 +426,7 @@ const nowPlayingEmbed = (interactionOrMessage, client, queue) => {
     return np
 }
 
-const saveSongEmbed = (interaction, client, queue) => {
+const saveSongEmbed = (interactionOrMessage, client, queue) => {
     const { currentTrack } = queue;
 
     const np = new EmbedBuilder()
@@ -444,13 +444,13 @@ const saveSongEmbed = (interaction, client, queue) => {
             { name: `${leftAngleDown} Source`, value: `${arrow} ${titleCase(currentTrack.source)}`, inline: true },
         )
         .addFields(
-            { name: `${leftAngleDown} Uploaded at`, value: `${arrow} ${currentTrack.metadata?.uploadedAt || new Date(currentTrack.metadata?.source?.releaseDate.isoString).toLocaleDateString('en-US') || 'NA'}`, inline: true },
+            { name: `${leftAngleDown} Uploaded at`, value: `${arrow} ${currentTrack.metadata?.uploadedAt || currentTrack.metadata?.source?.releaseDate.isoString ? new Date(currentTrack.metadata?.source?.releaseDate.isoString).toLocaleDateString('en-US') : 'NA'}`, inline: true },
             { name: `${leftAngleDown} Likes`, value: `${arrow} ${currentTrack.raw?.likes || currentTrack.metadata.bridge?.likes || 'NA'}`, inline: true },
             { name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${currentTrack.url})`, inline: true },
         )
         .setFooter({
-            iconURL: interaction.user.displayAvatarURL(),
-            text: `Requested by ${interaction.user.username}`
+            iconURL: interactionOrMessage?.user?.displayAvatarURL() || interactionOrMessage?.author?.displayAvatarURL() || "NA",
+            text: `Requested by ${interactionOrMessage?.user?.username || interactionOrMessage?.author?.username || "NA"}`
         })
         .setTimestamp()
 

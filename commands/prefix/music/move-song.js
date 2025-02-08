@@ -11,9 +11,10 @@ const TO_OPTION_ID = 'to-position';
 module.exports = {
     category: 'music',
     cooldown: 3,
-    aliases: ['move-to', 'mt'],
+    aliases: ['mv'],
     data: {
-        name: 'move'
+        name: 'move-song',
+        description: "Move a song from one position to another in the queue. Usage: move-song <from position> <to position>"
     },
 
     async execute(client, message, params) {
@@ -28,12 +29,8 @@ module.exports = {
 
             // Better checking
             if (!fromPosition || !toPosition) {
-                console.log("inside");
                 return message.reply({ embeds: [errorEmbed(` Please enter valid position number from 1`)] })
-                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occurred with prefix move-to command!')
-                        // console.log(err);
-                    });
+                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
             const queue = useQueue(message.guildId);
 
@@ -42,10 +39,7 @@ module.exports = {
             // Not enough songs in queue
             if ((queue?.size ?? 0) < 2) {
                 return message.reply({ embeds: [errorEmbed(` Not enough songs in queue to perform any move action`)] })
-                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occurred with prefix move-to command!')
-                        console.log(err);
-                    });
+                    .then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
             // Check bounds/constraints

@@ -9,7 +9,8 @@ module.exports = {
     cooldown: 3,
     aliases: ['np'],
     data: {
-        name: 'now-playing'
+        name: 'now-playing',
+        description: "Display information about the currently playing song"
     },
     async execute(client, message) {
 
@@ -20,34 +21,25 @@ module.exports = {
             const queue = useQueue(message.guildId);
             if (!queue) {
                 return message.reply({ embeds: [errorEmbed(` Queue is currently empty`)] })
-                    .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occured with prefix now-playing command!')
-                        console.log(err);
-                    })
+                    .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
             const { currentTrack } = queue;
             if (!currentTrack) {
                 return message.reply({ embeds: [errorEmbed(`Can't fetch information of current playing song`)] })
-                    .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => {
-                        errorLog('An error occured with prefix now-playing command!')
-                        console.log(err);
-                    })
+                    .then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
             }
 
             const npEmbed = nowPlayingEmbed(message, client, queue);
             return message.reply({ embeds: [npEmbed] });
 
         } catch (error) {
-            errorLog(error.message)
+            errorLog(error);
             return message.reply({
                 embeds: [
                     errorEmbed(`Something went wrong while executing \`now-playing\` command`)
                 ],
-            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => {
-                errorLog('An error occured with prefix now-playing command!')
-                console.log(err);
-            })
+            }).then(msge => setTimeout(() => msge.delete(), ERROR_MSGE_DELETE_TIMEOUT)).catch(err => errorLog(err));
         }
     }
 };

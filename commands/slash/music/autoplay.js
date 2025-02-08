@@ -52,7 +52,7 @@ module.exports = {
                     setTimeout(() => {
                         interaction.deleteReply()
                     }, ERROR_MSGE_DELETE_TIMEOUT);
-                    errorLog(error)
+                    errorLog(new Error('Failed to update current track embed'));
                     return;
                 }
 
@@ -63,9 +63,9 @@ module.exports = {
 
             let msge = ''
             if (isAutoplay) {
-                msge = `${enabled} Autoplay is now **[enabled](https://discord.com/channels/1248989810459152384/1254197147662815343/${queue.metadata.nowPlaying})** for the current session.\nIf you want it persistent use \`/repeat-mode\` with persistent true`
+                msge = `${enabled} Autoplay is now **[enabled](https://discord.com)** for the current session.\nIf you want it persistent use \`/repeat-mode\` with persistent true`
             } else {
-                msge = `${disabled} Autoplay is now **[disabled](https://discord.com/channels/1248989810459152384/1254197147662815343/${queue.metadata.nowPlaying})** for the current session.\nIf you want it persistent use \`/repeat-mode\` with persistent true`
+                msge = `${disabled} Autoplay is now **[disabled](https://discord.com)** for the current session.\nIf you want it persistent use \`/repeat-mode\` with persistent true`
             }
             await interaction.reply({
                 embeds: [
