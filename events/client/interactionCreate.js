@@ -1,18 +1,18 @@
-const { Collection, InteractionType } = require("discord.js");
+const { Collection, InteractionType, Events } = require("discord.js");
 const { errorLog, cmdLog, warningLog, infoLog } = require("../../configs/logger");
 const chalk = require("chalk");
 const { getRuntime, errorEmbed } = require("../../helper/utils");
 const { OWNERID } = require("../../helper/constants");
 
 module.exports = {
-	name: 'interactionCreate',
+	name: Events.InteractionCreate,
 	async execute(interaction, client) {
 		if (interaction.isChatInputCommand()) {
-			const { commands } = client;
+			const { slashCommands } = client;
 			const { commandName } = interaction;
-			const command = commands.get(commandName)
+			const command = slashCommands.get(commandName)
 
-			// For message commandds aliases -> || commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+			// For message commandds aliases -> || slashCommands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
 			if (!command) {
 				warningLog(`No command matching ${commandName} was found.`)
@@ -52,13 +52,18 @@ module.exports = {
 			try {
 				await command.execute(interaction, client);
 			} catch (error) {
+				errorLog(error);
 				if (interaction.replied || interaction.deferred) {
-					await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+					await interaction.followUp({
+						content: 'There was an error while executing this command!',
+						ephemeral: true
+					});
 				} else {
-					await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+					await interaction.reply({
+						content: 'There was an error while executing this command!',
+						ephemeral: true
+					});
 				}
-				errorLog(`An error has occurred while executing the ${chalk.redBright(`/${command.data.name}`)} command.`)
-				console.error(error);
 			}
 
 			cmdLog(command.data.name, 'ApplicationCommand', interaction.guild.name, interaction.channel.name, interaction.member.user.username)
@@ -76,13 +81,12 @@ module.exports = {
 			try {
 				await button.execute(interaction, client)
 			} catch (error) {
+				errorLog(error);
 				if (interaction.replied || interaction.deferred) {
 					await interaction.followUp({ content: 'There was an error while executing this button!', ephemeral: true });
 				} else {
 					await interaction.reply({ content: 'There was an error while executing this button!', ephemeral: true });
 				}
-				errorLog(`An error has occurred while executing the button component.`)
-				console.error(error);
 			}
 			cmdLog(button.data.name, 'ButtonComponent', interaction.guild.name, interaction.channel.name, interaction.member.user.username)
 
@@ -99,13 +103,12 @@ module.exports = {
 			try {
 				await menu.execute(interaction, client);
 			} catch (error) {
+				errorLog(error);
 				if (interaction.replied || interaction.deferred) {
 					await interaction.followUp({ content: 'There was an error while executing this menu!', ephemeral: true });
 				} else {
 					await interaction.reply({ content: 'There was an error while executing this menu!', ephemeral: true });
 				}
-				errorLog(`An error has occurred while executing the menu component.`)
-				console.error(error);
 			}
 			cmdLog(menu.data.name, 'SelectMenuComponent', interaction.guild.name, interaction.channel.name, interaction.member.user.username)
 
@@ -119,8 +122,7 @@ module.exports = {
 			try {
 				await command.autocomplete(interaction, client)
 			} catch (error) {
-				errorLog(`Unknown error encountered while responding to autocomplete query in ${commandName}`)
-				console.error(error)
+				errorLog(error);
 			}
 			infoLog('DEBUG', '', `<${chalk.cyanBright(commandName)}> | Auto Complete | Queried "${chalk.green(query)}" in ${getRuntime(autoResponseQueryStart).ms} ms`)
 		}

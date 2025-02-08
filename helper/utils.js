@@ -7,12 +7,15 @@ const { GuildQueuePlayerNode, QueueRepeatMode, usePlayer, useQueue, useMainPlaye
 const { BOT_MSGE_DELETE_TIMEOUT, DEFAULT_DECIMAL_PRECISION, NS_IN_ONE_MS, NS_IN_ONE_SECOND } = require("./constants");
 
 const requireSessionConditions = (
-    interaction,
+    interactionOrMessage,
     requireVoiceSession = false,
     useInitializeSessionConditions = false,
     requireDJRole = false // Explicit set to false for public commands not available as of now
 ) => {
-    const { guild, member } = interaction;
+    // Determine if it's an interaction or a message
+    const isInteraction = interactionOrMessage.isCommand?.();
+    const guild = isInteraction ? interactionOrMessage.guild : interactionOrMessage.member.guild;
+    const member = isInteraction ? interactionOrMessage.member : interactionOrMessage.member;
 
     // Return early
     // if (!requireMusicChannel(interaction)) return false;
@@ -20,8 +23,9 @@ const requireSessionConditions = (
 
     // Check voice channel requirement
     const channel = member.voice?.channel;
+
     if (!channel) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 new EmbedBuilder()
                     .setColor(errorColor)
@@ -34,7 +38,7 @@ const requireSessionConditions = (
 
     const queue = useQueue(guild.id);
     if (queue && queue.channel.id !== channel.id) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 errorEmbed(`I'm playing in <#${queue.channel.id}>`)
             ],
@@ -45,16 +49,16 @@ const requireSessionConditions = (
 
     if (
         useInitializeSessionConditions === true
-        && requireInitializeSessionConditions(interaction) !== true
+        && requireInitializeSessionConditionsUnified(interactionOrMessage) !== true
     ) return false;
 
     else if (
         requireVoiceSession === true
         && !usePlayer(guild.id)?.queue
     ) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
-                errorEmbed(`No music is currently being played - use \`/play\` command to play something first.`)
+                errorEmbed(`No music is currently being played - use \`/play\` command to play something first`)
             ],
             ephemeral: true
         });
@@ -64,16 +68,14 @@ const requireSessionConditions = (
     return true;
 };
 
-const requireInitializeSessionConditions = (interaction) => {
-    // Destructure
-    const { member } = interaction;
-
-    // Check voice channel requirement
+const requireInitializeSessionConditionsUnified = (interactionOrMessage) => {
+    const isInteraction = interactionOrMessage.isCommand?.();
+    const member = isInteraction ? interactionOrMessage.member : interactionOrMessage.member;
     const channel = member.voice?.channel;
 
     // Can't see channel
     if (!channel.viewable) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 errorEmbed(`I don't have permission to see your voice channel - maybe I don't have permissions or something`)
             ],
@@ -84,7 +86,7 @@ const requireInitializeSessionConditions = (interaction) => {
 
     // Join channel
     if (!channel.joinable) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
                 errorEmbed(`I don't have permission to join your voice channel - maybe I don't have permissions or something`)
             ],
@@ -94,26 +96,32 @@ const requireInitializeSessionConditions = (interaction) => {
     }
 
     // Channel is full
-    // channel.userLimit >= channel.members.size
     if (
         channel.full
-        && !channel.members.some((m) => m.id === interaction.client.user.id)
+        && !channel.members.some((m) => m.id === interactionOrMessage.client.user.id)
     ) {
-        interaction.reply({
+        interactionOrMessage.reply?.({
             embeds: [
-                errorEmbed(`Your voice channel is currently full.`)
+                errorEmbed(`Your voice channel is currently full`)
             ],
             ephemeral: true
         });
         return false;
     }
 
-    // Ok
     return true;
 };
 
+const repeatModeEmojiStr = (repeatMode) => repeatMode === QueueRepeatMode.AUTOPLAY
+    ? ':gear: Autoplay'
+    : repeatMode === QueueRepeatMode.QUEUE
+        ? ':repeat: Queue'
+        : repeatMode === QueueRepeatMode.TRACK
+            ? ':repeat_one: Track'
+            : ':no_entry: Off';
+
 const handlePagination = async (
-    interaction,
+    messageOrInteraction,
     member,
     usableEmbeds,
     activeDurationMs = 60000 * 3,
@@ -128,9 +136,10 @@ const handlePagination = async (
         components: getPaginationComponents(pageNow, usableEmbeds.length, prevCustomId, nextCustomId),
         fetchReply: true
     };
-    const replyFunction = dynamicInteractionReplyFn(interaction, shouldFollowUpIfReplied);
+
+    const replyFunction = dynamicInteractionReplyFn(messageOrInteraction, shouldFollowUpIfReplied);
     const interactionMessage = await replyFunction
-        .call(interaction, initialCtx)
+        .call(messageOrInteraction, initialCtx)
         .catch((err) => {
             console.log('Error encountered while responding to interaction with dynamic reply function:');
             console.dir({
@@ -179,25 +188,30 @@ const handlePagination = async (
     });
 
     paginationCollector.on('end', () => {
-        interaction.editReply({
-            components: getPaginationComponents(
-                pageNow,
-                usableEmbeds.length,
-                prevCustomId,
-                nextCustomId,
-                true
-            )
-        }).catch(() => { /* Void */ });
+        const isInteraction = messageOrInteraction.isCommand?.();
+        if (isInteraction) {
+            messageOrInteraction.editReply({
+                components: getPaginationComponents(
+                    pageNow,
+                    usableEmbeds.length,
+                    prevCustomId,
+                    nextCustomId,
+                    true
+                )
+            }).catch(() => { /* Void */ });
+        } else {
+            messageOrInteraction.edit({
+                components: getPaginationComponents(
+                    pageNow,
+                    usableEmbeds.length,
+                    prevCustomId,
+                    nextCustomId,
+                    true
+                )
+            }).catch(() => { /* Void */ });
+        }
     });
 };
-
-const repeatModeEmojiStr = (repeatMode) => repeatMode === QueueRepeatMode.AUTOPLAY
-    ? ':gear: Autoplay'
-    : repeatMode === QueueRepeatMode.QUEUE
-        ? ':repeat: Queue'
-        : repeatMode === QueueRepeatMode.TRACK
-            ? ':repeat_one: Track'
-            : ':no_entry: Off';
 
 const queueEmbeds = (queue, guild, title) => {
     // Ok, display the queue!
@@ -237,32 +251,24 @@ const queueEmbeds = (queue, guild, title) => {
     return usableEmbeds;
 };
 
-const queueEmbedResponse = (interaction, queue, title = 'Queue') => {
-    const { guild, member } = interaction;
+const queueEmbedResponse = (messageOrInteraction, queue, title = 'Queue') => {
+    const { guild, member } = messageOrInteraction;
     // Ok, display the queue!
     const usableEmbeds = queueEmbeds(queue, guild, title);
     // Queue empty
     if (usableEmbeds.length === 0) {
-        interaction.reply({
+        messageOrInteraction.reply({
             embeds: [
                 new EmbedBuilder()
                     .setColor(botColor)
                     .setDescription(`${sad} Queue is currently empty.`)
             ]
         });
-
-        try {
-            setTimeout(() => {
-                interaction.deleteReply()
-            }, BOT_MSGE_DELETE_TIMEOUT)
-        } catch (error) {
-            console.log(error);
-        }
     }
     // Reply to the interaction with the SINGLE embed
-    else if (usableEmbeds.length === 1) interaction.reply({ embeds: usableEmbeds }).catch(() => { /* Void */ });
+    else if (usableEmbeds.length === 1) messageOrInteraction.reply({ embeds: usableEmbeds }).catch(() => { /* Void */ });
     // Properly handle pagination for multiple embeds
-    else handlePagination(interaction, member, usableEmbeds);
+    else handlePagination(messageOrInteraction, member, usableEmbeds);
 };
 
 const getPaginationComponents = (pageNow, pageTotal, prevCustomId, nextCustomId, disableAll = false) => {
@@ -283,15 +289,6 @@ const getPaginationComponents = (pageNow, pageTotal, prevCustomId, nextCustomId,
                     .setStyle(ButtonStyle.Secondary)
             )
     ];
-};
-
-const dynamicInteractionReplyFn = (interaction, shouldFollowUpIfReplied = false) => {
-    const interactionWasAcknowledged = interaction.deferred || interaction.replied;
-    return interactionWasAcknowledged
-        ? shouldFollowUpIfReplied
-            ? interaction.followUp
-            : interaction.editReply
-        : interaction.reply;
 };
 
 const handlePaginationButtons = (i, componentMember, pageNow, prevCustomId, nextCustomId, usableEmbeds) => {
@@ -336,6 +333,15 @@ const handlePaginationButtons = (i, componentMember, pageNow, prevCustomId, next
 
     // Passed checks
     return true;
+};
+
+const dynamicInteractionReplyFn = (messageOrInteraction, shouldFollowUpIfReplied = false) => {
+    const isInteraction = messageOrInteraction.deferred || messageOrInteraction.replied;
+    if (isInteraction) {
+        return shouldFollowUpIfReplied ? messageOrInteraction.followUp : messageOrInteraction.editReply;
+    } else {
+        return messageOrInteraction.reply;
+    }
 };
 
 const queueTrackCb = (track, idx) => `${++idx}. [${track.title}](${track.url}) - \`${track.duration}\`- ${track.requestedBy}`;
@@ -388,7 +394,7 @@ const errorEmbed = (content) => new EmbedBuilder().setColor(errorColor).setDescr
 
 const successEmbed = (content) => new EmbedBuilder().setColor(botColor).setDescription(`${success} ${content}.`)
 
-const nowPlayingEmbed = (interaction, client, queue) => {
+const nowPlayingEmbed = (interactionOrMessage, client, queue) => {
     const { currentTrack } = queue;
 
     const np = new EmbedBuilder()
@@ -412,15 +418,15 @@ const nowPlayingEmbed = (interaction, client, queue) => {
             { name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${currentTrack.url})`, inline: true },
         )
         .setFooter({
-            iconURL: interaction.user.displayAvatarURL(),
-            text: `Requested by ${interaction.user.username}`
+            iconURL: interactionOrMessage?.user?.displayAvatarURL() || interactionOrMessage?.author?.displayAvatarURL() || "NA",
+            text: `Requested by ${interactionOrMessage?.user?.username || interactionOrMessage?.author?.username || "NA"}`
         })
         .setTimestamp()
 
     return np
 }
 
-const saveSongEmbed = (interaction, client, queue) => {
+const saveSongEmbed = (interactionOrMessage, client, queue) => {
     const { currentTrack } = queue;
 
     const np = new EmbedBuilder()
@@ -438,13 +444,13 @@ const saveSongEmbed = (interaction, client, queue) => {
             { name: `${leftAngleDown} Source`, value: `${arrow} ${titleCase(currentTrack.source)}`, inline: true },
         )
         .addFields(
-            { name: `${leftAngleDown} Uploaded at`, value: `${arrow} ${currentTrack.metadata?.uploadedAt || new Date(currentTrack.metadata?.source?.releaseDate.isoString).toLocaleDateString('en-US') || 'NA'}`, inline: true },
+            { name: `${leftAngleDown} Uploaded at`, value: `${arrow} ${currentTrack.metadata?.uploadedAt || currentTrack.metadata?.source?.releaseDate.isoString ? new Date(currentTrack.metadata?.source?.releaseDate.isoString).toLocaleDateString('en-US') : 'NA'}`, inline: true },
             { name: `${leftAngleDown} Likes`, value: `${arrow} ${currentTrack.raw?.likes || currentTrack.metadata.bridge?.likes || 'NA'}`, inline: true },
             { name: `${leftAngleDown} Song link`, value: `${arrow} [Click here](${currentTrack.url})`, inline: true },
         )
         .setFooter({
-            iconURL: interaction.user.displayAvatarURL(),
-            text: `Requested by ${interaction.user.username}`
+            iconURL: interactionOrMessage?.user?.displayAvatarURL() || interactionOrMessage?.author?.displayAvatarURL() || "NA",
+            text: `Requested by ${interactionOrMessage?.user?.username || interactionOrMessage?.author?.username || "NA"}`
         })
         .setTimestamp()
 
@@ -483,7 +489,7 @@ const getSuggestedSongs = async (track) => {
 
     } catch (error) {
         console.error('Error getting song recommendations:', error);
-        return []; 
+        return [];
     }
 }
 

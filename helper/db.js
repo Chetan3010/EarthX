@@ -11,13 +11,13 @@ const getGuildSettings = async (interaction) => {
             return settings
         }
         return settings
-        
+
     } catch (error) {
         const interactionWasAcknowledged = interaction.deferred || interaction.replied
         if (interactionWasAcknowledged) {
             await interaction.followUp({
                 embeds: [
-                    errorEmbed(`Something went wrong while interacting with database`)
+                    errorEmbed(`Something went wrong while interacting with database!`)
                 ],
                 ephemeral: true
             })
@@ -25,7 +25,7 @@ const getGuildSettings = async (interaction) => {
         else {
             await interaction.reply({
                 embeds: [
-                    errorEmbed(`Something went wrong while interacting with database`)
+                    errorEmbed(`Something went wrong while interacting with database!`)
                 ],
                 ephemeral: true
             })
@@ -34,6 +34,28 @@ const getGuildSettings = async (interaction) => {
     }
 }
 
+const getGuildSettingsForMessage = async (message) => {
+    const guildId = message.guildId
+
+    try {
+        const settings = await GuildModel.findOne({ guildId })
+        if (!settings) {
+            const guild = new GuildModel({ guildId })
+            const settings = await guild.save()
+            return settings
+        }
+        return settings
+
+    } catch (error) {
+        await message.reply({
+            embeds: [
+                errorEmbed(`Something went wrong while interacting with database!`)
+            ],
+        })
+    }
+}
+
 module.exports = {
     getGuildSettings,
+    getGuildSettingsForMessage
 }

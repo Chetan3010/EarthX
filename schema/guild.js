@@ -9,6 +9,14 @@ const guildSchema = new mongoose.Schema({
     guildName: {
         type: String,
     },
+    isPrefixCmdEnable: {
+        type: Boolean,
+        default: false
+    },
+    prefix: {
+        type: String,
+        default: '.'
+    },
     // Volume System Default - 100
     volume: {
         type: Number,

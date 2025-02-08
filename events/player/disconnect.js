@@ -29,8 +29,7 @@ module.exports = {
             }).then(msge => setTimeout(() => msge.delete(), BOT_MSGE_DELETE_TIMEOUT));
 
         } catch (error) {
-            errorLog('An error occurred with player event!');
-            console.log(error);
+            errorLog(error);
         }
     }
 };

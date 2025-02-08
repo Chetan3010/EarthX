@@ -4,7 +4,7 @@ const { token, spotifyClientId, spotifyClientSecret, mongoConnection } = process
 
 const TidalExtractor = require('discord-player-tidal').default
 
-const { Client, Collection, GatewayIntentBits, ActivityType } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, ActivityType, PresenceUpdateStatus } = require('discord.js');
 const { Player } = require('discord-player');
 const {
     SpotifyExtractor,
@@ -20,14 +20,20 @@ const { connect } = require('mongoose');
 const chalk = require('chalk');
 const { infoLog } = require('./configs/logger');
 const { generateOauthTokens, YoutubeiExtractor } = require('discord-player-youtubei');
-const { DeezerExtractor } = require('discord-player-deezer');
+const { default: DeezerExtractor } = require('discord-player-deezer');
 
 const client = new Client({
     presence: {
-        status: 'online',
+        status: PresenceUpdateStatus.Online,
         activities: [{ name: '/help', type: ActivityType.Listening }],
     },
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates]
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessageReactions
+    ]
 });
 
 const player = new Player(client, {
@@ -47,11 +53,9 @@ try {
     ffmpegProcess.destroy(); // Attempt to terminate the FFmpeg process
 } catch (error) {
     if (error.code === 'EPERM') {
-        errorLog(`Permission error while trying to terminate FFmpeg: ${error.message}`);
-        console.error('Ensure the process has the necessary permissions to terminate FFmpeg.');
-    } else {
-        console.error('An error occurred while trying to terminate FFmpeg:', error);
+        infoLog('DEBUG',"",'Ensure the process has the necessary permissions to terminate FFmpeg.');
     }
+    errorLog(error);
 }
 
 process.on('SIGINT', () => {
@@ -72,7 +76,8 @@ process.on('SIGINT', () => {
         {
             clientId: spotifyClientId,
             clientSecret: spotifyClientSecret
-        });
+        }
+    );
 
     // Not a stable
     // await player.extractors.register(YouTubeExtractor, {});
@@ -86,7 +91,9 @@ process.on('SIGINT', () => {
     // await player.extractors.loadDefault();
 })();
 
-client.commands = new Collection();
+client.prefixCommands = new Collection();
+client.prefixAliases = new Collection();
+client.slashCommands = new Collection();
 client.buttons = new Collection();
 client.selectMenus = new Collection();
 client.cooldowns = new Collection();

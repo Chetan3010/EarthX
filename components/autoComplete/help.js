@@ -8,10 +8,10 @@ module.exports = {
         const query = interaction.options.getFocused();
         if (!query) return [];
 
-        const { commands } = client;
+        const { slashCommands } = client;
 
         // Getting our search query's results
-        const queryResult = commands.filter(
+        const queryResult = slashCommands.filter(
             (cmd) => cmd.data.name.toLowerCase().indexOf(query) >= 0
                 || cmd.aliases.includes(query)
                 // Filtering matches by category

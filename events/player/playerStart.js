@@ -98,8 +98,7 @@ module.exports = {
             // queue.metadata.updateInterval = interval;
 
         } catch (error) {
-            errorLog('An error occurred with player event!');
-            console.log(error);
+            errorLog(error);
         }
     }
 }
