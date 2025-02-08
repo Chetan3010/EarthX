@@ -31,7 +31,7 @@ module.exports = {
 
             let msge = ''
             if (status) {
-                msge = `${enabled} Prefix commands have been **[enabled](https://discord.com)** for this server.`
+                msge = `${enabled} Prefix commands have been **[enabled](https://discord.com)** for this server.\nUse consistent command type else it will not perform as expected!`
             } else {
                 msge = `${disabled} Prefix commands have been **[disabled](https://discord.com)** for this server.`
             }

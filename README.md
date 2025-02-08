@@ -115,6 +115,7 @@ For developers looking to host their own instance:
 
 #### Prerequisite
 
+- node.js v22 or newer
 - Discord bot/client token
 - Discord bot/client id
 - Spotify Client Id

@@ -14,7 +14,7 @@ module.exports = {
         if (!requireSessionConditions(message, true)) return;
 
         try {
-            const queue = client.player.nodes.get(message.guild.id);
+            const queue = client.player.nodes.get(message?.guild?.id);
             if (!queue?.isPlaying()) {
                 return message.reply({ embeds: [errorEmbed(` Nothing is currently playing`)] })
                     .then(msg => setTimeout(() => msg.delete(), ERROR_MSGE_DELETE_TIMEOUT))

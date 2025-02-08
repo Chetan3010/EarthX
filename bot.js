@@ -20,7 +20,7 @@ const { connect } = require('mongoose');
 const chalk = require('chalk');
 const { infoLog } = require('./configs/logger');
 const { generateOauthTokens, YoutubeiExtractor } = require('discord-player-youtubei');
-const { default: DeezerExtractor } = require('discord-player-deezer');
+const { DeezerExtractor } = require('discord-player-deezer');
 
 const client = new Client({
     presence: {
