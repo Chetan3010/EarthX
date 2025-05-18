@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@discord-player/extractor": "^7.1.0",
-    "@discordjs/rest": "^2.4.2",
+    "@discordjs/rest": "^2.5.0",
     "@discordjs/voice": "^0.18.0",
     "chalk": "^4.1.2",
     "common-tags": "^1.8.2",
