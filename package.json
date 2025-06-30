@@ -27,7 +27,7 @@
     "discord-player-tidal": "^0.1.0",
     "discord-player-youtubei": "^1.4.6",
     "discord.js": "^14.17.3",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.0.0",
     "mediaplex": "^1.0.0",
     "mongoose": "^8.14.2",
     "ytdl-core": "^4.11.5"
