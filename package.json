@@ -29,7 +29,7 @@
     "discord.js": "^14.21.0",
     "dotenv": "^17.2.1",
     "mediaplex": "^1.0.0",
-    "mongoose": "^8.16.4",
+    "mongoose": "^8.17.0",
     "ytdl-core": "^4.11.5"
   }
 }
