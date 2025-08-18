@@ -19,7 +19,7 @@
   "dependencies": {
     "@discord-player/extractor": "^7.1.0",
     "@discordjs/rest": "^2.5.1",
-    "@discordjs/voice": "^0.18.0",
+    "@discordjs/voice": "^0.19.0",
     "chalk": "^4.1.2",
     "common-tags": "^1.8.2",
     "discord-player": "^7.1.0",
